@@ -8,6 +8,7 @@ module.exports = {
       path: `${__dirname}/dist`,
       filename: 'bundle.js',
     },
+    devtool: 'source-map',
     plugins: [
         new HtmlWebPackPlugin({
             template: resolve(__dirname, './public', 'index.html'),
