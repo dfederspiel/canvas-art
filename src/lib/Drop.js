@@ -1,7 +1,7 @@
 import { rand } from './helpers'
 
 export default class Drop {
-    constructor(x, y, w, h, frames, colorString, ease) {
+    constructor(x, y, w, h, frames, colorString, easeFn) {
         this.x = x;
         this.y = y;
         this.width = w;
@@ -13,7 +13,7 @@ export default class Drop {
         this.ydir = Math.round(Math.random());
         this.animationFrame = Math.floor(rand(0, frames));
         this.frames = frames;
-        this.ease = ease;
+        this.easeFn = easeFn;
         this.animationDirection = 1;
     }
 
@@ -46,13 +46,10 @@ export default class Drop {
             this.ydir = 1;
         }
 
-        // console.log((this.speed * (this.xdir == 0 ? -1 : 1)))
-
         this.x += (this.speed * (this.xdir == 0 ? -1 : 1));
         this.y += (this.speed * (this.ydir == 0 ? -1 : 1));
 
         const currentFrame = this.getAnimationFrame();
-        this.size = this.ease(currentFrame, 10, 25, this.frames);
-        
+        this.size = this.easeFn(currentFrame, 10, 25, this.frames);
     }
 }

@@ -19,8 +19,6 @@ setInterval(() => {
     count++;
 }, 1000)
 
-
-console.log(Date.now())
 const d = Date.now() + 10000
 
 let drops = [];
@@ -66,15 +64,13 @@ for(var x = 0; x < 100; x++ ) {
 }
 
 const displayText = () => {
-    // Display score and time 
     ctx.fillStyle = "rgb(255, 255, 255)";
-    ctx.font = "30px Helvetica";
+    ctx.font = "20px Helvetica";
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
+
     ctx.fillText("Time: " + count, 20, 20);
-
     ctx.fillText("Frame: " + frameNumber, 20, 50);
-
     ctx.fillText("FPS: " + (frameNumber / count).toFixed(2), 20, 80)
 }
 
@@ -89,7 +85,7 @@ var render = function () {
         drop.update();
     })
 
-    //displayText();
+    displayText();
   };
 
 // The main game loop
