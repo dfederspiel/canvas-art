@@ -7,6 +7,7 @@ import {
   easeInOutQuad,
   easeLinear,
 } from "./lib/easing";
+import Rect from "./lib/Rect";
 
 // Create the canvas for the game to display in
 var canvas = document.createElement("canvas");
@@ -29,74 +30,156 @@ setInterval(() => {
 
 const d = Date.now() + 10000;
 
-const WALL_WIDTH = 100;
-const WALL_HEIGHT = 100;
-const wall = new Wall(
-  WIDTH / 2 - WALL_WIDTH / 2,
-  HEIGHT / 2 - WALL_HEIGHT / 2,
-  WALL_WIDTH,
-  WALL_HEIGHT,
-  "rgb(200, 0, 0)"
-);
+const WALL_WIDTH = 120;
+const WALL_HEIGHT = 120;
 
-const wall2 = new Wall(
-  WIDTH * 0.2 - WALL_WIDTH / 2,
-  HEIGHT / 2 - WALL_HEIGHT / 2,
-  WALL_WIDTH,
-  WALL_HEIGHT,
-  "rgb(0, 200, 0)"
-);
-
-const wall3 = new Wall(
-  WIDTH * 0.8 - WALL_WIDTH / 2,
-  HEIGHT / 2 - WALL_HEIGHT / 2,
-  WALL_WIDTH,
-  WALL_HEIGHT,
-  "rgb(0, 0, 200)"
-);
+const walls = [
+  new Wall(
+    WIDTH / 2 - WALL_WIDTH / 2,
+    HEIGHT / 2 - WALL_HEIGHT / 2,
+    WALL_WIDTH,
+    WALL_HEIGHT,
+    "rgb(200, 0, 0)"
+  ),
+  new Wall(
+    WIDTH * 0.25 - WALL_WIDTH / 2,
+    HEIGHT / 2 - WALL_HEIGHT / 2,
+    WALL_WIDTH,
+    WALL_HEIGHT,
+    "rgb(0, 200, 0)"
+  ),
+  new Wall(
+    WIDTH * 0.8 - WALL_WIDTH / 2,
+    HEIGHT / 2 - WALL_HEIGHT / 2,
+    WALL_WIDTH,
+    WALL_HEIGHT,
+    "rgb(0, 0, 200)"
+  ),
+  new Wall(
+    WIDTH * 0.375 - WALL_WIDTH / 2 / 2,
+    HEIGHT / 2 - WALL_HEIGHT / 2 / 2,
+    WALL_WIDTH / 2,
+    WALL_HEIGHT / 2,
+    "rgb(0, 200, 200)"
+  ),
+  new Wall(
+    WIDTH * 0.65 - WALL_WIDTH / 2 / 2,
+    HEIGHT / 2 - WALL_HEIGHT / 2 / 2,
+    WALL_WIDTH / 2,
+    WALL_HEIGHT / 2,
+    "rgb(200, 0, 200)"
+  ),
+];
 
 let drops = [];
-for (var x = 0; x < 15000; x++) {
-  let size = DROP_SIZE * Math.random();
+for (var x = 0; x < 10000; x++) {
+  let size = Math.floor(rand(2, 12));
   drops.push(
     new Drop(
-      rand(0, WIDTH),
-      rand(0, HEIGHT),
-      5,
-      5,
-      rand(60, 240),
-      `rgb(60,60,60)`,
-      easeLinear
-    )
-  );
-}
-for (var x = 0; x < 500; x++) {
-  drops.push(
-    new Drop(
-      rand(0, WIDTH),
-      rand(0, HEIGHT),
-      15,
-      15,
-      rand(120, 480),
-      `rgb(60,60,60)`,
-      easeInElastic
+      new Rect(rand(0, WIDTH), rand(0, HEIGHT), size, size, {
+        min: {
+          w: 2,
+          h: 2,
+        },
+        max: {
+          w: 8,
+          h: 8,
+        },
+      }),
+      rand(15, 600),
+      `rgb(160,160,160)`,
+      [easeInOutBack, easeInElastic, easeInOutQuad, easeLinear][Math.floor(rand(0, 4))],
+      rand(.01, .5),
+      rand(1, 3),
     )
   );
 }
 
-for (var x = 0; x < 100; x++) {
-  drops.push(
-    new Drop(
-      rand(0, WIDTH),
-      rand(0, HEIGHT),
-      25,
-      25,
-      rand(30, 45),
-      `rgb(60,60,60)`,
-      easeInElastic
-    )
-  );
-}
+for (var x = 0; x < 10000; x++) {
+    let size = Math.floor(rand(2, 12));
+    drops.push(
+      new Drop(
+        new Rect(rand(0, WIDTH), rand(0, HEIGHT), size, size, {
+          min: {
+            w: 2,
+            h: 2,
+          },
+          max: {
+            w: 8,
+            h: 8,
+          },
+        }),
+        rand(15, 600),
+        `rgb(60,60,60)`,
+        [easeInOutBack, easeInElastic, easeInOutQuad, easeLinear][Math.floor(rand(0, 4))],
+        rand(1, 3),
+        rand(.01, .5),
+      )
+    );
+  }
+
+// for (var x = 0; x < 100; x++) {
+//   let size = Math.floor(rand(2, 12));
+//   drops.push(
+//     new Drop(
+//       new Rect(rand(0, WIDTH), rand(HEIGHT / 2 + 200, HEIGHT), size, size, {
+//         min: {
+//           w: 10,
+//           h: 10,
+//         },
+//         max: {
+//           w: 25,
+//           h: 25,
+//         },
+//       }),
+//       rand(1, 300),
+//       `rgb(60,60,60)`,
+//       easeInElastic
+//     )
+//   );
+// }
+
+// for (var x = 0; x < 100; x++) {
+//   let size = Math.floor(rand(2, 12));
+//   drops.push(
+//     new Drop(
+//       new Rect(rand(0, WIDTH), rand(HEIGHT / 2 + 200, HEIGHT), size, size, {
+//         min: {
+//           w: 10,
+//           h: 10,
+//         },
+//         max: {
+//           w: 25,
+//           h: 25,
+//         },
+//       }),
+//       rand(30, 60),
+//       `rgb(60,60,60)`,
+//       easeInOutBack
+//     )
+//   );
+// }
+
+// for (var x = 0; x < 100; x++) {
+//   let size = rand(2, 12);
+//   drops.push(
+//     new Drop(
+//       new Rect(rand(0, WIDTH), rand(HEIGHT / 2 + 200, HEIGHT), size, size, {
+//         min: {
+//           x: 10,
+//           y: 10,
+//         },
+//         max: {
+//           x: 25,
+//           y: 25,
+//         },
+//       }),
+//       rand(120, 480),
+//       `rgb(60,60,60)`,
+//       easeInOutQuad
+//     )
+//   );
+// }
 
 const displayText = () => {
   ctx.fillStyle = "rgb(255, 255, 255)";
@@ -108,10 +191,10 @@ const displayText = () => {
   ctx.fillText("Frame: " + frameNumber, 20, 50);
   ctx.fillText("FPS: " + (frameNumber / count).toFixed(2), 20, 80);
 
-  ctx.textAlign = "center";
-  ctx.fillText(box1hits, WIDTH * 0.2, HEIGHT / 2 - 10);
-  ctx.fillText(box2hits, WIDTH / 2, HEIGHT / 2 - 10);
-  ctx.fillText(box3hits, WIDTH * 0.8, HEIGHT / 2 - 10);
+//   ctx.textAlign = "center";
+//   ctx.fillText(walls[0].hits, WIDTH * 0.2, HEIGHT / 2 - 10);
+//   ctx.fillText(walls[1].hits, WIDTH / 2, HEIGHT / 2 - 10);
+//   ctx.fillText(walls[2].hits, WIDTH * 0.8, HEIGHT / 2 - 10);
 };
 
 // RECTANGLE/RECTANGLE
@@ -152,20 +235,19 @@ function collides(r1, r2) {
 }
 
 function setDirection(drop) {
-
-  if (drop.x >= WIDTH - drop.w && drop.xdir > 0) {
+  if (drop.x - drop.w / 2 >= WIDTH - drop.w && drop.xdir > 0) {
     drop.xdir = -1;
   }
 
-  if (drop.x <= 0 && drop.xdir < 0) {
+  if (drop.x - drop.w / 2 <= 0 && drop.xdir < 0) {
     drop.xdir = 1;
   }
 
-  if (drop.y >= HEIGHT - drop.h && drop.ydir > 0) {
+  if (drop.y - drop.h / 2 >= HEIGHT - drop.h && drop.ydir > 0) {
     drop.ydir = -1;
   }
 
-  if (drop.y < 0 && drop.ydir < 0) {
+  if (drop.y - drop.h / 2 < 0 && drop.ydir < 0) {
     drop.ydir = 1;
   }
 }
@@ -194,49 +276,43 @@ function doCollision(angle, drop) {
   } else drop.hit = false; /// reset hit when this hit is done (angle = null)
 }
 
-let box1hits = 0;
-let box2hits = 0;
-let box3hits = 0;
-
 // Draw everything on the canvas
 const render = function () {
   frameNumber++;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  ctx.globalAlpha = 0.5;
   drops.forEach((drop, idx) => {
     ctx.fillStyle = drop.colorString;
-    ctx.fillRect(drop.x, drop.y, drop.w, drop.h);
+    ctx.fillRect(drop.x - drop.w / 2, drop.y - drop.h / 2, drop.w, drop.h);
 
     drop.update();
 
     setDirection(drop);
 
-    const angle = collides(drop, wall);
-    if (angle) {
-      box1hits++;
-      drop.colorString = 'rgb(120, 0, 0)';
-    }
-    doCollision(angle, drop);
-    const angle2 = collides(drop, wall2);
-    if (angle2) {
-      box2hits++;
-      drop.colorString = 'rgb(0, 120, 0)';
-    }
-    doCollision(angle2, drop);
-    const angle3 = collides(drop, wall3);
-    if (angle3) {
-      box3hits++;
-      drop.colorString = 'rgb(0, 0, 120)';
-    }
-    doCollision(angle3, drop);
+    walls.forEach((wall) => {
+      const angle = collides(
+        {
+          x: drop.x - drop.w / 2, // use a center x point to calculate trajectory
+          y: drop.y - drop.h / 2, // use a center y point to calculate trajectory
+          w: drop.w,
+          h: drop.h,
+        },
+        wall
+      );
+      if (angle) {
+        wall.hits++;
+        drop.colorString = wall.colorString;
+      }
+      doCollision(angle, drop);
+    });
   });
-  
-  ctx.fillStyle = wall.fillStyle;
-  ctx.fillRect(wall.x, wall.y, wall.w, wall.h);
-  ctx.fillStyle = wall2.fillStyle;
-  ctx.fillRect(wall2.x, wall2.y, wall2.w, wall2.h);
-  ctx.fillStyle = wall3.fillStyle;
-  ctx.fillRect(wall3.x, wall3.y, wall3.w, wall3.h);
+
+  ctx.globalAlpha = 25;
+  walls.forEach((w) => {
+    ctx.fillStyle = w.colorString;
+    ctx.fillRect(w.x, w.y, w.w, w.h);
+  });
 
   displayText();
 };

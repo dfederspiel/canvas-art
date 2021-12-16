@@ -1,9 +1,10 @@
 export default class Wall {
-  constructor(x, y, w, h, fillStyle) {
+  constructor(x, y, w, h, colorString) {
     this.x = x;
     this.y = y;
     this.w = w;
     this.h = h;
-    this.fillStyle = fillStyle;
+    this.colorString = colorString;
+    this.hits = 0;
   }
 }
