@@ -17,7 +17,6 @@ document.body.appendChild(canvas);
 
 let count = 0;
 let frameNumber = 0;
-let hitColor = "";
 
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
@@ -30,8 +29,8 @@ setInterval(() => {
 
 const d = Date.now() + 10000;
 
-const WALL_WIDTH = 200;
-const WALL_HEIGHT = 200;
+const WALL_WIDTH = 100;
+const WALL_HEIGHT = 100;
 const wall = new Wall(
   WIDTH / 2 - WALL_WIDTH / 2,
   HEIGHT / 2 - WALL_HEIGHT / 2,
@@ -57,43 +56,43 @@ const wall3 = new Wall(
 );
 
 let drops = [];
-for (var x = 0; x < 500; x++) {
+for (var x = 0; x < 15000; x++) {
   let size = DROP_SIZE * Math.random();
   drops.push(
     new Drop(
       rand(0, WIDTH),
       rand(0, HEIGHT),
-      2,
-      2,
+      5,
+      5,
       rand(60, 240),
-      `rgb(200,0,0)`,
+      `rgb(60,60,60)`,
       easeLinear
     )
   );
 }
-for (var x = 0; x < 300; x++) {
+for (var x = 0; x < 500; x++) {
   drops.push(
     new Drop(
       rand(0, WIDTH),
       rand(0, HEIGHT),
-      2,
-      2,
+      15,
+      15,
       rand(120, 480),
-      `rgb(${rand(0, 0)}, ${rand(0, 0)}, ${rand(200, 255)})`,
+      `rgb(60,60,60)`,
       easeInElastic
     )
   );
 }
 
-for (var x = 0; x < 50; x++) {
+for (var x = 0; x < 100; x++) {
   drops.push(
     new Drop(
       rand(0, WIDTH),
       rand(0, HEIGHT),
-      5,
-      5,
+      25,
+      25,
       rand(30, 45),
-      `rgb(${rand(100, 200)}, ${rand(0, 0)}, ${rand(0, 0)})`,
+      `rgb(60,60,60)`,
       easeInElastic
     )
   );
@@ -153,10 +152,6 @@ function collides(r1, r2) {
 }
 
 function setDirection(drop) {
-  // drop.xdir = drop.x >= WIDTH - drop.w && drop.xdir == 1 ? 0 : 1
-  // drop.xdir = drop.x <= 0 && drop.xdir == 0 ? 1 : 0;
-  // drop.ydir = drop.y >= HEIGHT - drop.h && drop.ydir == 1 ? 0 : 1
-  // drop.ydir = drop.y < 0 && drop.ydir == 0 ? 1 : 0;
 
   if (drop.x >= WIDTH - drop.w && drop.xdir > 0) {
     drop.xdir = -1;
@@ -181,8 +176,6 @@ function doCollision(angle, drop) {
     /// if we're not already in a hit situation, create one
     if (!drop.hit) {
       drop.hit = true;
-      //hitColor = `rgb(${rand(0, 255)}, ${rand(0, 255)}, ${rand(0, 255)})`;
-      //(drop.colorString = hitColor), (drop.hit = true);
       /// zone 1 - left
       if ((angle >= 0 && angle < 45) || (angle > 315 && angle < 360)) {
         /// if moving in + direction deflect rect 1 in x direction etc.
@@ -210,13 +203,6 @@ const render = function () {
   frameNumber++;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = wall.fillStyle;
-  ctx.fillRect(wall.x, wall.y, wall.w, wall.h);
-  ctx.fillStyle = wall2.fillStyle;
-  ctx.fillRect(wall2.x, wall2.y, wall2.w, wall2.h);
-  ctx.fillStyle = wall3.fillStyle;
-  ctx.fillRect(wall3.x, wall3.y, wall3.w, wall3.h);
-
   drops.forEach((drop, idx) => {
     ctx.fillStyle = drop.colorString;
     ctx.fillRect(drop.x, drop.y, drop.w, drop.h);
@@ -228,22 +214,29 @@ const render = function () {
     const angle = collides(drop, wall);
     if (angle) {
       box1hits++;
-      drop.colorString = wall.fillStyle;
+      drop.colorString = 'rgb(120, 0, 0)';
     }
     doCollision(angle, drop);
     const angle2 = collides(drop, wall2);
     if (angle2) {
       box2hits++;
-      drop.colorString = wall2.fillStyle;
+      drop.colorString = 'rgb(0, 120, 0)';
     }
     doCollision(angle2, drop);
     const angle3 = collides(drop, wall3);
     if (angle3) {
       box3hits++;
-      drop.colorString = wall3.fillStyle;
+      drop.colorString = 'rgb(0, 0, 120)';
     }
     doCollision(angle3, drop);
   });
+  
+  ctx.fillStyle = wall.fillStyle;
+  ctx.fillRect(wall.x, wall.y, wall.w, wall.h);
+  ctx.fillStyle = wall2.fillStyle;
+  ctx.fillRect(wall2.x, wall2.y, wall2.w, wall2.h);
+  ctx.fillStyle = wall3.fillStyle;
+  ctx.fillRect(wall3.x, wall3.y, wall3.w, wall3.h);
 
   displayText();
 };
