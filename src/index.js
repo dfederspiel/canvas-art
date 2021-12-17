@@ -30,8 +30,8 @@ setInterval(() => {
 
 const d = Date.now() + 10000;
 
-const WALL_WIDTH = 120;
-const WALL_HEIGHT = 120;
+const WALL_WIDTH = 20;
+const WALL_HEIGHT = HEIGHT;
 
 const walls = [
   new Wall(
@@ -39,40 +39,40 @@ const walls = [
     HEIGHT / 2 - WALL_HEIGHT / 2,
     WALL_WIDTH,
     WALL_HEIGHT,
-    "rgb(200, 0, 0)"
+    "rgb(0, 255, 0)"
   ),
   new Wall(
-    WIDTH * 0.25 - WALL_WIDTH / 2,
+    WIDTH * 0.2 - WALL_WIDTH / 2,
     HEIGHT / 2 - WALL_HEIGHT / 2,
     WALL_WIDTH,
     WALL_HEIGHT,
-    "rgb(0, 200, 0)"
+    "rgb(255, 0, 0)"
   ),
   new Wall(
     WIDTH * 0.8 - WALL_WIDTH / 2,
     HEIGHT / 2 - WALL_HEIGHT / 2,
     WALL_WIDTH,
     WALL_HEIGHT,
-    "rgb(0, 0, 200)"
+    "rgb(0, 0, 255)"
   ),
-  new Wall(
-    WIDTH * 0.375 - WALL_WIDTH / 2 / 2,
-    HEIGHT / 2 - WALL_HEIGHT / 2 / 2,
-    WALL_WIDTH / 2,
-    WALL_HEIGHT / 2,
-    "rgb(0, 200, 200)"
-  ),
-  new Wall(
-    WIDTH * 0.65 - WALL_WIDTH / 2 / 2,
-    HEIGHT / 2 - WALL_HEIGHT / 2 / 2,
-    WALL_WIDTH / 2,
-    WALL_HEIGHT / 2,
-    "rgb(200, 0, 200)"
-  ),
+//   new Wall(
+//     WIDTH * 0.375 - WALL_WIDTH / 2 / 2,
+//     HEIGHT / 2 - WALL_HEIGHT / 2 / 2,
+//     WALL_WIDTH / 2,
+//     WALL_HEIGHT / 2,
+//     "rgb(0, 200, 200)"
+//   ),
+//   new Wall(
+//     WIDTH * 0.65 - WALL_WIDTH / 2 / 2,
+//     HEIGHT / 2 - WALL_HEIGHT / 2 / 2,
+//     WALL_WIDTH / 2,
+//     WALL_HEIGHT / 2,
+//     "rgb(200, 0, 200)"
+//   ),
 ];
 
 let drops = [];
-for (var x = 0; x < 10000; x++) {
+for (var x = 0; x < 1250; x++) {
   let size = Math.floor(rand(2, 12));
   drops.push(
     new Drop(
@@ -82,15 +82,15 @@ for (var x = 0; x < 10000; x++) {
           h: 2,
         },
         max: {
-          w: 8,
-          h: 8,
+          w: 18,
+          h: 18,
         },
       }),
       rand(15, 600),
       `rgb(160,160,160)`,
-      [easeInOutBack, easeInElastic, easeInOutQuad, easeLinear][Math.floor(rand(0, 4))],
-      rand(.01, .5),
-      rand(1, 3),
+      easeInElastic,
+      rand(.01, 5),
+      rand(.01, 5),
     )
   );
 }
@@ -105,15 +105,15 @@ for (var x = 0; x < 10000; x++) {
             h: 2,
           },
           max: {
-            w: 8,
-            h: 8,
+            w: 4,
+            h: 4,
           },
         }),
         rand(15, 600),
         `rgb(60,60,60)`,
         [easeInOutBack, easeInElastic, easeInOutQuad, easeLinear][Math.floor(rand(0, 4))],
-        rand(1, 3),
-        rand(.01, .5),
+        rand(.01, .1),
+        rand(1, 5),
       )
     );
   }
@@ -252,20 +252,21 @@ function setDirection(drop) {
   }
 }
 
-function doCollision(angle, drop) {
+function doCollision(angle, drop, wall) {
   // did we have an intersection?
   if (angle !== null) {
     /// if we're not already in a hit situation, create one
     if (!drop.hit) {
       drop.hit = true;
+      const { angles } = wall;
       /// zone 1 - left
-      if ((angle >= 0 && angle < 45) || (angle > 315 && angle < 360)) {
+      if ((angle >= 0 && angle < angles.tl) || (angle > angles.bl && angle < 360)) {
         /// if moving in + direction deflect rect 1 in x direction etc.
         if (drop.xdir > 0) drop.xdir = -drop.xdir;
-      } else if (angle >= 45 && angle < 135) {
+      } else if (angle >= angles.tl && angle < angles.tr) {
         /// zone 2 - top
         if (drop.ydir > 0) drop.ydir = -drop.ydir;
-      } else if (angle >= 135 && angle < 225) {
+      } else if (angle >= angles.tr && angle < angles.br) {
         /// zone 3 - right
         if (drop.xdir < 0) drop.xdir = -drop.xdir;
       } else {
@@ -304,11 +305,12 @@ const render = function () {
         wall.hits++;
         drop.colorString = wall.colorString;
       }
-      doCollision(angle, drop);
+      doCollision(angle, drop, wall);
     });
+    // console.log(walls[0].angles())
   });
 
-  ctx.globalAlpha = 25;
+  ctx.globalAlpha = 1;
   walls.forEach((w) => {
     ctx.fillStyle = w.colorString;
     ctx.fillRect(w.x, w.y, w.w, w.h);
