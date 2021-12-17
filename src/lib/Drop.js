@@ -11,13 +11,13 @@ export default class Drop {
         this.colorString = colorString || `rgb(${rand(0, 25)}, ${rand(0, 25)}, ${rand(0, 255)})`;
         this.speedx = vx
         this.speedy = vy
-        this.xdir = Math.round(Math.random()) == 0 ? -1 : 1;
-        this.ydir = Math.round(Math.random()) == 0 ? -1 : 1;
+        this.xdir = 1 // Math.round(Math.random()) == 0 ? -1 : 1;
+        this.ydir = 1 // Math.round(Math.random()) == 0 ? -1 : 1;
         this.animationFrame = Math.floor(rand(0, frames));
         this.frames = frames;
         this.easeFn = easeFn;
         this.animationDirection = 1;
-        this.alpha = 0;
+        this.alpha = .5;
         this.hitTime = 0;
         this.hitEffectDuration = duration || 5000
     }
