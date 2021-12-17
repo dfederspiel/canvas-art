@@ -21,6 +21,12 @@ let LEFT_PRESSED = false;
 let UP_PRESSED = false;
 let DOWN_PRESSED = false;
 
+const WALL_DIVISIONS = 0
+const PARTICLE_VX = 0;
+const PARTICLE_VY = 0;
+const ROTATION_STEP = .1;
+const MAX_PARTICLES = 175;
+
 document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowRight") RIGHT_PRESSED = true;
   else if (e.key === "ArrowLeft") LEFT_PRESSED = true;
@@ -35,6 +41,10 @@ document.addEventListener("keyup", (e) => {
   else if (e.key === "ArrowDown") DOWN_PRESSED = false;
 });
 
+document.addEventListener("keyup", (e) => {
+    if (e.key === "x") particles = [];
+  });
+
 let count = 0;
 let frameNumber = 0;
 
@@ -47,13 +57,12 @@ setInterval(() => {
 
 const d = Date.now() + 10000;
 
-const wall_count = 4;
 let walls = [];
-for (let idx = 0; idx < wall_count; idx++) {
+for (let idx = 0; idx < WALL_DIVISIONS; idx++) {
   const w = WIDTH;
-  const h = 10;
+  const h = 4;
   const x = rand(0, WIDTH - w);
-  const y = (HEIGHT / wall_count) * idx + HEIGHT / wall_count / 2;
+  const y = (HEIGHT / WALL_DIVISIONS) * idx + HEIGHT / WALL_DIVISIONS / 2;
 
   walls.push(
     new Wall(
@@ -66,10 +75,10 @@ for (let idx = 0; idx < wall_count; idx++) {
   );
 }
 
-for (let idx = 0; idx < wall_count; idx++) {
-  const w = 10;
+for (let idx = 0; idx < WALL_DIVISIONS; idx++) {
+  const w = 4;
   const h = HEIGHT;
-  const x = (WIDTH / wall_count) * idx + WIDTH / wall_count / 2;
+  const x = (WIDTH / WALL_DIVISIONS) * idx + WIDTH / WALL_DIVISIONS / 2;
   const y = rand(0, HEIGHT - h);
 
   walls.push(
@@ -111,7 +120,7 @@ const WALL_HEIGHT = 100;
 // ];
 
 let drops = [];
-for (var x = 0; x < 1250; x++) {
+for (var x = 0; x < 1000; x++) {
   let size = Math.floor(rand(2, 12));
   drops.push(
     new Drop(
@@ -413,22 +422,22 @@ var main = function () {
           h: 10,
         },
         max: {
-          w: 40,
-          h: 40,
+          w: 20,
+          h: 20,
         },
       }),
-      240,
-      `rgb(${rand(0, 255)}, ${rand(0, 0)}, ${rand(0, 0)})`,
-      easeInOutQuad,
-      rand(1, 10),
-      1,
+      120,
+      `rgb(${rand(50, 255)}, ${rand(50, 255)}, ${rand(50, 255)})`,
+      easeInElastic,
+      PARTICLE_VX,
+      PARTICLE_VY,
       2000
     )
   );
   // run the render function
   render(drops);
   render(particles);
-  angle += .5;
+  angle += ROTATION_STEP;
   if (angle >= 2 * Math.PI) {
     angle = 0;
     particleCenterX = rand(0, WIDTH);
@@ -436,7 +445,7 @@ var main = function () {
     radius = rand(50, 200);
   }
   // Request to do this again ASAP
-  while (particles.length > 500) particles.shift();
+  while (particles.length > MAX_PARTICLES) particles.shift();
   requestAnimationFrame(main);
 };
 

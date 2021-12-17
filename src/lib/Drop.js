@@ -13,7 +13,7 @@ export default class Drop {
         this.speedy = vy
         this.xdir = 1 // Math.round(Math.random()) == 0 ? -1 : 1;
         this.ydir = 1 // Math.round(Math.random()) == 0 ? -1 : 1;
-        this.animationFrame = Math.floor(rand(0, frames));
+        this.animationFrame = 0; //Math.floor(rand(0, frames));
         this.frames = frames;
         this.easeFn = easeFn;
         this.animationDirection = 1;
