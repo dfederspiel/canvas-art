@@ -22,54 +22,63 @@ let frameNumber = 0;
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
 
-const DROP_SIZE = 10;
-
 setInterval(() => {
   count++;
 }, 1000);
 
 const d = Date.now() + 10000;
 
-const WALL_WIDTH = 20;
-const WALL_HEIGHT = HEIGHT;
+const wall_count = 2;
+let walls = [];
+for(let idx = 0; idx < wall_count; idx ++) {
+    const w = WIDTH
+    const h = 5
+    const x = rand(0, WIDTH -  w)
+    const y = (HEIGHT / wall_count) * idx + ((HEIGHT / wall_count) / 2)
 
-const walls = [
-  new Wall(
-    WIDTH * 0.2 - WALL_WIDTH / 2,
-    HEIGHT / 2 - WALL_HEIGHT / 2,
-    WALL_WIDTH,
-    WALL_HEIGHT,
-    "rgb(255, 0, 0)"
-  ),
-  new Wall(
-    WIDTH * 0.325 - WALL_WIDTH / 2 / 2,
-    HEIGHT / 2 - WALL_HEIGHT / 2 / 2,
-    WALL_WIDTH * 4,
-    WALL_HEIGHT / 2,
-    "rgb(0, 200, 200)"
-  ),
-  new Wall(
-    WIDTH / 2 - WALL_WIDTH / 2,
-    HEIGHT / 2 - WALL_HEIGHT / 2,
-    WALL_WIDTH,
-    WALL_HEIGHT,
-    "rgb(0, 255, 0)"
-  ),
-  new Wall(
-    WIDTH * 0.625 - WALL_WIDTH / 2 / 2,
-    HEIGHT / 2 - WALL_HEIGHT / 2 / 2,
-    WALL_WIDTH * 4,
-    WALL_HEIGHT / 2,
-    "rgb(200, 0, 200)"
-  ),
-  new Wall(
-    WIDTH * 0.8 - WALL_WIDTH / 2,
-    HEIGHT / 2 - WALL_HEIGHT / 2,
-    WALL_WIDTH,
-    WALL_HEIGHT,
-    "rgb(0, 0, 255)"
-  ),
-];
+    walls.push(new Wall(
+        x, y, w, h, `rgb(${rand(0, 255)}, ${rand(0, 255)}, ${rand(0, 255)})`
+    ))
+}
+
+for(let idx = 0; idx < wall_count; idx ++) {
+    const w = 5
+    const h = HEIGHT
+    const x = (WIDTH / wall_count) * idx + ((WIDTH / wall_count) / 2)
+    const y = rand(0, HEIGHT -  h)
+
+    walls.push(new Wall(
+        x, y, w, h, `rgb(${rand(0, 255)}, ${rand(0, 255)}, ${rand(0, 255)})`
+    ))
+}
+
+
+const WALL_WIDTH = 100;
+const WALL_HEIGHT = 100;
+
+// walls = [
+//   new Wall(
+//     WIDTH * 0.2 - WALL_WIDTH / 2,
+//     HEIGHT / 2 - WALL_HEIGHT / 2,
+//     WALL_WIDTH,
+//     WALL_HEIGHT,
+//     "rgb(255, 0, 0)"
+//   ),
+//   new Wall(
+//     WIDTH / 2 - WALL_WIDTH / 2,
+//     HEIGHT / 2 - WALL_HEIGHT / 2,
+//     WALL_WIDTH,
+//     WALL_HEIGHT,
+//     "rgb(0, 255, 0)"
+//   ),
+//   new Wall(
+//     WIDTH * 0.8 - WALL_WIDTH / 2,
+//     HEIGHT / 2 - WALL_HEIGHT / 2,
+//     WALL_WIDTH,
+//     WALL_HEIGHT,
+//     "rgb(0, 0, 255)"
+//   ),
+// ];
 
 let drops = [];
 for (var x = 0; x < 1250; x++) {
@@ -89,8 +98,8 @@ for (var x = 0; x < 1250; x++) {
       rand(15, 600),
       `rgb(160,160,160)`,
       easeInElastic,
-      rand(0.01, 5),
-      rand(0.01, 5)
+      rand(0.01, 2),
+      rand(0.01, 2)
     )
   );
 }
@@ -114,8 +123,8 @@ for (var x = 0; x < 10000; x++) {
       [easeInOutBack, easeInElastic, easeInOutQuad, easeLinear][
         Math.floor(rand(0, 4))
       ],
-      rand(0.01, 0.1),
-      rand(1, 5)
+      rand(.01, .1),
+      rand(.1, 1)
     )
   );
 }
@@ -315,7 +324,7 @@ const render = function () {
     // console.log(walls[0].angles())
   });
 
-  ctx.globalAlpha = 1;
+  ctx.globalAlpha = .2;
   walls.forEach((w) => {
     ctx.fillStyle = w.colorString;
     ctx.fillRect(w.x, w.y, w.w, w.h);
