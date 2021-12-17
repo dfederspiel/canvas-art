@@ -1,7 +1,7 @@
 import { rand } from './helpers'
 
 export default class Drop {
-    constructor(rect, frames, colorString, easeFn, vx, vy) {
+    constructor(rect, frames, colorString, easeFn, vx, vy, duration) {
         this.x = rect.x;
         this.y = rect.y;
         this.w = rect.w;
@@ -17,6 +17,9 @@ export default class Drop {
         this.frames = frames;
         this.easeFn = easeFn;
         this.animationDirection = 1;
+        this.alpha = 0;
+        this.hitTime = 0;
+        this.hitEffectDuration = duration || 5000
     }
 
     getAnimationFrame() {

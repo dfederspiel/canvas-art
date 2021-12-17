@@ -28,7 +28,7 @@ setInterval(() => {
 
 const d = Date.now() + 10000;
 
-const wall_count = 2;
+const wall_count = 6;
 let walls = [];
 for(let idx = 0; idx < wall_count; idx ++) {
     const w = WIDTH
@@ -53,8 +53,8 @@ for(let idx = 0; idx < wall_count; idx ++) {
 }
 
 
-const WALL_WIDTH = 100;
-const WALL_HEIGHT = 100;
+// const WALL_WIDTH = 100;
+// const WALL_HEIGHT = 100;
 
 // walls = [
 //   new Wall(
@@ -99,12 +99,13 @@ for (var x = 0; x < 1250; x++) {
       `rgb(160,160,160)`,
       easeInElastic,
       rand(0.01, 2),
-      rand(0.01, 2)
+      rand(0.01, 2),
+      rand(2000, 10000)
     )
   );
 }
 
-for (var x = 0; x < 10000; x++) {
+for (var x = 0; x < 20000; x++) {
   let size = Math.floor(rand(2, 12));
   drops.push(
     new Drop(
@@ -114,8 +115,8 @@ for (var x = 0; x < 10000; x++) {
           h: 2,
         },
         max: {
-          w: 4,
-          h: 4,
+          w: 6,
+          h: 6,
         },
       }),
       rand(15, 600),
@@ -123,8 +124,9 @@ for (var x = 0; x < 10000; x++) {
       [easeInOutBack, easeInElastic, easeInOutQuad, easeLinear][
         Math.floor(rand(0, 4))
       ],
-      rand(.01, .1),
-      rand(.1, 1)
+      rand(1, 2),
+      rand(1, 2),
+      rand(50, 1000)
     )
   );
 }
@@ -298,6 +300,7 @@ const render = function () {
 
   ctx.globalAlpha = 0.5;
   drops.forEach((drop, idx) => {
+    ctx.globalAlpha = drop.alpha;
     ctx.fillStyle = drop.colorString;
     ctx.fillRect(drop.x - drop.w / 2, drop.y - drop.h / 2, drop.w, drop.h);
 
@@ -318,6 +321,14 @@ const render = function () {
       if (angle) {
         wall.hits++;
         drop.colorString = wall.colorString;
+        drop.hitTime = Date.now();
+      }
+      if(drop.hitTime > 0) {
+        drop.alpha = easeInOutQuad(Date.now() - drop.hitTime, 0, 1, drop.hitEffectDuration)
+        if(Date.now() > drop.hitTime + drop.hitEffectDuration * 2) {
+            drop.hitTime = 0;
+            drop.alpha = 0;
+        }
       }
       doCollision(angle, drop, wall);
     });
@@ -335,8 +346,6 @@ const render = function () {
 
 // The main game loop
 var main = function () {
-  // run the update function
-  //update(0.02); // do not change
   // run the render function
   render();
   // Request to do this again ASAP
