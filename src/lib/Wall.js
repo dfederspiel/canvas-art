@@ -1,9 +1,8 @@
-export default class Wall {
+import Rect from "./Rect";
+import Size from "./Size";
+export default class Wall extends Rect {
   constructor(x, y, w, h, colorString) {
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
+    super(x, y, w, h);
     this.colorString = colorString;
     this.hits = 0;
 
@@ -11,10 +10,10 @@ export default class Wall {
     const halfHeight = this.h / 2;
 
     this.angles = {
-        tl: this.angle(this.x, this.y),
-        tr: this.angle(this.x + this.w, this.y),
-        bl: this.angle(this.x, this.y + this.h),
-        br: this.angle(this.x + this.w, this.y + this.h),
+      tl: this.angle(this.x, this.y),
+      tr: this.angle(this.x + this.w, this.y),
+      bl: this.angle(this.x, this.y + this.h),
+      br: this.angle(this.x + this.w, this.y + this.h),
     };
   }
 

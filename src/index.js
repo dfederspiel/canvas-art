@@ -2,36 +2,48 @@ import Drop from "./lib/Drop";
 import Wall from "./lib/Wall";
 import { rand } from "./lib/helpers";
 import {
+  easeInCubic,
   easeInElastic,
-  easeInOutBack,
   easeInOutQuad,
-  easeLinear,
+  effects,
 } from "./lib/easing";
 import Rect from "./lib/Rect";
 
-// Create the canvas for the game to display in
-var canvas = document.createElement("canvas");
-var ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-document.body.appendChild(canvas);
+import { calculate } from "./lib/helpers";
+import Size from "./lib/Size";
+
+import Scene from "./lib/Scene";
+
+const scene = new Scene(window.innerWidth, window.innerHeight);
+document.body.appendChild(scene.canvas);
 
 let RIGHT_PRESSED = false;
 let LEFT_PRESSED = false;
 let UP_PRESSED = false;
 let DOWN_PRESSED = false;
 
-const WALL_DIVISIONS = 0
-const PARTICLE_VX = 0;
-const PARTICLE_VY = 0;
-const ROTATION_STEP = .1;
-const MAX_PARTICLES = 175;
+let ROTATION_INTERVAL = (Math.PI * 2) / (60 * 60);
+let ROTATION_ANGLE = ROTATION_INTERVAL - (Math.PI * 2) / 4;
+let ROTATION_ANGLE_MINUTES = ROTATION_ANGLE;
+
+let RADIUS = 50;
+let CHECK_COLLISIONS = false;
+let SPACE_BAR = false;
+
+const WALL_DIVISIONS = 0;
+const WALL_WIDTH = 5;
+const WALL_HEIGHT = 5;
+const MAX_PARTICLES = 1500;
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowRight") RIGHT_PRESSED = true;
   else if (e.key === "ArrowLeft") LEFT_PRESSED = true;
   else if (e.key === "ArrowUp") UP_PRESSED = true;
   else if (e.key === "ArrowDown") DOWN_PRESSED = true;
+  if (e.key === "x") {
+    particles = [];
+  }
+  if (e.key === " ") SPACE_BAR = true;
 });
 
 document.addEventListener("keyup", (e) => {
@@ -39,277 +51,152 @@ document.addEventListener("keyup", (e) => {
   else if (e.key === "ArrowLeft") LEFT_PRESSED = false;
   else if (e.key === "ArrowUp") UP_PRESSED = false;
   else if (e.key === "ArrowDown") DOWN_PRESSED = false;
-});
 
-document.addEventListener("keyup", (e) => {
-    if (e.key === "x") particles = [];
-  });
+  if (e.key === "z") CHECK_COLLISIONS = !CHECK_COLLISIONS;
+  if (e.key === " ") SPACE_BAR = false;
+});
 
 let count = 0;
 let frameNumber = 0;
 
-const WIDTH = window.innerWidth;
-const HEIGHT = window.innerHeight;
-
 setInterval(() => {
   count++;
+  ROTATION_ANGLE_MINUTES += ROTATION_INTERVAL;
+  console.log(ROTATION_ANGLE);
+  console.log(ROTATION_ANGLE_MINUTES);
 }, 1000);
 
-const d = Date.now() + 10000;
-
 let walls = [];
-for (let idx = 0; idx < WALL_DIVISIONS; idx++) {
-  const w = WIDTH;
-  const h = 4;
-  const x = rand(0, WIDTH - w);
-  const y = (HEIGHT / WALL_DIVISIONS) * idx + HEIGHT / WALL_DIVISIONS / 2;
-
-  walls.push(
-    new Wall(
-      x,
-      y,
-      w,
-      h,
-      `rgb(${rand(0, 255)}, ${rand(0, 255)}, ${rand(0, 255)})`
-    )
-  );
-}
-
-for (let idx = 0; idx < WALL_DIVISIONS; idx++) {
-  const w = 4;
-  const h = HEIGHT;
-  const x = (WIDTH / WALL_DIVISIONS) * idx + WIDTH / WALL_DIVISIONS / 2;
-  const y = rand(0, HEIGHT - h);
-
-  walls.push(
-    new Wall(
-      x,
-      y,
-      w,
-      h,
-      `rgb(${rand(0, 255)}, ${rand(0, 255)}, ${rand(0, 255)})`
-    )
-  );
-}
-
-const WALL_WIDTH = 100;
-const WALL_HEIGHT = 100;
-
-// walls = [
-// //   new Wall(
-// //     WIDTH * 0.2 - WALL_WIDTH / 2,
-// //     HEIGHT / 2 - WALL_HEIGHT / 2,
-// //     WALL_WIDTH,
-// //     WALL_HEIGHT,
-// //     "#f7b267"
-// //   ),
+// walls.push(
 //   new Wall(
-//     WIDTH / 2 - WALL_WIDTH / 2,
-//     HEIGHT / 2 - WALL_HEIGHT / 2,
+//     scene.width * 0.3 - WALL_WIDTH / 2,
+//     scene.height / 2 - 300 / 2,
+//     WALL_WIDTH,
+//     300,
+//     "#f00"
+//   ),
+//   new Wall(
+//     scene.width / 2 - WALL_WIDTH / 2,
+//     scene.height / 2 - WALL_HEIGHT / 2,
 //     WALL_WIDTH,
 //     WALL_HEIGHT,
-//     "#f4845f"
+//     "#0f0"
 //   ),
-// //   new Wall(
-// //     WIDTH * 0.8 - WALL_WIDTH / 2,
-// //     HEIGHT / 2 - WALL_HEIGHT / 2,
-// //     WALL_WIDTH,
-// //     WALL_HEIGHT,
-// //     "#f25c54"
-// //   ),
-// ];
+//   new Wall(
+//     scene.width * 0.7 - WALL_WIDTH / 2,
+//     scene.height / 2 - 300 / 2,
+//     WALL_WIDTH,
+//     300,
+//     "#00f"
+//   )
+// );
 
-let drops = [];
+for (let idx = 0; idx < WALL_DIVISIONS; idx++) {
+  const w = scene.width;
+  const h = WALL_HEIGHT;
+  const x = rand(0, scene.width - w);
+  const y =
+    (scene.height / WALL_DIVISIONS) * idx + scene.height / WALL_DIVISIONS / 2;
+
+  walls.push(
+    new Wall(
+      x,
+      y - h / 2,
+      w,
+      h,
+      `rgb(${rand(0, 255)}, ${rand(0, 255)}, ${rand(0, 255)})`
+    )
+  );
+}
+
+for (let idx = 0; idx < WALL_DIVISIONS; idx++) {
+  const w = WALL_WIDTH;
+  const h = scene.height;
+  const x =
+    (scene.width / WALL_DIVISIONS) * idx + scene.width / WALL_DIVISIONS / 2;
+  const y = rand(0, scene.height - h);
+
+  walls.push(
+    new Wall(
+      x - w / 2,
+      y,
+      w,
+      h,
+      `rgb(${rand(0, 255)}, ${rand(0, 255)}, ${rand(0, 255)})`
+    )
+  );
+}
+
+let backgroundGlitter = [];
 for (var x = 0; x < 1000; x++) {
-  let size = Math.floor(rand(2, 12));
-  drops.push(
+  backgroundGlitter.push(
     new Drop(
-      new Rect(rand(0, WIDTH), rand(0, HEIGHT), size, size, {
-        min: {
-          w: 2,
-          h: 2,
-        },
-        max: {
-          w: 18,
-          h: 18,
-        },
-      }),
+      new Rect(
+        rand(0, window.innerWidth),
+        rand(0, window.innerHeight),
+        10,
+        10,
+        new Size(2, 2, rand(10, 10), rand(10, 10))
+      ),
       rand(15, 600),
       `rgb(160,160,160)`,
       easeInElastic,
-      rand(0.01, 2),
-      rand(0.01, 2),
-      rand(2000, 10000)
+      rand(-1, 1),
+      rand(-0.2, 0.2),
+      rand(2000, 10000),
+      new Rect(40, 40, scene.width - 40, scene.height - 40)
     )
   );
 }
 
-// for (var x = 0; x < 20000; x++) {
-//   let size = Math.floor(rand(2, 12));
-//   drops.push(
-//     new Drop(
-//       new Rect(rand(0, -WIDTH), rand(0, -HEIGHT), size, size, {
-//         min: {
-//           w: 2,
-//           h: 2,
-//         },
-//         max: {
-//           w: 6,
-//           h: 6,
-//         },
-//       }),
-//       rand(15, 600),
-//       `rgb(60,60,60)`,
-//       [easeInOutBack, easeInElastic, easeInOutQuad, easeLinear][
-//         Math.floor(rand(0, 4))
-//       ],
-//       rand(1, 5),
-//       rand(1, 5),
-//       rand(50, 2000)
-//     )
-//   );
-// }
-
-// for (var x = 0; x < 100; x++) {
-//   let size = Math.floor(rand(2, 12));
-//   drops.push(
-//     new Drop(
-//       new Rect(rand(0, WIDTH), rand(HEIGHT / 2 + 200, HEIGHT), size, size, {
-//         min: {
-//           w: 10,
-//           h: 10,
-//         },
-//         max: {
-//           w: 25,
-//           h: 25,
-//         },
-//       }),
-//       rand(1, 300),
-//       `rgb(60,60,60)`,
-//       easeInElastic
-//     )
-//   );
-// }
-
-// for (var x = 0; x < 100; x++) {
-//   let size = Math.floor(rand(2, 12));
-//   drops.push(
-//     new Drop(
-//       new Rect(rand(0, WIDTH), rand(HEIGHT / 2 + 200, HEIGHT), size, size, {
-//         min: {
-//           w: 10,
-//           h: 10,
-//         },
-//         max: {
-//           w: 25,
-//           h: 25,
-//         },
-//       }),
-//       rand(30, 60),
-//       `rgb(60,60,60)`,
-//       easeInOutBack
-//     )
-//   );
-// }
-
-// for (var x = 0; x < 100; x++) {
-//   let size = rand(2, 12);
-//   drops.push(
-//     new Drop(
-//       new Rect(rand(0, WIDTH), rand(HEIGHT / 2 + 200, HEIGHT), size, size, {
-//         min: {
-//           x: 10,
-//           y: 10,
-//         },
-//         max: {
-//           x: 25,
-//           y: 25,
-//         },
-//       }),
-//       rand(120, 480),
-//       `rgb(60,60,60)`,
-//       easeInOutQuad
-//     )
-//   );
-// }
-
 const displayText = () => {
-  ctx.fillStyle = "rgb(255, 255, 255)";
-  ctx.font = "20px Helvetica";
-  ctx.textAlign = "left";
-  ctx.textBaseline = "top";
+  scene.ctx.fillStyle = "rgb(255, 255, 255)";
+  scene.ctx.font = "20px Helvetica";
+  scene.ctx.textAlign = "left";
+  scene.ctx.textBaseline = "top";
 
-  ctx.fillText("Time: " + count, 20, 20);
-  ctx.fillText("Frame: " + frameNumber, 20, 50);
-  ctx.fillText("FPS: " + (frameNumber / count).toFixed(2), 20, 80);
-
-  //   ctx.textAlign = "center";
-  //   ctx.fillText(walls[0].hits, WIDTH * 0.2, HEIGHT / 2 - 10);
-  //   ctx.fillText(walls[1].hits, WIDTH / 2, HEIGHT / 2 - 10);
-  //   ctx.fillText(walls[2].hits, WIDTH * 0.8, HEIGHT / 2 - 10);
+  scene.ctx.fillText("Time: " + count, 20, 20);
+  scene.ctx.fillText("Frame: " + frameNumber, 20, 50);
+  scene.ctx.fillText("FPS: " + (frameNumber / count).toFixed(2), 20, 80);
 };
 
-// RECTANGLE/RECTANGLE
-// function rectRect(drop, wall) {
-//   if (
-//     drop.x + drop.w >= wall.x && // r1 right edge past r2 left
-//     drop.x <= wall.x + wall.w && // r1 left edge past r2 right
-//     drop.y + drop.h >= wall.y && // r1 top edge past r2 bottom
-//     drop.y <= wall.y + wall.h
-//   ) {
-//     // r1 bottom edge past r2 top
-//     return true;
-//   }
-//   return false;
-// }
-
+/**
+ *
+ * @param {Rect} r1
+ * @param {Rect} r2
+ * @returns
+ */
 function collides(r1, r2) {
-  /// classic intersection test
-  var hit = !(
-    r1.x + r1.w < r2.x ||
-    r2.x + r2.w < r1.x ||
-    r1.y + r1.h < r2.y ||
-    r2.y + r2.h < r1.y
-  );
-
-  /// if intersects, get angle between the two rects to determine hit zone
+  var hit = calculate.hit(r1, r2);
   if (hit) {
-    /// calc angle
-    var dx = r2.x + r2.w / 2 - (r1.x + r1.w / 2);
-    var dy = r2.y + r2.h / 2 - (r1.y + r1.h / 2);
-
-    /// for simplicity convert radians to degree
-    var angle = (Math.atan2(dy, dx) * 180) / Math.PI;
-    if (angle < 0) angle += 360;
-
-    return angle;
+    return calculate.angle(r1, r2);
   } else return null;
 }
 
-function setDirection(drop) {
-  if (drop.x - drop.w / 2 >= WIDTH - drop.w && drop.xdir > 0) {
-    drop.xdir = -1;
-  }
+// function deflectBoundaries(drop) {
+//   if (drop.x - drop.w / 2 >= scene.width - drop.w && drop.speedx > 0) {
+//     drop.speedx = -drop.speedx;
+//   }
 
-  if (drop.x - drop.w / 2 <= 0 && drop.xdir < 0) {
-    drop.xdir = 1;
-  }
+//   if (drop.x - drop.w / 2 <= 0 && drop.speedx < 0) {
+//     drop.speedx = -drop.speedx;
+//   }
 
-  if (drop.y - drop.h / 2 >= HEIGHT - drop.h && drop.ydir > 0) {
-    drop.ydir = -1;
-  }
+//   if (drop.y - drop.h / 2 >= scene.height - drop.h && drop.speedy > 0) {
+//     drop.speedy = -drop.speedy;
+//   }
 
-  if (drop.y - drop.h / 2 < 0 && drop.ydir < 0) {
-    drop.ydir = 1;
-  }
-}
+//   if (drop.y - drop.h / 2 < 0 && drop.speedy < 0) {
+//     drop.speedy = -drop.speedy;
+//   }
+// }
 
-function doCollision(angle, drop, wall) {
+function doCollision(angle, obj, wall) {
   // did we have an intersection?
   if (angle !== null) {
     /// if we're not already in a hit situation, create one
-    if (!drop.hit) {
-      drop.hit = true;
+    if (!obj.hit) {
+      obj.hit = true;
       const { angles } = wall;
       /// zone 1 - left
       if (
@@ -317,77 +204,82 @@ function doCollision(angle, drop, wall) {
         (angle > angles.bl && angle < 360)
       ) {
         /// if moving in + direction deflect rect 1 in x direction etc.
-        if (drop.xdir > 0) drop.xdir = -drop.xdir;
+        if (obj.speedx > 0) obj.speedx = -obj.speedx;
       } else if (angle >= angles.tl && angle < angles.tr) {
         /// zone 2 - top
-        if (drop.ydir > 0) drop.ydir = -drop.ydir;
+        if (obj.speedy > 0) obj.speedy = -obj.speedy;
       } else if (angle >= angles.tr && angle < angles.br) {
         /// zone 3 - right
-        if (drop.xdir < 0) drop.xdir = -drop.xdir;
+        if (obj.speedx < 0) obj.speedx = -obj.speedx;
       } else {
         /// zone 4 - bottom
-        if (drop.ydir < 0) drop.ydir = -drop.ydir;
+        if (obj.speedy < 0) obj.speedy = -obj.speedy;
       }
     }
-  } else drop.hit = false; /// reset hit when this hit is done (angle = null)
+  } else obj.hit = false; /// reset hit when this hit is done (angle = null)
 }
 
 // Draw everything on the canvas
-const render = function (objects) {
-  ctx.globalAlpha = 0.5;
-  objects.forEach((drop, idx) => {
-    ctx.globalAlpha = drop.alpha;
-    ctx.fillStyle = drop.colorString;
-    ctx.fillRect(drop.x - drop.w / 2, drop.y - drop.h / 2, drop.w, drop.h);
+const render = function (objects, checkBoundaries, checkCollisions) {
+  scene.ctx.globalAlpha = 0.5;
+  objects.forEach((p, idx) => {
+    const cp = {
+      x: p.x - p.w / 2, // use a center x point to calculate trajectory
+      y: p.y - p.h / 2, // use a center y point to calculate trajectory
+      w: p.w,
+      h: p.h,
+    };
+    scene.ctx.globalAlpha = p.alpha;
+    scene.ctx.fillStyle = p.colorString;
+    scene.ctx.fillRect(cp.x, cp.y, p.w, p.h);
 
-    if (RIGHT_PRESSED) drop.xdir = 1;
-    if (LEFT_PRESSED) drop.xdir = -1;
-    if (UP_PRESSED) drop.ydir = -1;
-    if (DOWN_PRESSED) drop.ydir = 1;
+    // if (RIGHT_PRESSED) p.speedx = Math.abs(p.speedx);
+    // if (LEFT_PRESSED) p.speedx = -Math.abs(p.speedx);
+    // if (UP_PRESSED) p.speedy = -Math.abs(p.speedy);
+    // if (DOWN_PRESSED) p.speedy = Math.abs(p.speedy);
 
-    drop.update();
+    p.update();
 
-    setDirection(drop);
+    if (checkBoundaries) {
+      p.checkBoundaries();
+    }
 
-    walls.forEach((wall) => {
-      const angle = collides(
-        {
-          x: drop.x - drop.w / 2, // use a center x point to calculate trajectory
-          y: drop.y - drop.h / 2, // use a center y point to calculate trajectory
-          w: drop.w,
-          h: drop.h,
-        },
-        wall
-      );
-      if (angle) {
-        wall.hits++;
-        drop.colorString = wall.colorString;
-        //drop.hitTime = Date.now();
-      }
-      if (drop.hitTime > 0) {
-        drop.alpha = easeInOutQuad(
-          Date.now() - drop.hitTime,
-          0,
-          1,
-          drop.hitEffectDuration
-        );
-        if (Date.now() > drop.hitTime + drop.hitEffectDuration * 2) {
-          drop.hitTime = 0;
-          drop.alpha = 0;
+    if (checkCollisions) {
+      walls.forEach((wall) => {
+        const angle = collides(cp, wall);
+
+        if (angle) {
+          wall.hits++;
+          p.colorString = wall.colorString;
+          p.hitTime = Date.now();
+          p.alpha = 1;
         }
-      }
-      doCollision(angle, drop, wall);
-    });
-    // console.log(walls[0].angles())
+
+        if (p.hitTime > 0) {
+          const a = easeInOutQuad(
+            Date.now() - p.hitTime,
+            0,
+            1,
+            p.hitEffectDuration
+          );
+          p.alpha = 1 - a;
+          if (Date.now() > p.hitTime + p.hitEffectDuration) {
+            p.hitTime = 0;
+            p.alpha = 0;
+          }
+        }
+        doCollision(angle, p, wall);
+      });
+    }
   });
 
-  ctx.globalAlpha = 0.2;
   walls.forEach((w) => {
-    ctx.fillStyle = w.colorString;
-    ctx.fillRect(w.x, w.y, w.w, w.h);
+    scene.ctx.fillStyle = w.colorString;
+    scene.ctx.globalAlpha = CHECK_COLLISIONS ? 0.8 : 0.2;
+    scene.ctx.fillRect(w.x, w.y, w.w, w.h);
   });
 
-  ctx.globalAlpha = 1;
+  scene.ctx.globalAlpha = 0.2;
   displayText();
 };
 
@@ -399,62 +291,124 @@ function getXYOnCircle(x, y, a, distance) {
   };
 }
 
-// The main game loop
 let particles = [];
-let particleCenterX = rand(0, WIDTH);
-let particleCenterY = rand(0, HEIGHT);
-let radius = rand(50, 200);
-var main = function () {
-  frameNumber++;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const wall = walls[0];
-  const { x, y } = getXYOnCircle(
-    particleCenterX,
-    particleCenterY,
-    angle,
-    radius
-  );
+
+function renderParticleRing(cx, cy, srcRect, radius) {
+  const { x, y } = getXYOnCircle(cx, cy, ROTATION_ANGLE, radius);
   particles.push(
     new Drop(
-      new Rect(x, y, 10, 10, {
-        min: {
-          w: 10,
-          h: 10,
-        },
-        max: {
-          w: 20,
-          h: 20,
-        },
-      }),
-      120,
-      `rgb(${rand(50, 255)}, ${rand(50, 255)}, ${rand(50, 255)})`,
+      new Rect(x, y, 1, 1, new Size(2, 2, 5, 5)),
+      60,
+      `rgb(${rand(50, 255)}, ${rand(50, 255)}, ${rand(0, 0)})`,
       easeInElastic,
-      PARTICLE_VX,
-      PARTICLE_VY,
-      2000
+      (x - (srcRect.x + srcRect.w / 2)) / (rand(radius / 2, radius) * 100),
+      (y - (srcRect.y + srcRect.h / 2)) / (rand(radius / 2, radius) * 100),
+      1000,
+      new Rect(
+        100,
+        scene.height / 4,
+        scene.width - 100,
+        scene.height - scene.height / 4
+      )
     )
   );
-  // run the render function
-  render(drops);
-  render(particles);
-  angle += ROTATION_STEP;
-  if (angle >= 2 * Math.PI) {
+  scene.ctx.globalAlpha = 1;
+  render(particles, CHECK_COLLISIONS, CHECK_COLLISIONS);
+  if (angle >= Math.PI * 2) {
     angle = 0;
-    particleCenterX = rand(0, WIDTH);
-    particleCenterY = rand(0, HEIGHT);
-    radius = rand(50, 200);
   }
-  // Request to do this again ASAP
   while (particles.length > MAX_PARTICLES) particles.shift();
-  requestAnimationFrame(main);
-};
+}
 
-// Cross-browser support for requestAnimationFrame
-var w = window;
-requestAnimationFrame =
-  w.requestAnimationFrame ||
-  w.webkitRequestAnimationFrame ||
-  w.msRequestAnimationFrame ||
-  w.mozRequestAnimationFrame;
+var main = function () {
+  frameNumber++;
+  scene.ctx.clearRect(0, 0, scene.canvas.width, scene.canvas.height); // clear the screen
+  render(backgroundGlitter, true);
+
+  const { x: cx, y: cy } = getXYOnCircle(
+    scene.width / 2,
+    scene.height / 2,
+    ROTATION_ANGLE,
+    0
+  );
+
+  const { x, y } = getXYOnCircle(
+    scene.width / 2,
+    scene.height / 2,
+    ROTATION_ANGLE,
+    RADIUS + 150
+  );
+
+  const { x: q, y: r } = getXYOnCircle(
+    scene.width / 2,
+    scene.height / 2,
+    ROTATION_ANGLE_MINUTES,
+    RADIUS + 100
+  );
+
+  const { x: f, y: g } = getXYOnCircle(x, y, ROTATION_ANGLE * 60, 25);
+
+  renderParticleRing(
+    scene.width / 2,
+    scene.height / 2,
+    new Rect(scene.width / 2, scene.height / 2, 50, 50),
+    RADIUS + 150
+  );
+
+  renderParticleRing(
+    f,
+    g,
+    new Rect(scene.width / 2, scene.height / 2, 20, 20),
+    4
+  );
+
+  scene.ctx.globalAlpha = 0.9;
+  scene.ctx.beginPath();
+
+  scene.ctx.fillStyle = "red";
+  scene.ctx.fillRect(cx - 10, cy - 10, 20, 20);
+  scene.ctx.strokeStyle = "#cc0";
+  scene.ctx.fillStyle = "#cc0";
+  scene.ctx.arc(cx, cy, 20, 0, 2 * Math.PI);
+  scene.ctx.stroke();
+  scene.ctx.fill();
+
+  scene.ctx.beginPath();
+
+  scene.ctx.strokeStyle = "#cc0";
+  scene.ctx.fillStyle = "#cc0";
+  scene.ctx.arc(x, y, 10, 0, 2 * Math.PI);
+  scene.ctx.stroke();
+  scene.ctx.fill();
+
+  scene.ctx.fillStyle = "#fff";
+  scene.ctx.fillRect(q - 5, r - 5, 10, 10);
+
+  scene.ctx.globalAlpha = 1;
+  scene.ctx.fillStyle = "#369";
+  scene.ctx.fillRect(f - 2.5, g - 2.5, 5, 5);
+
+  scene.ctx.beginPath();
+
+  scene.ctx.strokeStyle = "#cc0";
+  scene.ctx.fillStyle = "#cc0";
+  scene.ctx.arc(f, g, 5, 0, 2 * Math.PI);
+  scene.ctx.fill();
+
+  scene.ctx.strokeStyle = "#fff";
+  // scene.ctx.moveTo(scene.width / 2, scene.height / 2);
+  // scene.ctx.lineTo(q, r);
+  // scene.ctx.moveTo(scene.width / 2, scene.height / 2);
+  // scene.ctx.lineTo(x, y);
+  // scene.ctx.moveTo(f, g);
+  // scene.ctx.lineTo(x, y);
+  // scene.ctx.moveTo(f, g);
+  // scene.ctx.lineTo(scene.width / 2, scene.height / 2);
+
+  scene.ctx.stroke();
+
+  requestAnimationFrame(main);
+  ROTATION_ANGLE += ROTATION_INTERVAL;
+};
 
 main();
