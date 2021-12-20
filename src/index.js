@@ -22,9 +22,14 @@ let LEFT_PRESSED = false;
 let UP_PRESSED = false;
 let DOWN_PRESSED = false;
 
+let radiansPerSecond = (Math.PI * 2) / 60;
+let radiansPerMinute = radiansPerSecond / 60;
+let radiansPerHour = (radiansPerMinute * 5) / 60;
 let ROTATION_INTERVAL = (Math.PI * 2) / (60 * 60);
 let ROTATION_ANGLE = ROTATION_INTERVAL - (Math.PI * 2) / 4;
 let ROTATION_ANGLE_MINUTES = ROTATION_ANGLE;
+
+console.log(radiansPerHour, radiansPerMinute, radiansPerSecond);
 
 let RADIUS = 50;
 let CHECK_COLLISIONS = false;
@@ -62,8 +67,6 @@ let frameNumber = 0;
 setInterval(() => {
   count++;
   ROTATION_ANGLE_MINUTES += ROTATION_INTERVAL;
-  console.log(ROTATION_ANGLE);
-  console.log(ROTATION_ANGLE_MINUTES);
 }, 1000);
 
 let walls = [];
@@ -301,9 +304,9 @@ function renderParticleRing(cx, cy, srcRect, radius) {
       60,
       `rgb(${rand(50, 255)}, ${rand(50, 255)}, ${rand(0, 0)})`,
       easeInElastic,
-      (x - (srcRect.x + srcRect.w / 2)) / (rand(radius / 2, radius) * 100),
-      (y - (srcRect.y + srcRect.h / 2)) / (rand(radius / 2, radius) * 100),
-      1000,
+      (x - (srcRect.x + srcRect.w / 2)) / rand(radius * 16, radius * 100),
+      (y - (srcRect.y + srcRect.h / 2)) / rand(radius * 16, radius * 100),
+      60,
       new Rect(
         100,
         scene.height / 4,
@@ -321,78 +324,100 @@ function renderParticleRing(cx, cy, srcRect, radius) {
 }
 
 var main = function () {
+  const date = new Date();
+  let timeInMs =
+    (date.getHours() * 60 * 60 + date.getMinutes() * 60 + date.getSeconds()) *
+      1000 +
+    date.getMilliseconds();
   frameNumber++;
   scene.ctx.clearRect(0, 0, scene.canvas.width, scene.canvas.height); // clear the screen
   render(backgroundGlitter, true);
 
-  const { x: cx, y: cy } = getXYOnCircle(
+  // Second Hand Position
+  const { x: secondsX, y: secondsY } = getXYOnCircle(
     scene.width / 2,
     scene.height / 2,
-    ROTATION_ANGLE,
-    0
+    (timeInMs / 1000) * radiansPerSecond - (Math.PI * 2) / 4,
+    RADIUS + 30
   );
 
-  const { x, y } = getXYOnCircle(
+  // Minute Hand Position
+  const { x: minutesX, y: minutesY } = getXYOnCircle(
     scene.width / 2,
     scene.height / 2,
-    ROTATION_ANGLE,
-    RADIUS + 150
-  );
-
-  const { x: q, y: r } = getXYOnCircle(
-    scene.width / 2,
-    scene.height / 2,
-    ROTATION_ANGLE_MINUTES,
+    (timeInMs / 1000) * radiansPerMinute - (Math.PI * 2) / 4,
     RADIUS + 100
   );
 
-  const { x: f, y: g } = getXYOnCircle(x, y, ROTATION_ANGLE * 60, 25);
-
-  renderParticleRing(
+  // Hour Hand Position
+  const { x: hoursX, y: hoursY } = getXYOnCircle(
     scene.width / 2,
     scene.height / 2,
-    new Rect(scene.width / 2, scene.height / 2, 50, 50),
+    (timeInMs / 1000) * radiansPerHour - (Math.PI * 2) / 4,
     RADIUS + 150
   );
 
-  renderParticleRing(
-    f,
-    g,
-    new Rect(scene.width / 2, scene.height / 2, 20, 20),
-    4
+  //
+  const { x: secondHandOrbiterX, y: secondHandOrbiterY } = getXYOnCircle(
+    secondsX,
+    secondsY,
+    ROTATION_ANGLE * 60,
+    25
   );
+
+  // renderParticleRing(
+  //   scene.width / 2,
+  //   scene.height / 2,
+  //   new Rect(scene.width / 2, scene.height / 2, 50, 50),
+  //   RADIUS
+  // );
+
+  // renderParticleRing(
+  //   secondHandOrbiterX,
+  //   secondHandOrbiterY,
+  //   new Rect(scene.width / 2, scene.height / 2, 20, 20),
+  //   4
+  // );
 
   scene.ctx.globalAlpha = 0.9;
   scene.ctx.beginPath();
 
   scene.ctx.fillStyle = "red";
-  scene.ctx.fillRect(cx - 10, cy - 10, 20, 20);
+  scene.ctx.fillRect(scene.width / 2 - 10, scene.height / 2 - 10, 20, 20);
   scene.ctx.strokeStyle = "#cc0";
   scene.ctx.fillStyle = "#cc0";
-  scene.ctx.arc(cx, cy, 20, 0, 2 * Math.PI);
+  scene.ctx.arc(scene.width / 2, scene.height / 2, 20, 0, 2 * Math.PI);
   scene.ctx.stroke();
   scene.ctx.fill();
 
   scene.ctx.beginPath();
-
   scene.ctx.strokeStyle = "#cc0";
   scene.ctx.fillStyle = "#cc0";
-  scene.ctx.arc(x, y, 10, 0, 2 * Math.PI);
+  scene.ctx.arc(secondsX, secondsY, 10, 0, 2 * Math.PI);
   scene.ctx.stroke();
   scene.ctx.fill();
 
+  scene.ctx.beginPath();
   scene.ctx.fillStyle = "#fff";
-  scene.ctx.fillRect(q - 5, r - 5, 10, 10);
+  scene.ctx.arc(minutesX, minutesY, 12, 0, 2 * Math.PI);
+  scene.ctx.stroke();
+  scene.ctx.fill();
+
+  scene.ctx.beginPath();
+  scene.ctx.fillStyle = "#fff";
+  scene.ctx.arc(hoursX, hoursY, 12, 0, 2 * Math.PI);
+  scene.ctx.stroke();
+  scene.ctx.fill();
 
   scene.ctx.globalAlpha = 1;
   scene.ctx.fillStyle = "#369";
-  scene.ctx.fillRect(f - 2.5, g - 2.5, 5, 5);
+  scene.ctx.fillRect(secondHandOrbiterX - 2.5, secondHandOrbiterY - 2.5, 5, 5);
 
   scene.ctx.beginPath();
 
   scene.ctx.strokeStyle = "#cc0";
   scene.ctx.fillStyle = "#cc0";
-  scene.ctx.arc(f, g, 5, 0, 2 * Math.PI);
+  scene.ctx.arc(secondHandOrbiterX, secondHandOrbiterY, 5, 0, 2 * Math.PI);
   scene.ctx.fill();
 
   scene.ctx.strokeStyle = "#fff";

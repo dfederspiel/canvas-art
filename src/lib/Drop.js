@@ -54,7 +54,7 @@ export default class Drop extends Rect {
       this.speedy = -this.speedy;
     }
 
-    if (this.y < this.containerRect.y && this.speedy < 0) {
+    if (this.y <= this.containerRect.y && this.speedy < 0) {
       this.speedy = -this.speedy;
     }
   }
