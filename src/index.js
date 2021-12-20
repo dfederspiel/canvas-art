@@ -24,7 +24,7 @@ let DOWN_PRESSED = false;
 
 let radiansPerSecond = (Math.PI * 2) / 60;
 let radiansPerMinute = radiansPerSecond / 60;
-let radiansPerHour = (radiansPerMinute * 5) / 60;
+let radiansPerHour = (radiansPerMinute * 60) / 12 / 60;
 let ROTATION_INTERVAL = (Math.PI * 2) / (60 * 60);
 let ROTATION_ANGLE = ROTATION_INTERVAL - (Math.PI * 2) / 4;
 let ROTATION_ANGLE_MINUTES = ROTATION_ANGLE;
@@ -372,16 +372,34 @@ var main = function () {
   //   RADIUS
   // );
 
-  // renderParticleRing(
-  //   secondHandOrbiterX,
-  //   secondHandOrbiterY,
-  //   new Rect(scene.width / 2, scene.height / 2, 20, 20),
-  //   4
-  // );
+  renderParticleRing(
+    secondHandOrbiterX,
+    secondHandOrbiterY,
+    new Rect(scene.width / 2, scene.height / 2, 20, 20),
+    4
+  );
 
-  scene.ctx.globalAlpha = 0.9;
+  scene.ctx.globalAlpha = 1;
+
   scene.ctx.beginPath();
 
+  scene.ctx.strokeStyle = "#fff";
+
+  scene.ctx.moveTo(scene.width / 2, scene.height / 2);
+  scene.ctx.lineTo(secondsX, secondsY);
+
+  scene.ctx.moveTo(scene.width / 2, scene.height / 2);
+  scene.ctx.lineTo(minutesX, minutesY);
+
+  scene.ctx.moveTo(scene.width / 2, scene.height / 2);
+  scene.ctx.lineTo(hoursX, hoursY);
+
+  scene.ctx.moveTo(secondsX, secondsY);
+  scene.ctx.lineTo(secondHandOrbiterX, secondHandOrbiterY);
+
+  scene.ctx.stroke();
+
+  scene.ctx.beginPath();
   scene.ctx.fillStyle = "red";
   scene.ctx.fillRect(scene.width / 2 - 10, scene.height / 2 - 10, 20, 20);
   scene.ctx.strokeStyle = "#cc0";
@@ -419,18 +437,6 @@ var main = function () {
   scene.ctx.fillStyle = "#cc0";
   scene.ctx.arc(secondHandOrbiterX, secondHandOrbiterY, 5, 0, 2 * Math.PI);
   scene.ctx.fill();
-
-  scene.ctx.strokeStyle = "#fff";
-  // scene.ctx.moveTo(scene.width / 2, scene.height / 2);
-  // scene.ctx.lineTo(q, r);
-  // scene.ctx.moveTo(scene.width / 2, scene.height / 2);
-  // scene.ctx.lineTo(x, y);
-  // scene.ctx.moveTo(f, g);
-  // scene.ctx.lineTo(x, y);
-  // scene.ctx.moveTo(f, g);
-  // scene.ctx.lineTo(scene.width / 2, scene.height / 2);
-
-  scene.ctx.stroke();
 
   requestAnimationFrame(main);
   ROTATION_ANGLE += ROTATION_INTERVAL;
