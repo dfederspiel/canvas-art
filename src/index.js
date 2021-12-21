@@ -22,12 +22,12 @@ let LEFT_PRESSED = false;
 let UP_PRESSED = false;
 let DOWN_PRESSED = false;
 
+// In order for things to move slowly around the screen, it
 let radiansPerSecond = (Math.PI * 2) / 60;
-let radiansPerMinute = radiansPerSecond / 60;
+let radiansPerMinute = radiansPerSecond / 60; // 0.10471975511966 / 60 minutes = 0.001745329251994 radians
 let radiansPerHour = (radiansPerMinute * 60) / 12 / 60;
 let ROTATION_INTERVAL = (Math.PI * 2) / (60 * 60);
 let ROTATION_ANGLE = ROTATION_INTERVAL - (Math.PI * 2) / 4;
-let ROTATION_ANGLE_MINUTES = ROTATION_ANGLE;
 
 console.log(radiansPerHour, radiansPerMinute, radiansPerSecond);
 
@@ -70,14 +70,14 @@ setInterval(() => {
 }, 1000);
 
 let walls = [];
-// walls.push(
-//   new Wall(
-//     scene.width * 0.3 - WALL_WIDTH / 2,
-//     scene.height / 2 - 300 / 2,
-//     WALL_WIDTH,
-//     300,
-//     "#f00"
-//   ),
+walls.push(
+  new Wall(
+    scene.width * 0.3 - WALL_WIDTH / 2,
+    scene.height / 2 - 300 / 2,
+    WALL_WIDTH,
+    300,
+    "#F51720"
+  ),
 //   new Wall(
 //     scene.width / 2 - WALL_WIDTH / 2,
 //     scene.height / 2 - WALL_HEIGHT / 2,
@@ -85,14 +85,14 @@ let walls = [];
 //     WALL_HEIGHT,
 //     "#0f0"
 //   ),
-//   new Wall(
-//     scene.width * 0.7 - WALL_WIDTH / 2,
-//     scene.height / 2 - 300 / 2,
-//     WALL_WIDTH,
-//     300,
-//     "#00f"
-//   )
-// );
+  new Wall(
+    scene.width * 0.7 - WALL_WIDTH / 2,
+    scene.height / 2 - 300 / 2,
+    WALL_WIDTH,
+    300,
+    "#F51720"
+  )
+);
 
 for (let idx = 0; idx < WALL_DIVISIONS; idx++) {
   const w = scene.width;
@@ -175,24 +175,6 @@ function collides(r1, r2) {
     return calculate.angle(r1, r2);
   } else return null;
 }
-
-// function deflectBoundaries(drop) {
-//   if (drop.x - drop.w / 2 >= scene.width - drop.w && drop.speedx > 0) {
-//     drop.speedx = -drop.speedx;
-//   }
-
-//   if (drop.x - drop.w / 2 <= 0 && drop.speedx < 0) {
-//     drop.speedx = -drop.speedx;
-//   }
-
-//   if (drop.y - drop.h / 2 >= scene.height - drop.h && drop.speedy > 0) {
-//     drop.speedy = -drop.speedy;
-//   }
-
-//   if (drop.y - drop.h / 2 < 0 && drop.speedy < 0) {
-//     drop.speedy = -drop.speedy;
-//   }
-// }
 
 function doCollision(angle, obj, wall) {
   // did we have an intersection?
@@ -296,13 +278,13 @@ function getXYOnCircle(x, y, a, distance) {
 
 let particles = [];
 
-function renderParticleRing(cx, cy, srcRect, radius) {
+function renderParticleRing(cx, cy, srcRect, radius, angle) {
   const { x, y } = getXYOnCircle(cx, cy, ROTATION_ANGLE, radius);
   particles.push(
     new Drop(
-      new Rect(x, y, 1, 1, new Size(2, 2, 5, 5)),
+      new Rect(x, y, 1, 1, new Size(2, 2, 6, 6)),
       60,
-      `rgb(${rand(50, 255)}, ${rand(50, 255)}, ${rand(0, 0)})`,
+      `rgb(${rand(209, 255)}, ${rand(211, 251)}, ${rand(158, 218)})`,
       easeInElastic,
       (x - (srcRect.x + srcRect.w / 2)) / rand(radius * 16, radius * 100),
       (y - (srcRect.y + srcRect.h / 2)) / rand(radius * 16, radius * 100),
@@ -316,7 +298,7 @@ function renderParticleRing(cx, cy, srcRect, radius) {
     )
   );
   scene.ctx.globalAlpha = 1;
-  render(particles, CHECK_COLLISIONS, CHECK_COLLISIONS);
+  render(particles, false, false);
   if (angle >= Math.PI * 2) {
     angle = 0;
   }
@@ -329,16 +311,19 @@ var main = function () {
     (date.getHours() * 60 * 60 + date.getMinutes() * 60 + date.getSeconds()) *
       1000 +
     date.getMilliseconds();
+
   frameNumber++;
+
   scene.ctx.clearRect(0, 0, scene.canvas.width, scene.canvas.height); // clear the screen
-  render(backgroundGlitter, true);
+  
+  render(backgroundGlitter, true, true);
 
   // Second Hand Position
   const { x: secondsX, y: secondsY } = getXYOnCircle(
     scene.width / 2,
     scene.height / 2,
     (timeInMs / 1000) * radiansPerSecond - (Math.PI * 2) / 4,
-    RADIUS + 30
+    RADIUS + 20
   );
 
   // Minute Hand Position
@@ -361,29 +346,22 @@ var main = function () {
   const { x: secondHandOrbiterX, y: secondHandOrbiterY } = getXYOnCircle(
     secondsX,
     secondsY,
-    ROTATION_ANGLE * 60,
+    (timeInMs / 1000) * radiansPerSecond * 60 - (Math.PI * 2) / 4,
     25
   );
-
-  // renderParticleRing(
-  //   scene.width / 2,
-  //   scene.height / 2,
-  //   new Rect(scene.width / 2, scene.height / 2, 50, 50),
-  //   RADIUS
-  // );
 
   renderParticleRing(
     secondHandOrbiterX,
     secondHandOrbiterY,
     new Rect(scene.width / 2, scene.height / 2, 20, 20),
-    4
+    10
   );
 
   scene.ctx.globalAlpha = 1;
 
   scene.ctx.beginPath();
 
-  scene.ctx.strokeStyle = "#fff";
+  scene.ctx.strokeStyle = "#ddd";
 
   scene.ctx.moveTo(scene.width / 2, scene.height / 2);
   scene.ctx.lineTo(secondsX, secondsY);
@@ -399,47 +377,47 @@ var main = function () {
 
   scene.ctx.stroke();
 
-  scene.ctx.beginPath();
-  scene.ctx.fillStyle = "red";
-  scene.ctx.fillRect(scene.width / 2 - 10, scene.height / 2 - 10, 20, 20);
   scene.ctx.strokeStyle = "#cc0";
   scene.ctx.fillStyle = "#cc0";
-  scene.ctx.arc(scene.width / 2, scene.height / 2, 20, 0, 2 * Math.PI);
+
+  scene.ctx.beginPath();
+  scene.ctx.arc(scene.width / 2, scene.height / 2, 15, 0, 2 * Math.PI);
   scene.ctx.stroke();
   scene.ctx.fill();
 
   scene.ctx.beginPath();
-  scene.ctx.strokeStyle = "#cc0";
-  scene.ctx.fillStyle = "#cc0";
-  scene.ctx.arc(secondsX, secondsY, 10, 0, 2 * Math.PI);
+  scene.ctx.arc(secondsX, secondsY, 8, 0, 2 * Math.PI);
+  scene.ctx.fill();
+  scene.ctx.stroke();
+  
+  scene.ctx.beginPath();
+  scene.ctx.arc(minutesX, minutesY, 10, 0, 2 * Math.PI);
+  
   scene.ctx.stroke();
   scene.ctx.fill();
-
+  
   scene.ctx.beginPath();
-  scene.ctx.fillStyle = "#fff";
-  scene.ctx.arc(minutesX, minutesY, 12, 0, 2 * Math.PI);
-  scene.ctx.stroke();
-  scene.ctx.fill();
-
-  scene.ctx.beginPath();
-  scene.ctx.fillStyle = "#fff";
   scene.ctx.arc(hoursX, hoursY, 12, 0, 2 * Math.PI);
-  scene.ctx.stroke();
+  
   scene.ctx.fill();
-
-  scene.ctx.globalAlpha = 1;
-  scene.ctx.fillStyle = "#369";
-  scene.ctx.fillRect(secondHandOrbiterX - 2.5, secondHandOrbiterY - 2.5, 5, 5);
-
+  scene.ctx.stroke();
+  
   scene.ctx.beginPath();
-
-  scene.ctx.strokeStyle = "#cc0";
-  scene.ctx.fillStyle = "#cc0";
   scene.ctx.arc(secondHandOrbiterX, secondHandOrbiterY, 5, 0, 2 * Math.PI);
   scene.ctx.fill();
+  
+  scene.ctx.textAlign = "center";
+  scene.ctx.textBaseline = "top";
+  scene.ctx.fillStyle = '#000'
+  scene.ctx.font = "10px Helvetica";
+  scene.ctx.fillText(date.getSeconds(), secondsX, secondsY - 5)
+  scene.ctx.font = "12px Helvetica";
+  scene.ctx.fillText(date.getMinutes(), minutesX, minutesY - 6)
+  scene.ctx.font = "16px Helvetica";
+  scene.ctx.fillText(date.getHours() > 12 ? date.getHours() - 12 : date.getHours(), hoursX, hoursY - 8)
 
   requestAnimationFrame(main);
-  ROTATION_ANGLE += ROTATION_INTERVAL;
+//   ROTATION_ANGLE += ROTATION_INTERVAL;
 };
 
 main();
