@@ -1,8 +1,19 @@
 import { rand } from "./helpers";
 import Rect from "./Rect";
-import Wall from "./Wall";
+import Size from './Size';
 
 export default class Drop extends Rect {
+  /**
+   * 
+   * @param {Rect} rect 
+   * @param {number} frames 
+   * @param {string} colorString 
+   * @param {Function} easeFn 
+   * @param {number} vx 
+   * @param {number} vy 
+   * @param {Rect} containerRect 
+   * @param {Size} size 
+   */
   constructor(
     rect,
     frames,
@@ -10,10 +21,11 @@ export default class Drop extends Rect {
     easeFn,
     vx,
     vy,
-    duration,
-    containerRect
+    containerRect,
+    size,
+    hitEffectDuration
   ) {
-    super(rect.x, rect.y, rect.w, rect.h, rect.size);
+    super(rect.x, rect.y, rect.w, rect.h);
     this.hit = false;
     this.colorString =
       colorString || `rgb(${rand(0, 25)}, ${rand(0, 25)}, ${rand(0, 255)})`;
@@ -25,8 +37,9 @@ export default class Drop extends Rect {
     this.animationDirection = 1;
     this.alpha = 0.7;
     this.hitTime = 0;
-    this.hitEffectDuration = duration || 5000;
+    this.hitEffectDuration = hitEffectDuration || 5000;
     this.containerRect = containerRect;
+    this.size = size;
   }
 
   getAnimationFrame() {
@@ -68,6 +81,7 @@ export default class Drop extends Rect {
       this.size.max.w,
       this.frames
     );
+
     this.h = this.easeFn(
       currentFrame,
       this.size.min.h,

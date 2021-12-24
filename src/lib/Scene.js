@@ -12,10 +12,8 @@ export default class Scene {
     window.onresize = () => {
       this.width = this.canvas.width = window.innerWidth;
       this.height = this.canvas.height = window.innerHeight;
-
-      document.body.appendChild(this.scene.canvas);
     };
   }
 
-  render() {}
+  render() { }
 }

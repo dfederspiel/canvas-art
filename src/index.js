@@ -14,7 +14,10 @@ import Size from "./lib/Size";
 
 import Scene from "./lib/Scene";
 
-const scene = new Scene(window.innerWidth, window.innerHeight);
+let WIDTH = window.innerWidth;
+let HEIGHT = window.innerHeight;
+
+const scene = new Scene(WIDTH, HEIGHT);
 document.body.appendChild(scene.canvas);
 
 let RIGHT_PRESSED = false;
@@ -66,7 +69,7 @@ let frameNumber = 0;
 
 setInterval(() => {
   count++;
-  ROTATION_ANGLE_MINUTES += ROTATION_INTERVAL;
+  // ROTATION_ANGLE_MINUTES += ROTATION_INTERVAL;
 }, 1000);
 
 let walls = [];
@@ -78,13 +81,13 @@ walls.push(
     300,
     "#F51720"
   ),
-//   new Wall(
-//     scene.width / 2 - WALL_WIDTH / 2,
-//     scene.height / 2 - WALL_HEIGHT / 2,
-//     WALL_WIDTH,
-//     WALL_HEIGHT,
-//     "#0f0"
-//   ),
+  new Wall(
+    scene.width / 2 - WALL_WIDTH / 2,
+    scene.height / 2 - WALL_HEIGHT / 2,
+    WALL_WIDTH,
+    WALL_HEIGHT,
+    "#0f0"
+  ),
   new Wall(
     scene.width * 0.7 - WALL_WIDTH / 2,
     scene.height / 2 - 300 / 2,
@@ -137,17 +140,16 @@ for (var x = 0; x < 1000; x++) {
       new Rect(
         rand(0, window.innerWidth),
         rand(0, window.innerHeight),
-        10,
-        10,
-        new Size(2, 2, rand(10, 10), rand(10, 10))
+        3,
+        3,
       ),
-      rand(15, 600),
+      rand(15, 240),
       `rgb(160,160,160)`,
       easeInElastic,
       rand(-1, 1),
       rand(-0.2, 0.2),
-      rand(2000, 10000),
-      new Rect(40, 40, scene.width - 40, scene.height - 40)
+      new Rect(40, 40, scene.width - 40, scene.height - 40),
+      new Size(2, 2, 5, 5),
     )
   );
 }
@@ -218,10 +220,10 @@ const render = function (objects, checkBoundaries, checkCollisions) {
     scene.ctx.fillStyle = p.colorString;
     scene.ctx.fillRect(cp.x, cp.y, p.w, p.h);
 
-    // if (RIGHT_PRESSED) p.speedx = Math.abs(p.speedx);
-    // if (LEFT_PRESSED) p.speedx = -Math.abs(p.speedx);
-    // if (UP_PRESSED) p.speedy = -Math.abs(p.speedy);
-    // if (DOWN_PRESSED) p.speedy = Math.abs(p.speedy);
+    if (RIGHT_PRESSED) p.speedx = Math.abs(p.speedx);
+    if (LEFT_PRESSED) p.speedx = -Math.abs(p.speedx);
+    if (UP_PRESSED) p.speedy = -Math.abs(p.speedy);
+    if (DOWN_PRESSED) p.speedy = Math.abs(p.speedy);
 
     p.update();
 
@@ -282,19 +284,20 @@ function renderParticleRing(cx, cy, srcRect, radius, angle) {
   const { x, y } = getXYOnCircle(cx, cy, ROTATION_ANGLE, radius);
   particles.push(
     new Drop(
-      new Rect(x, y, 1, 1, new Size(2, 2, 6, 6)),
+      new Rect(x, y, 3, 3),
       60,
       `rgb(${rand(209, 255)}, ${rand(211, 251)}, ${rand(158, 218)})`,
       easeInElastic,
       (x - (srcRect.x + srcRect.w / 2)) / rand(radius * 16, radius * 100),
       (y - (srcRect.y + srcRect.h / 2)) / rand(radius * 16, radius * 100),
-      60,
       new Rect(
         100,
         scene.height / 4,
         scene.width - 100,
         scene.height - scene.height / 4
-      )
+      ),
+      new Size(2, 2, 5, 5),
+      rand(2000, 10000)
     )
   );
   scene.ctx.globalAlpha = 1;
@@ -306,16 +309,18 @@ function renderParticleRing(cx, cy, srcRect, radius, angle) {
 }
 
 var main = function () {
+  WIDTH = window.innerWidth;
+  HEIGHT = window.innerHeight;
   const date = new Date();
   let timeInMs =
     (date.getHours() * 60 * 60 + date.getMinutes() * 60 + date.getSeconds()) *
-      1000 +
+    1000 +
     date.getMilliseconds();
 
   frameNumber++;
 
   scene.ctx.clearRect(0, 0, scene.canvas.width, scene.canvas.height); // clear the screen
-  
+
   render(backgroundGlitter, true, true);
 
   // Second Hand Position
@@ -389,23 +394,23 @@ var main = function () {
   scene.ctx.arc(secondsX, secondsY, 8, 0, 2 * Math.PI);
   scene.ctx.fill();
   scene.ctx.stroke();
-  
+
   scene.ctx.beginPath();
   scene.ctx.arc(minutesX, minutesY, 10, 0, 2 * Math.PI);
-  
+
   scene.ctx.stroke();
   scene.ctx.fill();
-  
+
   scene.ctx.beginPath();
   scene.ctx.arc(hoursX, hoursY, 12, 0, 2 * Math.PI);
-  
+
   scene.ctx.fill();
   scene.ctx.stroke();
-  
+
   scene.ctx.beginPath();
   scene.ctx.arc(secondHandOrbiterX, secondHandOrbiterY, 5, 0, 2 * Math.PI);
   scene.ctx.fill();
-  
+
   scene.ctx.textAlign = "center";
   scene.ctx.textBaseline = "top";
   scene.ctx.fillStyle = '#000'
@@ -417,7 +422,7 @@ var main = function () {
   scene.ctx.fillText(date.getHours() > 12 ? date.getHours() - 12 : date.getHours(), hoursX, hoursY - 8)
 
   requestAnimationFrame(main);
-//   ROTATION_ANGLE += ROTATION_INTERVAL;
+  //   ROTATION_ANGLE += ROTATION_INTERVAL;
 };
 
 main();
