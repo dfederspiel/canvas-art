@@ -1,5 +1,3 @@
-let s;
-
 export function easeLinear(t, b, c, d) {
   return (c * t) / d + b;
 }
@@ -143,54 +141,74 @@ export function easeInOutElastic(t, b, c, d) {
   if (t < 1)
     return (
       -0.5 *
-        (a *
-          Math.pow(2, 10 * (t -= 1)) *
-          Math.sin(((t * d - s) * (2 * Math.PI)) / p)) +
+      (a *
+        Math.pow(2, 10 * (t -= 1)) *
+        Math.sin(((t * d - s) * (2 * Math.PI)) / p)) +
       b
     );
   return (
     a *
-      Math.pow(2, -10 * (t -= 1)) *
-      Math.sin(((t * d - s) * (2 * Math.PI)) / p) *
-      0.5 +
+    Math.pow(2, -10 * (t -= 1)) *
+    Math.sin(((t * d - s) * (2 * Math.PI)) / p) *
+    0.5 +
     c +
     b
   );
 }
 
 export function easeInBack(t, b, c, d) {
-  if (s == undefined) s = 1.70158;
+  var s = 1.70158;
   return c * (t /= d) * t * ((s + 1) * t - s) + b;
 }
 
 export function easeOutBack(t, b, c, d) {
-  if (s == undefined) s = 1.70158;
+  var s = 1.70158;
   return c * ((t = t / d - 1) * t * ((s + 1) * t + s) + 1) + b;
 }
 
 export function easeInOutBack(t, b, c, d) {
-  s = 1.70158;
+  var s = 1.70158;
   if ((t /= d / 2) < 1)
     return (c / 2) * (t * t * (((s *= 1.525) + 1) * t - s)) + b;
   return (c / 2) * ((t -= 2) * t * (((s *= 1.525) + 1) * t + s) + 2) + b;
 }
 
 export const effects = [
-  easeInBack,
-  easeInCirc,
-  easeInCubic,
-  easeInElastic,
-  easeInExpo,
-  easeInOutBack,
-  easeInOutCirc,
-  easeInOutCubic,
-  easeInOutElastic,
-  easeInOutExpo,
-  easeInOutQuad,
-  easeInOutQuart,
-  easeInOutSine,
-  easeInQuad,
-  easeInQuart,
+  easeLinear,
+
   easeInQuint,
+  easeOutQuint,
+
+  easeInExpo,
+  easeOutExpo,
+  easeInOutExpo,
+
+  easeInCirc,
+  easeOutCirc,
+  easeInOutCirc,
+
+  easeInCubic,
+  easeOutCubic,
+  easeInOutCubic,
+
+  easeInQuad,
+  easeOutQuad,
+  easeInOutQuad,
+
+  easeInQuart,
+  easeOutQuart,
+  easeInOutQuart,
+
+  easeInBack,
+  easeOutBack,
+  easeInOutBack,
+
+  easeInElastic,
+  easeOutElastic,
+  easeInOutElastic,
+
+  easeInSine,
   easeOutSine,
+  easeInOutSine,
 ];
+
