@@ -2,10 +2,8 @@ import Drop from "./lib/Drop";
 import Wall from "./lib/Wall";
 import { rand } from "./lib/helpers";
 import {
-  easeInCubic,
   easeInElastic,
   easeInOutQuad,
-  effects,
 } from "./lib/easing";
 import Rect from "./lib/Rect";
 
@@ -31,8 +29,6 @@ let radiansPerMinute = radiansPerSecond / 60; // 0.10471975511966 / 60 minutes =
 let radiansPerHour = (radiansPerMinute * 60) / 12 / 60;
 let ROTATION_INTERVAL = (Math.PI * 2) / (60 * 60);
 let ROTATION_ANGLE = ROTATION_INTERVAL - (Math.PI * 2) / 4;
-
-console.log(radiansPerHour, radiansPerMinute, radiansPerSecond);
 
 let RADIUS = 50;
 let CHECK_COLLISIONS = false;
@@ -69,7 +65,6 @@ let frameNumber = 0;
 
 setInterval(() => {
   count++;
-  // ROTATION_ANGLE_MINUTES += ROTATION_INTERVAL;
 }, 1000);
 
 let walls = [];
@@ -301,7 +296,7 @@ function renderParticleRing(cx, cy, srcRect, radius, angle) {
     )
   );
   scene.ctx.globalAlpha = 1;
-  render(particles, false, false);
+  render(particles, false, true);
   if (angle >= Math.PI * 2) {
     angle = 0;
   }
@@ -318,6 +313,8 @@ var main = function () {
     date.getMilliseconds();
 
   frameNumber++;
+
+  // timeInMs += frameNumber * timeInMs / 1000
 
   scene.ctx.clearRect(0, 0, scene.canvas.width, scene.canvas.height); // clear the screen
 

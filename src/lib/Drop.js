@@ -4,7 +4,6 @@ import Size from './Size';
 
 export default class Drop extends Rect {
   /**
-   * 
    * @param {Rect} rect 
    * @param {number} frames 
    * @param {string} colorString 

@@ -1,6 +1,6 @@
 import { effects } from "./easing"
 
-const ITERATIONS = 100;
+const ITERATIONS = 250;
 const START = 50;
 const END = 200; // to +10
 
