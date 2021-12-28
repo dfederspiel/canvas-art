@@ -1,6 +1,6 @@
 import Drop from "./lib/Drop";
 import Wall from "./lib/Wall";
-import { rand } from "./lib/helpers";
+import { colorRand, rand } from "./lib/helpers";
 import {
   easeInElastic,
   easeInOutQuad,
@@ -11,6 +11,7 @@ import { calculate } from "./lib/helpers";
 import Size from "./lib/Size";
 
 import Scene from "./lib/Scene";
+import { ObjectType } from "./lib/enums";
 
 let WIDTH = window.innerWidth;
 let HEIGHT = window.innerHeight;
@@ -27,6 +28,7 @@ let DOWN_PRESSED = false;
 let radiansPerSecond = (Math.PI * 2) / 60;
 let radiansPerMinute = radiansPerSecond / 60; // 0.10471975511966 / 60 minutes = 0.001745329251994 radians
 let radiansPerHour = (radiansPerMinute * 60) / 12 / 60;
+
 let ROTATION_INTERVAL = (Math.PI * 2) / (60 * 60);
 let ROTATION_ANGLE = ROTATION_INTERVAL - (Math.PI * 2) / 4;
 
@@ -67,28 +69,35 @@ setInterval(() => {
   count++;
 }, 1000);
 
-let walls = [];
+let walls: Array<Wall> = [];
 walls.push(
   new Wall(
     scene.width * 0.3 - WALL_WIDTH / 2,
     scene.height / 2 - 300 / 2,
     WALL_WIDTH,
-    300,
-    "#F51720"
-  ),
-  new Wall(
-    scene.width / 2 - WALL_WIDTH / 2,
-    scene.height / 2 - WALL_HEIGHT / 2,
-    WALL_WIDTH,
-    WALL_HEIGHT,
-    "#0f0"
+    scene.height * .360,
+    colorRand()
   ),
   new Wall(
     scene.width * 0.7 - WALL_WIDTH / 2,
     scene.height / 2 - 300 / 2,
     WALL_WIDTH,
-    300,
-    "#F51720"
+    scene.height * .360,
+    colorRand()
+  ),
+  new Wall(
+    scene.width * 0.3 - WALL_WIDTH / 2,
+    scene.height / 2 - 300 / 2,
+    scene.width * .4,
+    WALL_WIDTH,
+    colorRand()
+  ),
+  new Wall(
+    scene.width * 0.3 - WALL_WIDTH / 2,
+    scene.height / 2 + 300 / 2,
+    scene.width * .4,
+    WALL_WIDTH,
+    colorRand()
   )
 );
 
@@ -128,23 +137,27 @@ for (let idx = 0; idx < WALL_DIVISIONS; idx++) {
   );
 }
 
-let backgroundGlitter = [];
+let backgroundGlitter: Drop[] = [];
 for (var x = 0; x < 1000; x++) {
+  let sizeMin = rand(1, 3)
+  let sizeMax = rand(4, 6)
   backgroundGlitter.push(
     new Drop(
       new Rect(
-        rand(0, window.innerWidth),
-        rand(0, window.innerHeight),
-        3,
-        3,
+        rand(0, scene.width),
+        rand(0, scene.height),
+        rand(2, 10),
+        rand(2, 10),
       ),
       rand(15, 240),
-      `rgb(160,160,160)`,
+      '#000',
       easeInElastic,
-      rand(-1, 1),
-      rand(-0.2, 0.2),
+      rand(-2, 2),
+      rand(-2, 2),
       new Rect(40, 40, scene.width - 40, scene.height - 40),
-      new Size(2, 2, 5, 5),
+      new Size(sizeMin, sizeMin, sizeMax, sizeMax),
+      rand(500, 5000),
+      ObjectType.Particle,
     )
   );
 }
@@ -166,14 +179,14 @@ const displayText = () => {
  * @param {Rect} r2
  * @returns
  */
-function collides(r1, r2) {
+function collides(r1: Rect, r2: Rect) {
   var hit = calculate.hit(r1, r2);
   if (hit) {
     return calculate.angle(r1, r2);
   } else return null;
 }
 
-function doCollision(angle, obj, wall) {
+function doCollision(angle: number, obj: Drop, wall: Rect) {
   // did we have an intersection?
   if (angle !== null) {
     /// if we're not already in a hit situation, create one
@@ -202,7 +215,7 @@ function doCollision(angle, obj, wall) {
 }
 
 // Draw everything on the canvas
-const render = function (objects, checkBoundaries, checkCollisions) {
+const render = function (objects: Array<Drop>, checkBoundaries: boolean, checkCollisions: boolean) {
   scene.ctx.globalAlpha = 0.5;
   objects.forEach((p, idx) => {
     const cp = {
@@ -210,7 +223,7 @@ const render = function (objects, checkBoundaries, checkCollisions) {
       y: p.y - p.h / 2, // use a center y point to calculate trajectory
       w: p.w,
       h: p.h,
-    };
+    } as Rect;
     scene.ctx.globalAlpha = p.alpha;
     scene.ctx.fillStyle = p.colorString;
     scene.ctx.fillRect(cp.x, cp.y, p.w, p.h);
@@ -266,17 +279,19 @@ const render = function (objects, checkBoundaries, checkCollisions) {
 };
 
 let angle = 0;
-function getXYOnCircle(x, y, a, distance) {
+function getXYOnCircle(x: number, y: number, a: number, distance: number) {
   return {
     x: x + Math.cos(a) * distance,
     y: y + Math.sin(a) * distance,
   };
 }
 
-let particles = [];
+let particles: Drop[] = [];
 
-function renderParticleRing(cx, cy, srcRect, radius, angle) {
+function renderParticleRing(cx: number, cy: number, srcRect: Rect, radius: number, angle: number) {
   const { x, y } = getXYOnCircle(cx, cy, ROTATION_ANGLE, radius);
+  let sizeMin = rand(.5, 1.5)
+  let sizeMax = rand(2.5, 5)
   particles.push(
     new Drop(
       new Rect(x, y, 3, 3),
@@ -291,8 +306,9 @@ function renderParticleRing(cx, cy, srcRect, radius, angle) {
         scene.width - 100,
         scene.height - scene.height / 4
       ),
-      new Size(2, 2, 5, 5),
-      rand(2000, 10000)
+      new Size(sizeMin, sizeMin, sizeMax, sizeMax),
+      rand(2000, 10000),
+      ObjectType.Particle
     )
   );
   scene.ctx.globalAlpha = 1;
@@ -318,6 +334,7 @@ var main = function () {
 
   scene.ctx.clearRect(0, 0, scene.canvas.width, scene.canvas.height); // clear the screen
 
+  scene.ctx.globalAlpha = .75;
   render(backgroundGlitter, true, true);
 
   // Second Hand Position
@@ -355,7 +372,8 @@ var main = function () {
   renderParticleRing(
     secondHandOrbiterX,
     secondHandOrbiterY,
-    new Rect(scene.width / 2, scene.height / 2, 20, 20),
+    new Rect(secondsX, secondsY, 1, 1),
+    10,
     10
   );
 
@@ -412,11 +430,11 @@ var main = function () {
   scene.ctx.textBaseline = "top";
   scene.ctx.fillStyle = '#000'
   scene.ctx.font = "10px Helvetica";
-  scene.ctx.fillText(date.getSeconds(), secondsX, secondsY - 5)
+  scene.ctx.fillText(`${date.getSeconds()}`, secondsX, secondsY - 5)
   scene.ctx.font = "12px Helvetica";
-  scene.ctx.fillText(date.getMinutes(), minutesX, minutesY - 6)
+  scene.ctx.fillText(`${date.getMinutes()}`, minutesX, minutesY - 6)
   scene.ctx.font = "16px Helvetica";
-  scene.ctx.fillText(date.getHours() > 12 ? date.getHours() - 12 : date.getHours(), hoursX, hoursY - 8)
+  scene.ctx.fillText(`${date.getHours() > 12 ? date.getHours() - 12 : date.getHours()}`, hoursX, hoursY - 8)
 
   requestAnimationFrame(main);
   //   ROTATION_ANGLE += ROTATION_INTERVAL;

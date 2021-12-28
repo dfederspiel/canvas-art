@@ -1,8 +1,25 @@
 import { rand } from "./helpers";
 import Rect from "./Rect";
 import Size from './Size';
+import { ObjectType } from "./enums";
 
 export default class Drop extends Rect {
+  rect: Rect;
+  frames: number;
+  hit: boolean;
+  colorString: string;
+  speedx: number;
+  speedy: number;
+  animationFrame: number;
+  easeFn: Function;
+  animationDirection: number;
+  alpha: number;
+  hitTime: number;
+  hitEffectDuration: number;
+  containerRect: Rect;
+  size: Size;
+  type: ObjectType;
+
   /**
    * @param {Rect} rect 
    * @param {number} frames 
@@ -11,18 +28,20 @@ export default class Drop extends Rect {
    * @param {number} vx 
    * @param {number} vy 
    * @param {Rect} containerRect 
-   * @param {Size} size 
+   * @param {Size} size
+   * @param {ObjectType} type
    */
   constructor(
-    rect,
-    frames,
-    colorString,
-    easeFn,
-    vx,
-    vy,
-    containerRect,
-    size,
-    hitEffectDuration
+    rect: Rect,
+    frames: number,
+    colorString: string,
+    easeFn: Function,
+    vx: number,
+    vy: number,
+    containerRect: Rect,
+    size: Size,
+    hitEffectDuration: number,
+    type: ObjectType
   ) {
     super(rect.x, rect.y, rect.w, rect.h);
     this.hit = false;
@@ -39,6 +58,7 @@ export default class Drop extends Rect {
     this.hitEffectDuration = hitEffectDuration || 5000;
     this.containerRect = containerRect;
     this.size = size;
+    this.type = type
   }
 
   getAnimationFrame() {

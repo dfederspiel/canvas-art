@@ -1,20 +1,21 @@
 import { calculate, collision, rand } from "./helpers"
+import Rect from "./Rect"
 
 describe('the helpers', () => {
   it('can detect when two rects overlap', () => {
     expect(calculate.hit({
       x: 0, y: 0, w: 10, h: 10
-    }, {
+    } as Rect, {
       x: 0, y: 0, w: 10, h: 10
-    })).toBeTruthy()
+    } as Rect)).toBeTruthy()
   })
 
   it('can detect when two rects do not overlap', () => {
     expect(calculate.hit({
       x: 0, y: 0, w: 10, h: 10
-    }, {
+    } as Rect, {
       x: 10.000000001, y: 11, w: 10, h: 10
-    })).toBeFalsy()
+    } as Rect)).toBeFalsy()
   })
 
   it('can plot a vertex from x, y, angle, and distance', () => {
@@ -27,17 +28,17 @@ describe('the helpers', () => {
   it('can find the angle between two center points of a rect', () => {
     expect(calculate.angle({
       x: 0, y: 0, w: 10, h: 10
-    }, {
+    } as Rect, {
       x: 11, y: 11, w: 10, h: 10
-    })).toEqual(45)
+    } as Rect)).toEqual(45)
   })
 
   it('can find the angle between two center points of a rect', () => {
     expect(calculate.angle({
       x: 11, y: 11, w: 10, h: 10
-    }, {
+    } as Rect, {
       x: 0, y: 0, w: 10, h: 10
-    })).toEqual(225)
+    } as Rect)).toEqual(225)
   })
 
   it('can get random numbers from min to max', () => {
@@ -48,16 +49,16 @@ describe('the helpers', () => {
   it('can detect angle of attack between two rects', () => {
     expect(collision.collides({
       x: 0, y: 0, w: 10, h: 10
-    }, {
+    } as Rect, {
       x: 0, y: 1, w: 10, h: 10
-    })).toEqual(90)
+    } as Rect)).toEqual(90)
   })
 
   it('will return null if no collision is detected', () => {
     expect(collision.collides({
       x: 0, y: 0, w: 10, h: 10
-    }, {
+    } as Rect, {
       x: 200, y: 20, w: 10, h: 10
-    })).toEqual(null)
+    } as Rect)).toEqual(null)
   })
 })

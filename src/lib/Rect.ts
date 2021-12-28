@@ -1,7 +1,16 @@
-import Size from "./Size";
-export default class Rect {
-  #angles = null;
+export interface Angles {
+  tl: number;
+  tr: number;
+  bl: number;
+  br: number;
+}
 
+export default class Rect {
+  #angles: Angles = null;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
   /**
    * Defines a new Rectangle
    * @param {Number} x
@@ -9,7 +18,7 @@ export default class Rect {
    * @param {Number} w
    * @param {Number} h
    */
-  constructor(x, y, w, h) {
+  constructor(x: number, y: number, w: number, h: number) {
     this.x = x;
     this.y = y;
     this.w = w;
@@ -28,7 +37,7 @@ export default class Rect {
     return this.#angles
   }
 
-  #angle(x, y) {
+  #angle(x: number, y: number) {
     var dx = this.x + this.w / 2 - x;
     var dy = this.y + this.h / 2 - y;
 

@@ -5,7 +5,7 @@ const START = 50;
 const END = 200; // to +10
 
 describe('the easing functions', () => {
-  let results = [];
+  let results: Array<number> = [];
 
   afterEach(() => {
     expect(results.join()).toMatchSnapshot()

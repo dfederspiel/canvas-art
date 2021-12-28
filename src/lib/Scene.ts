@@ -1,5 +1,11 @@
 export default class Scene {
-  constructor(width, height) {
+  width: number;
+  height: number;
+
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+
+  constructor(width: number, height: number) {
     this.width = width;
     this.height = height;
 
