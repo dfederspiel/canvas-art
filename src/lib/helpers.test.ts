@@ -1,4 +1,4 @@
-import { calculate, collision, rand } from "./helpers"
+import { calculate, collision, colorRand, rand } from "./helpers"
 import Rect from "./Rect"
 
 describe('the helpers', () => {
@@ -60,5 +60,15 @@ describe('the helpers', () => {
     } as Rect, {
       x: 200, y: 20, w: 10, h: 10
     } as Rect)).toEqual(null)
+  })
+
+  it('can generate random colors', () => {
+    jest.spyOn(Math, 'random').mockReturnValue(1)
+    expect(colorRand()).toEqual('rgb(255, 255, 255)')
+    jest.spyOn(Math, 'random').mockReturnValue(0)
+    expect(colorRand()).toEqual('rgb(0, 0, 0)')
+    jest.spyOn(Math, 'random').mockReturnValue(.5)
+    expect(colorRand()).toEqual('rgb(127.5, 127.5, 127.5)')
+
   })
 })

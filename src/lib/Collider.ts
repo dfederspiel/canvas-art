@@ -9,7 +9,6 @@ export default class Collider {
    * @param {Rect} r2 
    */
   constructor(r1: Rect, r2: Rect) {
-    if (!r1 || !r2) throw new Error("error")
     this.r1 = r1;
     this.r2 = r2;
   }
