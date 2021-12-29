@@ -4,7 +4,7 @@ import Size from "../../lib/Size";
 import Sprite from "../../lib/Sprite";
 import { Scene } from "../../lib/types";
 import { calculate, collision, colorRand, rand } from '../../lib/helpers'
-import { easeInElastic, easeInOutQuad } from '../../lib/easing'
+import { easeInBack, easeInElastic, easeInOutElastic, easeInOutQuad } from '../../lib/easing'
 import Wall from "../../lib/Wall";
 
 const MAX_PARTICLES = 1000;
@@ -126,9 +126,9 @@ export default class ClockScene implements Scene {
     this.particles.push(
       new Sprite(
         new Rect(x, y, 3, 3),
-        60,
+        rand(15, 300),
         `rgb(${rand(209, 255)}, ${rand(211, 251)}, ${rand(158, 218)})`,
-        easeInElastic,
+        easeInBack,
         (x - (srcRect.x + srcRect.w / 2)) / rand(radius * 16, radius * 100),
         (y - (srcRect.y + srcRect.h / 2)) / rand(radius * 16, radius * 100),
         new Rect(

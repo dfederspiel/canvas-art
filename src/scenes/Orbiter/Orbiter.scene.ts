@@ -21,6 +21,9 @@ export default class OrbiterScene implements Scene {
     this.width = width;
     this.height = height;
     this.ctx = context;
+
+    this.particleCenterX = rand(this.radius, this.width - this.radius)
+    this.particleCenterY = rand(this.radius, this.height - this.radius)
   }
 
   renderOtherStuff(objects: Sprite[]): void {
@@ -63,12 +66,15 @@ export default class OrbiterScene implements Scene {
     // run the render function
     // this.renderOtherStuff(this.drops);
     this.renderOtherStuff(this.particles);
-    this.angle += .1;
+    this.angle += .05;
     if (this.angle >= 2 * Math.PI) {
       this.angle = 0;
-      this.particleCenterX = rand(0, this.width);
-      this.particleCenterY = rand(0, this.height);
-      this.radius = rand(50, 200);
+      let r = rand(50, 200)
+      // this.particleCenterX = rand(0, this.width);
+      // this.particleCenterY = rand(0, this.height);
+      this.particleCenterX = rand(r, this.width - r)
+      this.particleCenterY = rand(r, this.height - r)
+      this.radius = r;
     }
     // Request to do this again ASAP
     while (this.particles.length > 1500) this.particles.shift();
