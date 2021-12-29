@@ -1,6 +1,6 @@
 # Canvas Art
 
-Deep dive into canvas rendering, collision detection, coordinate mapping, and all the various concepts within a game loop.
+Deep dive into canvas rendering, collision detection, coordinate mapping, and various concepts within the architecture of a game loop.
 
 ## Setup
 
@@ -19,22 +19,22 @@ Each example is represented as a `Scene`, which can be cycled through using the 
 
 ### Orbital Clock
 
-Using radian calculations to caluclate a coordinate at an angle and distance. Shows hours, minutes, seconds, milliseconds, plotted at vertecies from a center point. (the sun)
+Uses radian calculations to find a coordinate at an angle and distance. Shows hours, minutes, seconds, and milliseconds, plotted at vertices relative to a center point. (the sun)
+
+You'll notice the hands of the orbital clock are exactly opposite of what we would expect when looking at an analog analog clock. However, in order for this to align with what we know of orbital mechanics, the object that is rotating the fastest, must also be the closest to a given center point.
 ![alt text](images/scene-clock.png)
 
 ### Sea Space
 
-The first of scenes, showcasing basic boundary detection and rendering thousands
-of particles to the screen simultaneaously
+Showcases basic boundary detection and rendering thousands of particles to the screen simultaneously. Heavy use of randoms to ensure the scene is dynamic. Also leverages various easing functions to manipulate the size of each particle, based on random time, duration, and min/max sizing parameters.
 ![alt text](images/scene-seaspace.png)
 
 ### Walls
 
-Introuction of walls for testing collision detection between objects. Showcases boundary and hit detection
+Introduction of walls for testing collision detection between objects. Showcases deflection using angle of attack calculations, whereby the points on a square are used to determine its hit range (top, right, bottom, left) in degrees (0-360), allowing for more precise deflection mechanics along its respective x/y velocity.
 ![alt text](images/scene-walls.png)
 
 ### Orbiter
 
-First of the radian calculations, where circles are drawn around a central point
-in 2d space.
+First of the radian calculations, where circles are drawn around a randomized central point in 2d space. Using an angle between 0-360, a radius, and a center point, we determine the coordinates of any given point away from the center.
 ![alt text](images/scene-orbiter.png)
