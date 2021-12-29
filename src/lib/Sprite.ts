@@ -2,8 +2,9 @@ import { rand } from "./helpers";
 import Rect from "./Rect";
 import Size from './Size';
 import { ObjectType } from "./enums";
+import { Angles, Boundable, Collidable, Animatable } from "./types";
 
-export default class Drop extends Rect {
+export default class Sprite extends Rect implements Collidable, Boundable, Animatable {
   rect: Rect;
   frames: number;
   hit: boolean;
@@ -61,6 +62,10 @@ export default class Drop extends Rect {
     this.type = type
   }
 
+  collidesWith(reference: Rect): Angles {
+    throw new Error("Method not implemented.");
+  }
+
   getAnimationFrame() {
     if (this.animationDirection === 1) {
       this.animationFrame++;
@@ -91,9 +96,8 @@ export default class Drop extends Rect {
     }
   }
 
-  update() {
+  updateAnimation() {
     const currentFrame = this.getAnimationFrame();
-
     this.w = this.easeFn(
       currentFrame,
       this.size.min.w,
@@ -107,7 +111,9 @@ export default class Drop extends Rect {
       this.size.max.h,
       this.frames
     );
+  }
 
+  update() {
     this.x += this.speedx;
     this.y += this.speedy;
   }
