@@ -10,7 +10,9 @@ import Rect from "./lib/Rect";
 import { calculate } from "./lib/helpers";
 import Size from "./lib/Size";
 
-import Scene from "./lib/Scene";
+import { Animatable } from "./lib/types";
+
+import Scene from "./scenes/ClockScene";
 import { ObjectType } from "./lib/enums";
 
 let WIDTH = window.innerWidth;
@@ -172,6 +174,12 @@ for (var x = 0; x < 1000; x++) {
     )
   );
 }
+
+
+function doAniThing(obj: Animatable) {
+  obj.updateAnimation()
+}
+doAniThing(backgroundGlitter[0])
 
 const displayText = () => {
   ctx.fillStyle = "rgb(255, 255, 255)";
@@ -336,122 +344,21 @@ function renderParticleRing(cx: number, cy: number, srcRect: Rect, radius: numbe
   while (particles.length > MAX_PARTICLES) particles.shift();
 }
 
+const clockScene = new Scene(WIDTH, HEIGHT, ctx)
+
 var main = function () {
-  WIDTH = window.innerWidth;
-  HEIGHT = window.innerHeight;
-  const date = new Date();
-  let timeInMs =
-    (date.getHours() * 60 * 60 + date.getMinutes() * 60 + date.getSeconds()) *
-    1000 +
-    date.getMilliseconds();
+
 
   frameNumber++;
 
   // timeInMs += frameNumber * timeInMs / 1000
 
   ctx.clearRect(0, 0, canvas.width, canvas.height); // clear the screen
-
-  ctx.globalAlpha = .75;
   render(backgroundGlitter, true, true);
+  render(clockScene.particles, true, true)
 
-  // Second Hand Position
-  const { x: secondsX, y: secondsY } = getXYOnCircle(
-    WIDTH / 2,
-    HEIGHT / 2,
-    (timeInMs / 1000) * radiansPerSecond - (Math.PI * 2) / 4,
-    RADIUS + 20
-  );
+  clockScene.render();
 
-  // Minute Hand Position
-  const { x: minutesX, y: minutesY } = getXYOnCircle(
-    WIDTH / 2,
-    HEIGHT / 2,
-    (timeInMs / 1000) * radiansPerMinute - (Math.PI * 2) / 4,
-    RADIUS + 100
-  );
-
-  // Hour Hand Position
-  const { x: hoursX, y: hoursY } = getXYOnCircle(
-    WIDTH / 2,
-    HEIGHT / 2,
-    (timeInMs / 1000) * radiansPerHour - (Math.PI * 2) / 4,
-    RADIUS + 150
-  );
-
-  //
-  const { x: secondHandOrbiterX, y: secondHandOrbiterY } = getXYOnCircle(
-    secondsX,
-    secondsY,
-    (timeInMs / 1000) * radiansPerSecond * 60 - (Math.PI * 2) / 4,
-    25
-  );
-
-  renderParticleRing(
-    secondHandOrbiterX,
-    secondHandOrbiterY,
-    new Rect(secondsX, secondsY, 1, 1),
-    10,
-    10
-  );
-
-  ctx.globalAlpha = 1;
-
-  ctx.beginPath();
-
-  ctx.strokeStyle = "#ddd";
-
-  ctx.moveTo(WIDTH / 2, HEIGHT / 2);
-  ctx.lineTo(secondsX, secondsY);
-
-  ctx.moveTo(WIDTH / 2, HEIGHT / 2);
-  ctx.lineTo(minutesX, minutesY);
-
-  ctx.moveTo(WIDTH / 2, HEIGHT / 2);
-  ctx.lineTo(hoursX, hoursY);
-
-  ctx.moveTo(secondsX, secondsY);
-  ctx.lineTo(secondHandOrbiterX, secondHandOrbiterY);
-
-  ctx.stroke();
-
-  ctx.strokeStyle = "#cc0";
-  ctx.fillStyle = "#cc0";
-
-  ctx.beginPath();
-  ctx.arc(WIDTH / 2, HEIGHT / 2, 15, 0, 2 * Math.PI);
-  ctx.stroke();
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.arc(secondsX, secondsY, 8, 0, 2 * Math.PI);
-  ctx.fill();
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.arc(minutesX, minutesY, 10, 0, 2 * Math.PI);
-
-  ctx.stroke();
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.arc(hoursX, hoursY, 12, 0, 2 * Math.PI);
-
-  ctx.fill();
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.arc(secondHandOrbiterX, secondHandOrbiterY, 5, 0, 2 * Math.PI);
-  ctx.fill();
-
-  ctx.textAlign = "center";
-  ctx.textBaseline = "top";
-  ctx.fillStyle = '#000'
-  ctx.font = "10px Helvetica";
-  ctx.fillText(`${date.getSeconds()}`, secondsX, secondsY - 5)
-  ctx.font = "12px Helvetica";
-  ctx.fillText(`${date.getMinutes()}`, minutesX, minutesY - 6)
-  ctx.font = "16px Helvetica";
-  ctx.fillText(`${date.getHours() > 12 ? date.getHours() - 12 : date.getHours()}`, hoursX, hoursY - 8)
 
   requestAnimationFrame(main);
   //   ROTATION_ANGLE += ROTATION_INTERVAL;

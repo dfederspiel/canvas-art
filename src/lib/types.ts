@@ -20,3 +20,7 @@ export interface Animatable {
   animationDirection: number
   updateAnimation(): void
 }
+
+export interface Scene {
+  render(): void
+}
