@@ -50,7 +50,7 @@ export default class Sprite extends Rect implements Collidable, Boundable, Anima
       colorString || `rgb(${rand(0, 25)}, ${rand(0, 25)}, ${rand(0, 255)})`;
     this.speedx = vx;
     this.speedy = vy;
-    this.animationFrame = Math.floor(rand(0, frames));
+    this.animationFrame = 0;
     this.frames = frames;
     this.easeFn = easeFn;
     this.animationDirection = 1;

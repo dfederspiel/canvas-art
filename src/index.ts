@@ -1,4 +1,5 @@
 import ClockScene from "./scenes/Clock/ClockScene";
+import OrbiterScene from "./scenes/Orbiter/Orbiter.scene";
 import SeaSpaceScene from "./scenes/SeaSpace/SeaSpace.scene";
 import WallsScene from "./scenes/Walls/Walls.scene";
 
@@ -30,6 +31,7 @@ let frameNumber = 0;
 let clockScene = new ClockScene(WIDTH, HEIGHT, ctx)
 let seaSpaceScene = new SeaSpaceScene(WIDTH, HEIGHT, ctx);
 let wallsScene = new WallsScene(WIDTH, HEIGHT, ctx);
+let orbiterScene = new OrbiterScene(WIDTH, HEIGHT, ctx);
 
 let SCENE: number = 0;
 
@@ -46,6 +48,9 @@ var main = function () {
       break;
     case 2:
       wallsScene.render();
+      break;
+    case 3:
+      orbiterScene.render();
       break;
   }
 
@@ -66,6 +71,10 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "3") {
     wallsScene = new WallsScene(WIDTH, HEIGHT, ctx);
     SCENE = 2
+  };
+  if (e.key === "4") {
+    orbiterScene = new OrbiterScene(WIDTH, HEIGHT, ctx);
+    SCENE = 3
   };
 });
 
