@@ -1,9 +1,4 @@
-export interface Angles {
-  tl: number;
-  tr: number;
-  bl: number;
-  br: number;
-}
+import { Angles } from "./types";
 
 export default class Rect {
   #angles: Angles = null;

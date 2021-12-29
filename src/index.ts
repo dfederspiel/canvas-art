@@ -1,4 +1,4 @@
-import Drop from "./lib/Drop";
+import Sprite from "./lib/Sprite";
 import Wall from "./lib/Wall";
 import { colorRand, rand } from "./lib/helpers";
 import {
@@ -16,8 +16,19 @@ import { ObjectType } from "./lib/enums";
 let WIDTH = window.innerWidth;
 let HEIGHT = window.innerHeight;
 
-const scene = new Scene(WIDTH, HEIGHT);
-document.body.appendChild(scene.canvas);
+let canvas = document.createElement("canvas");
+let ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+window.onresize = () => {
+  WIDTH = canvas.width = window.innerWidth;
+  HEIGHT = canvas.height = window.innerHeight;
+};
+
+// const scene = new Scene(WIDTH, HEIGHT);
+document.body.appendChild(canvas);
 
 let RIGHT_PRESSED = false;
 let LEFT_PRESSED = false;
@@ -72,41 +83,41 @@ setInterval(() => {
 let walls: Array<Wall> = [];
 walls.push(
   new Wall(
-    scene.width * 0.3 - WALL_WIDTH / 2,
-    scene.height / 2 - 300 / 2,
+    WIDTH * 0.3 - WALL_WIDTH / 2,
+    HEIGHT / 2 - 300 / 2,
     WALL_WIDTH,
-    scene.height * .360,
+    HEIGHT * .360,
     colorRand()
   ),
   new Wall(
-    scene.width * 0.7 - WALL_WIDTH / 2,
-    scene.height / 2 - 300 / 2,
+    WIDTH * 0.7 - WALL_WIDTH / 2,
+    HEIGHT / 2 - 300 / 2,
     WALL_WIDTH,
-    scene.height * .360,
+    HEIGHT * .360,
     colorRand()
   ),
   new Wall(
-    scene.width * 0.3 - WALL_WIDTH / 2,
-    scene.height / 2 - 300 / 2,
-    scene.width * .4,
+    WIDTH * 0.3 - WALL_WIDTH / 2,
+    HEIGHT / 2 - 300 / 2,
+    WIDTH * .4,
     WALL_WIDTH,
     colorRand()
   ),
   new Wall(
-    scene.width * 0.3 - WALL_WIDTH / 2,
-    scene.height / 2 + 300 / 2,
-    scene.width * .4,
+    WIDTH * 0.3 - WALL_WIDTH / 2,
+    HEIGHT / 2 + 300 / 2,
+    WIDTH * .4,
     WALL_WIDTH,
     colorRand()
   )
 );
 
 for (let idx = 0; idx < WALL_DIVISIONS; idx++) {
-  const w = scene.width;
+  const w = WIDTH;
   const h = WALL_HEIGHT;
-  const x = rand(0, scene.width - w);
+  const x = rand(0, WIDTH - w);
   const y =
-    (scene.height / WALL_DIVISIONS) * idx + scene.height / WALL_DIVISIONS / 2;
+    (HEIGHT / WALL_DIVISIONS) * idx + HEIGHT / WALL_DIVISIONS / 2;
 
   walls.push(
     new Wall(
@@ -121,10 +132,10 @@ for (let idx = 0; idx < WALL_DIVISIONS; idx++) {
 
 for (let idx = 0; idx < WALL_DIVISIONS; idx++) {
   const w = WALL_WIDTH;
-  const h = scene.height;
+  const h = HEIGHT;
   const x =
-    (scene.width / WALL_DIVISIONS) * idx + scene.width / WALL_DIVISIONS / 2;
-  const y = rand(0, scene.height - h);
+    (WIDTH / WALL_DIVISIONS) * idx + WIDTH / WALL_DIVISIONS / 2;
+  const y = rand(0, HEIGHT - h);
 
   walls.push(
     new Wall(
@@ -137,15 +148,15 @@ for (let idx = 0; idx < WALL_DIVISIONS; idx++) {
   );
 }
 
-let backgroundGlitter: Drop[] = [];
+let backgroundGlitter: Sprite[] = [];
 for (var x = 0; x < 1000; x++) {
   let sizeMin = rand(1, 3)
   let sizeMax = rand(4, 6)
   backgroundGlitter.push(
-    new Drop(
+    new Sprite(
       new Rect(
-        rand(0, scene.width),
-        rand(0, scene.height),
+        rand(0, WIDTH),
+        rand(0, HEIGHT),
         rand(2, 10),
         rand(2, 10),
       ),
@@ -154,7 +165,7 @@ for (var x = 0; x < 1000; x++) {
       easeInElastic,
       rand(-2, 2),
       rand(-2, 2),
-      new Rect(40, 40, scene.width - 40, scene.height - 40),
+      new Rect(40, 40, WIDTH - 40, HEIGHT - 40),
       new Size(sizeMin, sizeMin, sizeMax, sizeMax),
       rand(500, 5000),
       ObjectType.Particle,
@@ -163,14 +174,14 @@ for (var x = 0; x < 1000; x++) {
 }
 
 const displayText = () => {
-  scene.ctx.fillStyle = "rgb(255, 255, 255)";
-  scene.ctx.font = "20px Helvetica";
-  scene.ctx.textAlign = "left";
-  scene.ctx.textBaseline = "top";
+  ctx.fillStyle = "rgb(255, 255, 255)";
+  ctx.font = "20px Helvetica";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "top";
 
-  scene.ctx.fillText("Time: " + count, 20, 20);
-  scene.ctx.fillText("Frame: " + frameNumber, 20, 50);
-  scene.ctx.fillText("FPS: " + (frameNumber / count).toFixed(2), 20, 80);
+  ctx.fillText("Time: " + count, 20, 20);
+  ctx.fillText("Frame: " + frameNumber, 20, 50);
+  ctx.fillText("FPS: " + (frameNumber / count).toFixed(2), 20, 80);
 };
 
 /**
@@ -186,37 +197,30 @@ function collides(r1: Rect, r2: Rect) {
   } else return null;
 }
 
-function doCollision(angle: number, obj: Drop, wall: Rect) {
-  // did we have an intersection?
-  if (angle !== null) {
-    /// if we're not already in a hit situation, create one
-    if (!obj.hit) {
-      obj.hit = true;
-      const { angles } = wall;
-      /// zone 1 - left
-      if (
-        (angle >= 0 && angle < angles.tl) ||
-        (angle > angles.bl && angle < 360)
-      ) {
-        /// if moving in + direction deflect rect 1 in x direction etc.
-        if (obj.speedx > 0) obj.speedx = -obj.speedx;
-      } else if (angle >= angles.tl && angle < angles.tr) {
-        /// zone 2 - top
-        if (obj.speedy > 0) obj.speedy = -obj.speedy;
-      } else if (angle >= angles.tr && angle < angles.br) {
-        /// zone 3 - right
-        if (obj.speedx < 0) obj.speedx = -obj.speedx;
-      } else {
-        /// zone 4 - bottom
-        if (obj.speedy < 0) obj.speedy = -obj.speedy;
-      }
-    }
-  } else obj.hit = false; /// reset hit when this hit is done (angle = null)
+function doCollision(angle: number, obj: Sprite) {
+  let { angles, speedx, speedy } = obj;
+  /// zone 1 - left
+  if (
+    (angle >= 0 && angle < angles.tl) ||
+    (angle > angles.bl && angle < 360)
+  ) {
+    /// if moving in + direction deflect rect 1 in x direction etc.
+    if (speedx > 0) speedx = -speedx;
+  } else if (angle >= angles.tl && angle < angles.tr) {
+    /// zone 2 - top
+    if (speedy > 0) speedy = -speedy;
+  } else if (angle >= angles.tr && angle < angles.br) {
+    /// zone 3 - right
+    if (speedx < 0) speedx = -speedx;
+  } else {
+    /// zone 4 - bottom
+    if (speedy < 0) speedy = -speedy;
+  }
 }
 
 // Draw everything on the canvas
-const render = function (objects: Array<Drop>, checkBoundaries: boolean, checkCollisions: boolean) {
-  scene.ctx.globalAlpha = 0.5;
+const render = function (objects: Array<Sprite>, checkBoundaries: boolean, checkCollisions: boolean) {
+  ctx.globalAlpha = 0.5;
   objects.forEach((p, idx) => {
     const cp = {
       x: p.x - p.w / 2, // use a center x point to calculate trajectory
@@ -224,9 +228,9 @@ const render = function (objects: Array<Drop>, checkBoundaries: boolean, checkCo
       w: p.w,
       h: p.h,
     } as Rect;
-    scene.ctx.globalAlpha = p.alpha;
-    scene.ctx.fillStyle = p.colorString;
-    scene.ctx.fillRect(cp.x, cp.y, p.w, p.h);
+    ctx.globalAlpha = p.alpha;
+    ctx.fillStyle = p.colorString;
+    ctx.fillRect(cp.x, cp.y, p.w, p.h);
 
     if (RIGHT_PRESSED) p.speedx = Math.abs(p.speedx);
     if (LEFT_PRESSED) p.speedx = -Math.abs(p.speedx);
@@ -263,22 +267,28 @@ const render = function (objects: Array<Drop>, checkBoundaries: boolean, checkCo
             p.alpha = 0;
           }
         }
-        doCollision(angle, p, wall);
+
+        if (angle !== null) {
+          /// if we're not already in a hit situation, create one
+          if (!p.hit) {
+            p.hit = true;
+            doCollision(angle, p);
+          }
+        } else p.hit = false; /// reset hit when this hit is done (angle = null)
       });
     }
   });
 
   walls.forEach((w) => {
-    scene.ctx.fillStyle = w.colorString;
-    scene.ctx.globalAlpha = CHECK_COLLISIONS ? 0.8 : 0.2;
-    scene.ctx.fillRect(w.x, w.y, w.w, w.h);
+    ctx.fillStyle = w.colorString;
+    ctx.globalAlpha = CHECK_COLLISIONS ? 0.8 : 0.2;
+    ctx.fillRect(w.x, w.y, w.w, w.h);
   });
 
-  scene.ctx.globalAlpha = 0.2;
+  ctx.globalAlpha = 0.2;
   displayText();
 };
 
-let angle = 0;
 function getXYOnCircle(x: number, y: number, a: number, distance: number) {
   return {
     x: x + Math.cos(a) * distance,
@@ -286,14 +296,14 @@ function getXYOnCircle(x: number, y: number, a: number, distance: number) {
   };
 }
 
-let particles: Drop[] = [];
+let particles: Sprite[] = [];
 
 function renderParticleRing(cx: number, cy: number, srcRect: Rect, radius: number, angle: number) {
   const { x, y } = getXYOnCircle(cx, cy, ROTATION_ANGLE, radius);
   let sizeMin = rand(.5, 1.5)
   let sizeMax = rand(2.5, 5)
   particles.push(
-    new Drop(
+    new Sprite(
       new Rect(x, y, 3, 3),
       60,
       `rgb(${rand(209, 255)}, ${rand(211, 251)}, ${rand(158, 218)})`,
@@ -302,16 +312,16 @@ function renderParticleRing(cx: number, cy: number, srcRect: Rect, radius: numbe
       (y - (srcRect.y + srcRect.h / 2)) / rand(radius * 16, radius * 100),
       new Rect(
         100,
-        scene.height / 4,
-        scene.width - 100,
-        scene.height - scene.height / 4
+        HEIGHT / 4,
+        WIDTH - 100,
+        HEIGHT - HEIGHT / 4
       ),
       new Size(sizeMin, sizeMin, sizeMax, sizeMax),
       rand(2000, 10000),
       ObjectType.Particle
     )
   );
-  scene.ctx.globalAlpha = 1;
+  ctx.globalAlpha = 1;
   render(particles, false, true);
   if (angle >= Math.PI * 2) {
     angle = 0;
@@ -332,31 +342,31 @@ var main = function () {
 
   // timeInMs += frameNumber * timeInMs / 1000
 
-  scene.ctx.clearRect(0, 0, scene.canvas.width, scene.canvas.height); // clear the screen
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // clear the screen
 
-  scene.ctx.globalAlpha = .75;
+  ctx.globalAlpha = .75;
   render(backgroundGlitter, true, true);
 
   // Second Hand Position
   const { x: secondsX, y: secondsY } = getXYOnCircle(
-    scene.width / 2,
-    scene.height / 2,
+    WIDTH / 2,
+    HEIGHT / 2,
     (timeInMs / 1000) * radiansPerSecond - (Math.PI * 2) / 4,
     RADIUS + 20
   );
 
   // Minute Hand Position
   const { x: minutesX, y: minutesY } = getXYOnCircle(
-    scene.width / 2,
-    scene.height / 2,
+    WIDTH / 2,
+    HEIGHT / 2,
     (timeInMs / 1000) * radiansPerMinute - (Math.PI * 2) / 4,
     RADIUS + 100
   );
 
   // Hour Hand Position
   const { x: hoursX, y: hoursY } = getXYOnCircle(
-    scene.width / 2,
-    scene.height / 2,
+    WIDTH / 2,
+    HEIGHT / 2,
     (timeInMs / 1000) * radiansPerHour - (Math.PI * 2) / 4,
     RADIUS + 150
   );
@@ -377,64 +387,64 @@ var main = function () {
     10
   );
 
-  scene.ctx.globalAlpha = 1;
+  ctx.globalAlpha = 1;
 
-  scene.ctx.beginPath();
+  ctx.beginPath();
 
-  scene.ctx.strokeStyle = "#ddd";
+  ctx.strokeStyle = "#ddd";
 
-  scene.ctx.moveTo(scene.width / 2, scene.height / 2);
-  scene.ctx.lineTo(secondsX, secondsY);
+  ctx.moveTo(WIDTH / 2, HEIGHT / 2);
+  ctx.lineTo(secondsX, secondsY);
 
-  scene.ctx.moveTo(scene.width / 2, scene.height / 2);
-  scene.ctx.lineTo(minutesX, minutesY);
+  ctx.moveTo(WIDTH / 2, HEIGHT / 2);
+  ctx.lineTo(minutesX, minutesY);
 
-  scene.ctx.moveTo(scene.width / 2, scene.height / 2);
-  scene.ctx.lineTo(hoursX, hoursY);
+  ctx.moveTo(WIDTH / 2, HEIGHT / 2);
+  ctx.lineTo(hoursX, hoursY);
 
-  scene.ctx.moveTo(secondsX, secondsY);
-  scene.ctx.lineTo(secondHandOrbiterX, secondHandOrbiterY);
+  ctx.moveTo(secondsX, secondsY);
+  ctx.lineTo(secondHandOrbiterX, secondHandOrbiterY);
 
-  scene.ctx.stroke();
+  ctx.stroke();
 
-  scene.ctx.strokeStyle = "#cc0";
-  scene.ctx.fillStyle = "#cc0";
+  ctx.strokeStyle = "#cc0";
+  ctx.fillStyle = "#cc0";
 
-  scene.ctx.beginPath();
-  scene.ctx.arc(scene.width / 2, scene.height / 2, 15, 0, 2 * Math.PI);
-  scene.ctx.stroke();
-  scene.ctx.fill();
+  ctx.beginPath();
+  ctx.arc(WIDTH / 2, HEIGHT / 2, 15, 0, 2 * Math.PI);
+  ctx.stroke();
+  ctx.fill();
 
-  scene.ctx.beginPath();
-  scene.ctx.arc(secondsX, secondsY, 8, 0, 2 * Math.PI);
-  scene.ctx.fill();
-  scene.ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(secondsX, secondsY, 8, 0, 2 * Math.PI);
+  ctx.fill();
+  ctx.stroke();
 
-  scene.ctx.beginPath();
-  scene.ctx.arc(minutesX, minutesY, 10, 0, 2 * Math.PI);
+  ctx.beginPath();
+  ctx.arc(minutesX, minutesY, 10, 0, 2 * Math.PI);
 
-  scene.ctx.stroke();
-  scene.ctx.fill();
+  ctx.stroke();
+  ctx.fill();
 
-  scene.ctx.beginPath();
-  scene.ctx.arc(hoursX, hoursY, 12, 0, 2 * Math.PI);
+  ctx.beginPath();
+  ctx.arc(hoursX, hoursY, 12, 0, 2 * Math.PI);
 
-  scene.ctx.fill();
-  scene.ctx.stroke();
+  ctx.fill();
+  ctx.stroke();
 
-  scene.ctx.beginPath();
-  scene.ctx.arc(secondHandOrbiterX, secondHandOrbiterY, 5, 0, 2 * Math.PI);
-  scene.ctx.fill();
+  ctx.beginPath();
+  ctx.arc(secondHandOrbiterX, secondHandOrbiterY, 5, 0, 2 * Math.PI);
+  ctx.fill();
 
-  scene.ctx.textAlign = "center";
-  scene.ctx.textBaseline = "top";
-  scene.ctx.fillStyle = '#000'
-  scene.ctx.font = "10px Helvetica";
-  scene.ctx.fillText(`${date.getSeconds()}`, secondsX, secondsY - 5)
-  scene.ctx.font = "12px Helvetica";
-  scene.ctx.fillText(`${date.getMinutes()}`, minutesX, minutesY - 6)
-  scene.ctx.font = "16px Helvetica";
-  scene.ctx.fillText(`${date.getHours() > 12 ? date.getHours() - 12 : date.getHours()}`, hoursX, hoursY - 8)
+  ctx.textAlign = "center";
+  ctx.textBaseline = "top";
+  ctx.fillStyle = '#000'
+  ctx.font = "10px Helvetica";
+  ctx.fillText(`${date.getSeconds()}`, secondsX, secondsY - 5)
+  ctx.font = "12px Helvetica";
+  ctx.fillText(`${date.getMinutes()}`, minutesX, minutesY - 6)
+  ctx.font = "16px Helvetica";
+  ctx.fillText(`${date.getHours() > 12 ? date.getHours() - 12 : date.getHours()}`, hoursX, hoursY - 8)
 
   requestAnimationFrame(main);
   //   ROTATION_ANGLE += ROTATION_INTERVAL;
