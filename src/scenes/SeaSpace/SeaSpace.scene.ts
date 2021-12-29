@@ -59,7 +59,7 @@ export default class SeaSpaceScene implements Scene {
           rand(-2, 2),
           rand(-2, 2),
           new Rect(0, 0, this.width, this.height),
-          new Size(2.5, 2.5, 5, 5),
+          new Size(5, 5, 35, 35),
           1000,
           ObjectType.Particle
         )
@@ -75,13 +75,13 @@ export default class SeaSpaceScene implements Scene {
             10,
             10,
           ),
-          rand(30, 45),
+          rand(60, 120),
           `rgb(${rand(100, 200)}, ${rand(0, 0)}, ${rand(0, 0)})`,
           easeInElastic,
-          rand(-1, 1),
-          rand(-1, 1),
+          rand(-.5, .5),
+          rand(-.5, .5),
           new Rect(0, 0, this.width, this.height),
-          new Size(5, 5, 10, 10),
+          new Size(2, 2, 20, 20),
           1000,
           ObjectType.Particle
         )
@@ -90,6 +90,7 @@ export default class SeaSpaceScene implements Scene {
   }
 
   render(): void {
+    this.#ctx.globalAlpha = .75;
     this.#drops.forEach((drop, idx) => {
       this.#ctx.fillStyle = drop.colorString;
       this.#ctx.fillRect(drop.x - drop.w / 2, drop.y - drop.h / 2, drop.w, drop.h)

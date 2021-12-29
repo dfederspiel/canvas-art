@@ -13,8 +13,8 @@ export default class WallsScene implements Scene {
   static PARTICLE_VY = 0;
   static ROTATION_STEP = .01;
   static MAX_PARTICLES = 1750;
-  static WALL_WIDTH = 100;
-  static WALL_HEIGHT = 100;
+  static WALL_WIDTH = 10;
+  static WALL_HEIGHT = 10;
 
   static RIGHT_PRESSED = false;
   static LEFT_PRESSED = false;
@@ -48,7 +48,7 @@ export default class WallsScene implements Scene {
 
     for (let idx = 0; idx < WallsScene.WALL_DIVISIONS; idx++) {
       const w = this.width;
-      const h = 4;
+      const h = WallsScene.WALL_WIDTH
       const x = rand(0, this.width - w);
       const y = (this.height / WallsScene.WALL_DIVISIONS) * idx + this.height / WallsScene.WALL_DIVISIONS / 2;
 
@@ -64,7 +64,7 @@ export default class WallsScene implements Scene {
     }
 
     for (let idx = 0; idx < WallsScene.WALL_DIVISIONS; idx++) {
-      const w = 4;
+      const w = WallsScene.WALL_WIDTH;
       const h = this.height;
       const x = (this.width / WallsScene.WALL_DIVISIONS) * idx + this.width / WallsScene.WALL_DIVISIONS / 2;
       const y = rand(0, this.height - h);

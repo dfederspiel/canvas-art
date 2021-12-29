@@ -50,7 +50,7 @@ export default class ClockScene implements Scene {
     this.#radiansPerHour = (this.#radiansPerMinute * 60) / 12 / 60;
 
     const WALL_WIDTH = 5;
-    const MARGIN = .15 * this.width;
+    const MARGIN = .1 * this.width;
     this.walls.push(
       // LEFT
       new Wall(
