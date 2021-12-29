@@ -33,11 +33,6 @@ export default class OrbiterScene implements Scene {
       this.ctx.fillStyle = drop.colorString;
       this.ctx.fillRect(drop.x - drop.w / 2, drop.y - drop.h / 2, drop.w, drop.h);
 
-      // if (RIGHT_PRESSED) drop.xdir = 1;
-      // if (LEFT_PRESSED) drop.xdir = -1;
-      // if (UP_PRESSED) drop.ydir = -1;
-      // if (DOWN_PRESSED) drop.ydir = 1;
-
       drop.update();
 
       drop.checkBoundaries();
@@ -60,18 +55,16 @@ export default class OrbiterScene implements Scene {
         0,
         0,
         new Rect(0, 0, this.width, this.height),
-        new Size(5, 5, 5, 5)
+        new Size(5, 5, 20, 20)
       )
     );
     // run the render function
-    // this.renderOtherStuff(this.drops);
     this.renderOtherStuff(this.particles);
     this.angle += .05;
+    // this.radius += rand(-.5, .5); // add perturbations to radius for each step to create chaotic pattern in arc
     if (this.angle >= 2 * Math.PI) {
       this.angle = 0;
       let r = rand(50, 200)
-      // this.particleCenterX = rand(0, this.width);
-      // this.particleCenterY = rand(0, this.height);
       this.particleCenterX = rand(r, this.width - r)
       this.particleCenterY = rand(r, this.height - r)
       this.radius = r;

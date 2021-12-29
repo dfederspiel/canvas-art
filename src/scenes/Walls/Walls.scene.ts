@@ -88,8 +88,8 @@ export default class WallsScene implements Scene {
           rand(15, 600),
           `rgb(160,160,160)`,
           easeInElastic,
-          rand(0.01, 2),
-          rand(0.01, 2),
+          rand(-2, 2),
+          rand(-2, 2),
           new Rect(0, 0, this.width, this.height),
           new Size(5, 5, 10, 10)
         )
