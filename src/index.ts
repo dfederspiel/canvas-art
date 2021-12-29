@@ -1,4 +1,5 @@
-import Scene from "./scenes/Clock/ClockScene";
+import ClockScene from "./scenes/Clock/ClockScene";
+import SeaSpaceScene from "./scenes/SeaSpace/SeaSpace.scene";
 
 let WIDTH = window.innerWidth;
 let HEIGHT = window.innerHeight;
@@ -25,9 +26,10 @@ setInterval(() => {
 
 
 let frameNumber = 0;
-const clockScene = new Scene(WIDTH, HEIGHT, ctx)
+const clockScene = new ClockScene(WIDTH, HEIGHT, ctx)
+const seaSpaceScene = new SeaSpaceScene(WIDTH, HEIGHT, ctx);
 
-const SCENE = 0;
+let SCENE: number = 0;
 
 var main = function () {
 
@@ -37,10 +39,22 @@ var main = function () {
     case 0:
       clockScene.render();
       break;
+    case 1:
+      seaSpaceScene.render();
+      break;
   }
 
   frameNumber++;
   requestAnimationFrame(main);
 };
+
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "1") SCENE = 0;
+  if (e.key === "2") SCENE = 1;
+  if (e.key === "3") SCENE = 2;
+  if (e.key === "4") SCENE = 3;
+  if (e.key === "5") SCENE = 4;
+});
 
 main();

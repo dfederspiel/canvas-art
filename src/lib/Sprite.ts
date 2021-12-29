@@ -40,9 +40,9 @@ export default class Sprite extends Rect implements Collidable, Boundable, Anima
     vx: number,
     vy: number,
     containerRect: Rect,
-    size: Size,
-    hitEffectDuration: number,
-    type: ObjectType
+    size?: Size,
+    hitEffectDuration?: number,
+    type?: ObjectType
   ) {
     super(rect.x, rect.y, rect.w, rect.h);
     this.hit = false;

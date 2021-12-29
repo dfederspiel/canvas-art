@@ -22,5 +22,7 @@ export interface Animatable {
 }
 
 export interface Scene {
+  width: number;
+  height: number;
   render(): void
 }
