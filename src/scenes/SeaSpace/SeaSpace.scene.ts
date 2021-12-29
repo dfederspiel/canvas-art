@@ -90,9 +90,6 @@ export default class SeaSpaceScene implements Scene {
   }
 
   render(): void {
-    this.#ctx.fillStyle = '#fff'
-    this.#ctx.fillText("NEW SCENE", 100, 100)
-
     this.#drops.forEach((drop, idx) => {
       this.#ctx.fillStyle = drop.colorString;
       this.#ctx.fillRect(drop.x - drop.w / 2, drop.y - drop.h / 2, drop.w, drop.h)

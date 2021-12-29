@@ -27,13 +27,13 @@ setInterval(() => {
 }, 1000);
 
 
-let frameNumber = 0;
 let clockScene = new ClockScene(WIDTH, HEIGHT, ctx)
 let seaSpaceScene = new SeaSpaceScene(WIDTH, HEIGHT, ctx);
 let wallsScene = new WallsScene(WIDTH, HEIGHT, ctx);
 let orbiterScene = new OrbiterScene(WIDTH, HEIGHT, ctx);
 
 let SCENE: number = 0;
+let title = '';
 
 var main = function () {
 
@@ -41,20 +41,28 @@ var main = function () {
 
   switch (SCENE) {
     case 0:
+      title = "Clock"
       clockScene.render();
       break;
     case 1:
+      title = "Sea Space"
       seaSpaceScene.render();
       break;
     case 2:
+      title = "Walls"
       wallsScene.render();
       break;
     case 3:
+      title = "Orbiters"
       orbiterScene.render();
       break;
   }
 
-  frameNumber++;
+  ctx.globalAlpha = .85;
+  ctx.fillStyle = '#fff';
+  ctx.font = '24px Arial'
+  ctx.fillText(title, WIDTH / 2, 10);
+
   requestAnimationFrame(main);
 };
 
