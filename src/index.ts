@@ -27,9 +27,9 @@ setInterval(() => {
 
 
 let frameNumber = 0;
-const clockScene = new ClockScene(WIDTH, HEIGHT, ctx)
-const seaSpaceScene = new SeaSpaceScene(WIDTH, HEIGHT, ctx);
-const wallsScene = new WallsScene(WIDTH, HEIGHT, ctx);
+let clockScene = new ClockScene(WIDTH, HEIGHT, ctx)
+let seaSpaceScene = new SeaSpaceScene(WIDTH, HEIGHT, ctx);
+let wallsScene = new WallsScene(WIDTH, HEIGHT, ctx);
 
 let SCENE: number = 0;
 
@@ -55,9 +55,18 @@ var main = function () {
 
 
 document.addEventListener("keydown", (e) => {
-  if (e.key === "1") SCENE = 0;
-  if (e.key === "2") SCENE = 1;
-  if (e.key === "3") SCENE = 2;
+  if (e.key === "1") {
+    clockScene = new ClockScene(WIDTH, HEIGHT, ctx);
+    SCENE = 0;
+  }
+  if (e.key === "2") {
+    seaSpaceScene = new SeaSpaceScene(WIDTH, HEIGHT, ctx);
+    SCENE = 1
+  };
+  if (e.key === "3") {
+    wallsScene = new WallsScene(WIDTH, HEIGHT, ctx);
+    SCENE = 2
+  };
 });
 
 main();

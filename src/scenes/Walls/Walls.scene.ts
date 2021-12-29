@@ -216,7 +216,7 @@ export default class WallsScene implements Scene {
     );
     // run the render function
     this.renderOtherStuff(this.drops, true, true);
-    this.renderOtherStuff(this.particles, true, true);
+    // this.renderOtherStuff(this.particles, true, true);
     this.angle += WallsScene.ROTATION_STEP;
     if (this.angle >= 2 * Math.PI) {
       this.angle = 0;
