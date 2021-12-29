@@ -52,31 +52,35 @@ export default class ClockScene implements Scene {
     const WALL_WIDTH = 5;
     const MARGIN = .15 * this.width;
     this.walls.push(
+      // LEFT
       new Wall(
         MARGIN - WALL_WIDTH / 2,
-        MARGIN,
+        MARGIN - WALL_WIDTH / 2,
         WALL_WIDTH,
         this.height - MARGIN * 2,
         colorRand()
       ),
+      // RIGHT
       new Wall(
-        this.width - MARGIN,
-        MARGIN,
+        this.width - MARGIN - (WALL_WIDTH / 2),
+        MARGIN - WALL_WIDTH / 2,
         WALL_WIDTH,
         this.height - MARGIN * 2,
         colorRand()
       ),
+      // TOP
       new Wall(
         MARGIN - WALL_WIDTH / 2,
-        MARGIN,
-        this.width - MARGIN * 2,
+        MARGIN - WALL_WIDTH / 2,
+        this.width - MARGIN * 2 + WALL_WIDTH,
         WALL_WIDTH,
         colorRand()
       ),
+      // BOTTOM
       new Wall(
         MARGIN - WALL_WIDTH / 2,
-        this.height - MARGIN,
-        this.width - MARGIN * 2,
+        this.height - MARGIN - (WALL_WIDTH / 2),
+        this.width - MARGIN * 2 + WALL_WIDTH,
         WALL_WIDTH,
         colorRand()
       )
