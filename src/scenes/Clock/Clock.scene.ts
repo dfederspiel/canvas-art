@@ -3,8 +3,8 @@ import Rect from "../../lib/Rect";
 import Size from "../../lib/Size";
 import Sprite from "../../lib/Sprite";
 import { Scene } from "../../lib/types";
-import { calculate, collision, colorRand, rand } from '../../lib/helpers'
-import { easeInBack, easeInElastic, easeInOutElastic, easeInOutQuad } from '../../lib/easing'
+import { collision, colorRand, rand } from '../../lib/helpers'
+import { easeInBack, easeInElastic, easeInOutQuad } from '../../lib/easing'
 import Wall from "../../lib/Wall";
 
 const MAX_PARTICLES = 1000;
