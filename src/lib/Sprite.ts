@@ -114,6 +114,7 @@ export default class Sprite extends Rect implements Collidable, Boundable, Anima
   }
 
   update() {
+    this.updateAnimation()
     this.x += this.speedx;
     this.y += this.speedy;
   }

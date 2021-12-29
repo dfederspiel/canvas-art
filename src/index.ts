@@ -157,8 +157,8 @@ for (var x = 0; x < 1000; x++) {
       new Rect(
         rand(0, WIDTH),
         rand(0, HEIGHT),
-        rand(2, 10),
-        rand(2, 10),
+        10,
+        10,
       ),
       rand(15, 240),
       '#000',
@@ -197,25 +197,32 @@ function collides(r1: Rect, r2: Rect) {
   } else return null;
 }
 
-function doCollision(angle: number, obj: Sprite) {
-  let { angles, speedx, speedy } = obj;
-  /// zone 1 - left
-  if (
-    (angle >= 0 && angle < angles.tl) ||
-    (angle > angles.bl && angle < 360)
-  ) {
-    /// if moving in + direction deflect rect 1 in x direction etc.
-    if (speedx > 0) speedx = -speedx;
-  } else if (angle >= angles.tl && angle < angles.tr) {
-    /// zone 2 - top
-    if (speedy > 0) speedy = -speedy;
-  } else if (angle >= angles.tr && angle < angles.br) {
-    /// zone 3 - right
-    if (speedx < 0) speedx = -speedx;
-  } else {
-    /// zone 4 - bottom
-    if (speedy < 0) speedy = -speedy;
-  }
+function doCollision(angle: number, obj: Sprite, wall: Rect) {
+  // did we have an intersection?
+  if (angle !== null) {
+    /// if we're not already in a hit situation, create one
+    if (!obj.hit) {
+      obj.hit = true;
+      const { angles } = wall;
+      /// zone 1 - left
+      if (
+        (angle >= 0 && angle < angles.tl) ||
+        (angle > angles.bl && angle < 360)
+      ) {
+        /// if moving in + direction deflect rect 1 in x direction etc.
+        if (obj.speedx > 0) obj.speedx = -obj.speedx;
+      } else if (angle >= angles.tl && angle < angles.tr) {
+        /// zone 2 - top
+        if (obj.speedy > 0) obj.speedy = -obj.speedy;
+      } else if (angle >= angles.tr && angle < angles.br) {
+        /// zone 3 - right
+        if (obj.speedx < 0) obj.speedx = -obj.speedx;
+      } else {
+        /// zone 4 - bottom
+        if (obj.speedy < 0) obj.speedy = -obj.speedy;
+      }
+    }
+  } else obj.hit = false; /// reset hit when this hit is done (angle = null)
 }
 
 // Draw everything on the canvas
@@ -268,13 +275,13 @@ const render = function (objects: Array<Sprite>, checkBoundaries: boolean, check
           }
         }
 
-        if (angle !== null) {
-          /// if we're not already in a hit situation, create one
-          if (!p.hit) {
-            p.hit = true;
-            doCollision(angle, p);
-          }
-        } else p.hit = false; /// reset hit when this hit is done (angle = null)
+        // if (angle !== null) {
+        //   /// if we're not already in a hit situation, create one
+        //   if (!p.hit) {
+        //     p.hit = true;
+        doCollision(angle, p, wall);
+        //   }
+        // } else p.hit = false; /// reset hit when this hit is done (angle = null)
       });
     }
   });
