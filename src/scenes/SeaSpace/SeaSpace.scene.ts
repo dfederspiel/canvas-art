@@ -59,14 +59,14 @@ export default class SeaSpaceScene implements Scene {
           rand(-2, 2),
           rand(-2, 2),
           new Rect(0, 0, this.width, this.height),
-          new Size(5, 5, 35, 35),
+          new Size(5, 5, 20, 20),
           1000,
           ObjectType.Particle
         )
       )
     }
 
-    for (var x = 0; x < 100; x++) {
+    for (var x = 0; x < 50; x++) {
       this.#drops.push(
         new Sprite(
           new Rect(
@@ -81,7 +81,7 @@ export default class SeaSpaceScene implements Scene {
           rand(-.5, .5),
           rand(-.5, .5),
           new Rect(0, 0, this.width, this.height),
-          new Size(2, 2, 20, 20),
+          new Size(10, 10, 20, 20),
           1000,
           ObjectType.Particle
         )

@@ -42,7 +42,8 @@ export default class Sprite extends Rect implements Collidable, Boundable, Anima
     containerRect: Rect,
     size?: Size,
     hitEffectDuration?: number,
-    type?: ObjectType
+    type?: ObjectType,
+    animationFrame?: number,
   ) {
     super(rect.x, rect.y, rect.w, rect.h);
     this.hit = false;
@@ -50,7 +51,7 @@ export default class Sprite extends Rect implements Collidable, Boundable, Anima
       colorString || `rgb(${rand(0, 25)}, ${rand(0, 25)}, ${rand(0, 255)})`;
     this.speedx = vx;
     this.speedy = vy;
-    this.animationFrame = 0;
+    this.animationFrame = animationFrame !== undefined ? animationFrame : rand(0, frames);
     this.frames = frames;
     this.easeFn = easeFn;
     this.animationDirection = 1;

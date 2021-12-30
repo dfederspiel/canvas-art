@@ -1,5 +1,6 @@
 import { Scene } from "./lib/types";
 import ClockScene from "./scenes/Clock/Clock.scene";
+import FlowersScene from "./scenes/Flowers/Flowers.scene";
 import OrbiterScene from "./scenes/Orbiter/Orbiter.scene";
 import SeaSpaceScene from "./scenes/SeaSpace/SeaSpace.scene";
 import WallsScene from "./scenes/Walls/Walls.scene";
@@ -51,6 +52,7 @@ let pages: Page[] = [
   { title: 'Sea Space', scene: new SeaSpaceScene(WIDTH, HEIGHT, ctx) },
   { title: 'Walls', scene: new WallsScene(WIDTH, HEIGHT, ctx) },
   { title: 'Orbiters', scene: new OrbiterScene(WIDTH, HEIGHT, ctx) },
+  { title: 'Flowers', scene: new FlowersScene(WIDTH, HEIGHT, ctx) },
   { title: 'Waterfall', scene: new WaterfallScene(WIDTH, HEIGHT, ctx) },
 ]
 
@@ -89,9 +91,14 @@ document.addEventListener("keydown", (e) => {
     localStorage.setItem('scene', '4')
   };
   if (e.key === "5") {
-    pages[4].scene = new WaterfallScene(WIDTH, HEIGHT, ctx);
+    pages[4].scene = new FlowersScene(WIDTH, HEIGHT, ctx);
     PAGE = 5
     localStorage.setItem('scene', '5')
+  };
+  if (e.key === "6") {
+    pages[4].scene = new WaterfallScene(WIDTH, HEIGHT, ctx);
+    PAGE = 6
+    localStorage.setItem('scene', '6')
   };
 });
 
