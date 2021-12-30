@@ -96,7 +96,7 @@ document.addEventListener("keydown", (e) => {
     localStorage.setItem('scene', '5')
   };
   if (e.key === "6") {
-    pages[4].scene = new WaterfallScene(WIDTH, HEIGHT, ctx);
+    pages[5].scene = new WaterfallScene(WIDTH, HEIGHT, ctx);
     PAGE = 6
     localStorage.setItem('scene', '6')
   };
