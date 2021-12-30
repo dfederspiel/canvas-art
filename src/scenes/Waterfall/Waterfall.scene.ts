@@ -30,14 +30,14 @@ export default class WaterfallScene implements Scene {
       new Wall(this.width * .7 - 50, this.height / 2 - 50, 100, 100, '#00c'),
     ]
 
-    for (let x = 0; x < 2000; x++) this.particles.push(this.particle(
+    for (let x = 0; x < 4000; x++) this.particles.push(this.particle(
       rand(0, this.width),
-      rand(0, 100)
+      rand(-100, -75)
     ))
-    for (let x = 0; x < 2000; x++) this.particles.push(this.particle(
-      rand(0, this.width),
-      rand(this.height - 100, this.height)
-    ))
+    // for (let x = 0; x < 2000; x++) this.particles.push(this.particle(
+    //   rand(0, this.width),
+    //   rand(this.height - 100, this.height)
+    // ))
   }
 
   private particle(
@@ -47,6 +47,7 @@ export default class WaterfallScene implements Scene {
     h: number = rand(1, 5),
     c: string = '#222'
   ) {
+    const frames = rand(5, 15);
     return new Sprite(
       new Rect(
         x,
@@ -54,15 +55,16 @@ export default class WaterfallScene implements Scene {
         w,
         h,
       ),
-      rand(5, 15),
+      frames,
       c,
-      easeInOutQuad,
-      rand(-.15, .15),
-      rand(-1, 1),
+      easeLinear,
+      rand(-.015, .015),
+      rand(4, 8),
       new Rect(0, 0, this.width, this.height),
-      new Size(2, 2, 3, 3),
+      new Size(1, 1, 5, 5),
       0,
-      ObjectType.Particle
+      ObjectType.Particle,
+      rand(0, frames),
     )
   }
 
@@ -136,7 +138,13 @@ export default class WaterfallScene implements Scene {
       })
       this.ctx.globalAlpha = .8
       this.ctx.fillStyle = p.colorString
-      this.ctx.fillRect(p.x, p.y, p.w, p.h)
+      const cp = {
+        x: p.x - p.w / 2, // use a center x point to calculate trajectory
+        y: p.y - p.h / 2, // use a center y point to calculate trajectory
+        w: p.w,
+        h: p.h,
+      } as Rect;
+      this.ctx.fillRect(cp.x, cp.y, cp.w, cp.h)
       p.update();
 
     })

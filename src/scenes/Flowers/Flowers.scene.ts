@@ -86,7 +86,7 @@ export default class FlowersScene implements Scene {
   }
 
   render(): void {
-    this.pushParticles(25)
+    this.pushParticles(15)
     this.renderParticles(this.particles);
     while (this.particles.length > 5000) this.particles.shift();
   }
