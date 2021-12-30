@@ -39,6 +39,11 @@ Introduction of walls for testing collision detection between objects. Showcases
 First of the radian calculations, where circles are drawn around a randomized central point in 2d space. Using an angle between 0-360, a radius, and a center point, we determine the coordinates of any given point away from the center.
 ![alt text](images/scene-orbiter.png)
 
+### Flowers
+
+Building on the Orbiter scene, which modifies only the angle used to plot coordinates at each frame, this scene adds oscillations to the radius from 0-r. Additionally, rendering multiple points per frame can help speed up the animation, where the Orbiter scene is constrained to one particle per frame. (60 frames, 60 particles per second)
+![alt text](images/scene-flowers.png)
+
 ### Waterfall
 
 Color effect with particles and walls, where particles pick up the color of the wall they hit. 4000 particles rendered in the upper and lower canvas with a randomized velocity, mostly in the Y axis, followed by collision detection between particles and R,G,B walls
