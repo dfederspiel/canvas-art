@@ -13,8 +13,8 @@ export default class WallsScene implements Scene {
   static PARTICLE_VY = 0;
   static ROTATION_STEP = .01;
   static MAX_PARTICLES = 1750;
-  static WALL_WIDTH = 10;
-  static WALL_HEIGHT = 10;
+  static WALL_WIDTH = 2;
+  static WALL_HEIGHT = 2;
 
   static RIGHT_PRESSED = false;
   static LEFT_PRESSED = false;
@@ -88,10 +88,10 @@ export default class WallsScene implements Scene {
           rand(15, 600),
           `rgb(160,160,160)`,
           easeInElastic,
-          rand(-2, 2),
-          rand(-2, 2),
+          rand(-2.5, 2.5),
+          rand(-2.5, 2.5),
           new Rect(0, 0, this.width, this.height),
-          new Size(5, 5, 10, 10)
+          new Size(2, 2, 5, 5)
         )
       );
     }

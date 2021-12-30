@@ -1,4 +1,5 @@
 import { easeInElastic } from "../../lib/easing";
+import { ObjectType } from "../../lib/enums";
 import { calculate, rand } from "../../lib/helpers";
 import Rect from "../../lib/Rect";
 import Size from "../../lib/Size";
@@ -55,7 +56,10 @@ export default class OrbiterScene implements Scene {
         0,
         0,
         new Rect(0, 0, this.width, this.height),
-        new Size(5, 5, 20, 20)
+        new Size(5, 5, 20, 20),
+        500,
+        ObjectType.Particle,
+        0
       )
     );
     // run the render function

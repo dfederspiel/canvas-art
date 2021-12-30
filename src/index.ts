@@ -1,5 +1,6 @@
 import { Scene } from "./lib/types";
-import ClockScene from "./scenes/Clock/ClockScene";
+import ClockScene from "./scenes/Clock/Clock.scene";
+import FlowersScene from "./scenes/Flowers/Flowers.scene";
 import OrbiterScene from "./scenes/Orbiter/Orbiter.scene";
 import SeaSpaceScene from "./scenes/SeaSpace/SeaSpace.scene";
 import WallsScene from "./scenes/Walls/Walls.scene";
@@ -8,19 +9,20 @@ import WaterfallScene from "./scenes/Waterfall/Waterfall.scene";
 let WIDTH = window.innerWidth;
 let HEIGHT = window.innerHeight;
 
-let canvas = document.createElement("canvas");
-let ctx = canvas.getContext("2d");
+let canvas: HTMLCanvasElement;
+let ctx: CanvasRenderingContext2D;
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas = document.createElement("canvas");
+ctx = canvas.getContext("2d");
+
+canvas.width = WIDTH;
+canvas.height = HEIGHT;
+document.body.appendChild(canvas);
 
 window.onresize = () => {
   WIDTH = canvas.width = window.innerWidth;
   HEIGHT = canvas.height = window.innerHeight;
 };
-
-document.body.appendChild(canvas);
-
 
 let count = 0;
 
@@ -29,32 +31,39 @@ setInterval(() => {
 }, 1000);
 
 
+function renderTitle() {
+  ctx.globalAlpha = .85;
+  ctx.fillStyle = '#fff';
+  ctx.font = '24px Arial';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+  ctx.fillText(`Scene ${PAGE}: ${pages[PAGE - 1].title}`, 10, 10);
+  ctx.font = '16px Arial';
+  ctx.fillText(`Press 1-${pages.length} to switch scenes`, 10, 40);
+}
+
 type Page = {
   title: string
   scene: Scene
 }
+
 let pages: Page[] = [
-  { title: 'Space Clock', scene: new ClockScene(WIDTH, HEIGHT, ctx) },
+  { title: 'Space Clock', scene: new ClockScene(canvas.width, canvas.height, ctx) },
   { title: 'Sea Space', scene: new SeaSpaceScene(WIDTH, HEIGHT, ctx) },
   { title: 'Walls', scene: new WallsScene(WIDTH, HEIGHT, ctx) },
   { title: 'Orbiters', scene: new OrbiterScene(WIDTH, HEIGHT, ctx) },
+  { title: 'Flowers', scene: new FlowersScene(WIDTH, HEIGHT, ctx) },
   { title: 'Waterfall', scene: new WaterfallScene(WIDTH, HEIGHT, ctx) },
 ]
 
-let SCENE: number = 0;
+let PAGE: number = parseInt(localStorage.getItem('scene')) || 1;
 
 var main = function () {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // clear the screen
+  ctx.clearRect(0, 0, WIDTH, HEIGHT); // clear the screen
 
-  pages[SCENE].scene.render();
+  pages[PAGE - 1].scene.render();
 
-  ctx.globalAlpha = .85;
-  ctx.fillStyle = '#fff';
-  ctx.font = '24px Arial'
-  ctx.textAlign = 'left';
-  ctx.fillText(`Scene ${SCENE + 1}: ${pages[SCENE].title}`, 10, 10);
-  ctx.font = '16px Arial'
-  ctx.fillText(`Press 1-${pages.length} to switch scenes`, 10, 40);
+  renderTitle();
 
   requestAnimationFrame(main);
 };
@@ -63,23 +72,33 @@ var main = function () {
 document.addEventListener("keydown", (e) => {
   if (e.key === "1") {
     pages[0].scene = new ClockScene(WIDTH, HEIGHT, ctx);
-    SCENE = 0;
+    PAGE = 1;
+    localStorage.setItem('scene', '1')
   }
   if (e.key === "2") {
     pages[1].scene = new SeaSpaceScene(WIDTH, HEIGHT, ctx);
-    SCENE = 1
+    PAGE = 2
+    localStorage.setItem('scene', '2')
   };
   if (e.key === "3") {
     pages[2].scene = new WallsScene(WIDTH, HEIGHT, ctx);
-    SCENE = 2
+    PAGE = 3
+    localStorage.setItem('scene', '3')
   };
   if (e.key === "4") {
     pages[3].scene = new OrbiterScene(WIDTH, HEIGHT, ctx);
-    SCENE = 3
+    PAGE = 4
+    localStorage.setItem('scene', '4')
   };
   if (e.key === "5") {
+    pages[4].scene = new FlowersScene(WIDTH, HEIGHT, ctx);
+    PAGE = 5
+    localStorage.setItem('scene', '5')
+  };
+  if (e.key === "6") {
     pages[4].scene = new WaterfallScene(WIDTH, HEIGHT, ctx);
-    SCENE = 4
+    PAGE = 6
+    localStorage.setItem('scene', '6')
   };
 });
 

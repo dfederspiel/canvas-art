@@ -15,6 +15,10 @@ export default class WaterfallScene implements Scene {
   private walls: Wall[] = [];
   private particles: Sprite[] = [];
 
+  private counter: number = 0;
+  private max_color: number = 255;
+  private direction: number = 1;
+
   constructor(width: number, height: number, context: CanvasRenderingContext2D) {
     this.width = width;
     this.height = height;
@@ -50,14 +54,14 @@ export default class WaterfallScene implements Scene {
         w,
         h,
       ),
-      rand(60, 240),
+      rand(5, 15),
       c,
-      easeLinear,
-      rand(-.01, .01),
-      rand(-2, 2),
+      easeInOutQuad,
+      rand(-.15, .15),
+      rand(-1, 1),
       new Rect(0, 0, this.width, this.height),
-      new Size(2, 2, 6, 6),
-      1000,
+      new Size(2, 2, 3, 3),
+      0,
       ObjectType.Particle
     )
   }
@@ -92,7 +96,11 @@ export default class WaterfallScene implements Scene {
 
   render(): void {
 
-    // this.particles.push(this.particle())
+    this.walls[0].colorString = `rgb(${this.counter}, 0, 0)`
+    this.walls[1].colorString = `rgb(0, ${this.counter}, 0)`
+    this.walls[2].colorString = `rgb(0, 0, ${this.counter})`
+
+    this.ctx.globalAlpha = .5
 
     this.walls.forEach(wall => {
       this.ctx.fillStyle = wall.colorString;
@@ -126,13 +134,21 @@ export default class WaterfallScene implements Scene {
         }
         this.doCollision(angle, p, wall);
       })
-
+      this.ctx.globalAlpha = .8
       this.ctx.fillStyle = p.colorString
       this.ctx.fillRect(p.x, p.y, p.w, p.h)
       p.update();
 
     })
 
-    while (this.particles.length > 4000) this.particles.shift();
+    if (this.counter < 200) this.direction = 1
+
+    if (this.direction > 0)
+      this.counter += 1;
+    else
+      this.counter -= 1;
+
+    if (this.counter % this.max_color === 0)
+      this.direction = -this.direction
   }
 }
