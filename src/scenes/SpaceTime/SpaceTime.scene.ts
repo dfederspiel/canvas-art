@@ -24,7 +24,7 @@ export default class SpaceTimeScene implements Scene, Randomizable {
   private frames = 30;
   private speed = 2;
   private limit = 2500;
-  private size = new Size(0, 0, 7, 7)
+  private size = new Size(0, 0, 2, 2)
   private angle = Math.PI;
 
   private effect = effects[Math.floor(Math.random() * effects.length)];
@@ -46,7 +46,7 @@ export default class SpaceTimeScene implements Scene, Randomizable {
     this.randomize();
   }
   randomize(): void {
-    this.step = rand(.0001, .05)
+    this.step = rand(.0001, .025)
     this.baseRadius = 20
     this.radius = this.baseRadius
     this.frames = Math.floor(rand(15, 120));
@@ -54,10 +54,10 @@ export default class SpaceTimeScene implements Scene, Randomizable {
     this.limit = rand(1000, 2500)
     this.particles = []
     let min = rand(0, 2)
-    let max = rand(min, 7)
+    let max = rand(min, 10)
     this.size = new Size(min, min, max, max)
-    this.particleCenterX = this.width / 2
-    this.particleCenterY = this.height / 2
+    this.particleCenterX = this.width / 2 + this.radius
+    this.particleCenterY = this.height / 2 - this.radius
     this.angle = Math.PI;
     this.direction = -this.direction
     this.effect = effects[Math.floor(Math.random() * effects.length)]
@@ -65,15 +65,15 @@ export default class SpaceTimeScene implements Scene, Randomizable {
   }
 
   renderLines(objects: Sprite[]): void {
-    this.ctx.beginPath();
-    this.ctx.globalAlpha = .2
-    this.ctx.lineWidth = .1
     objects.forEach((drop, idx) => {
+      this.ctx.beginPath();
+      this.ctx.globalAlpha = rand(.1, .4)
+      this.ctx.lineWidth = rand(.05, .5)
       this.ctx.strokeStyle = drop.colorString;
-      this.ctx.moveTo(this.width / 2, this.height / 2)
+      this.ctx.moveTo(this.width / 2 + this.baseRadius, this.height / 2 - this.baseRadius)
       this.ctx.lineTo(drop.x, drop.y)
+      this.ctx.stroke();
     });
-    this.ctx.stroke();
   }
 
   renderPoints(objects: Sprite[]): void {
@@ -81,7 +81,6 @@ export default class SpaceTimeScene implements Scene, Randomizable {
       this.ctx.globalAlpha = drop.alpha;
       this.ctx.fillStyle = drop.colorString;
       this.ctx.fillRect(drop.x - drop.w / 2, drop.y - drop.h / 2, drop.w, drop.h);
-
       drop.update();
     });
   }
@@ -112,8 +111,8 @@ export default class SpaceTimeScene implements Scene, Randomizable {
           this.frames,
           this.color,
           this.effect,
-          rand(-.1, .1),
-          rand(-.1, .1),
+          0, //rand(-.1, .1),
+          0, //rand(-.1, .1),
           new Rect(0, 0, this.width, this.height),
           this.size,
           500,
@@ -159,20 +158,10 @@ export default class SpaceTimeScene implements Scene, Randomizable {
     }
   }
 
-  renderStem(r: number) {
-    this.ctx.globalAlpha = 1;
-    this.ctx.strokeStyle = "#fff"
-    this.ctx.lineWidth = this.size.max.w;
-    this.ctx.beginPath();
-    this.ctx.moveTo(this.width / 2, this.height)
-    this.ctx.lineTo(this.width / 2, this.height - r / 2)
-    this.ctx.stroke();
-
-  }
-
   render(): void {
     this.count = this.count + 1 // count render calls
     this.plotPoints(this.speed) // the number of points correlates to speed
+    // this.renderLines(this.particles.slice(this.particles.length - this.limit / 10)); // 
     this.renderLines(this.particles); // 
     this.renderPoints(this.particles); // 
 
