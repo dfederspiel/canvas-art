@@ -70,7 +70,7 @@ export default class SpaceTimeScene implements Scene, Randomizable {
       this.ctx.globalAlpha = rand(.1, .4)
       this.ctx.lineWidth = rand(.05, .5)
       this.ctx.strokeStyle = drop.colorString;
-      this.ctx.moveTo(this.width / 2 + this.baseRadius, this.height / 2 - this.baseRadius)
+      this.ctx.moveTo(this.width / 2, this.height / 2 - this.baseRadius)
       this.ctx.lineTo(drop.x, drop.y)
       this.ctx.stroke();
     });
