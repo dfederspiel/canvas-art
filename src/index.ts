@@ -5,6 +5,7 @@ import FlowersScene from "./scenes/Flowers/Flowers.scene";
 import OrbiterScene from "./scenes/Orbiter/Orbiter.scene";
 import SeaSpaceScene from "./scenes/SeaSpace/SeaSpace.scene";
 import SnakesScene from "./scenes/Snakes/Snakes.scene";
+import SpaceTimeScene from "./scenes/SpaceTime/SpaceTime.scene";
 import WallsScene from "./scenes/Walls/Walls.scene";
 import WaterfallScene from "./scenes/Waterfall/Waterfall.scene";
 
@@ -58,6 +59,7 @@ let pages: Page[] = [
   { title: 'Flowers', scene: new FlowersScene(WIDTH, HEIGHT, ctx) },
   { title: 'Snakes on a Plane', scene: new SnakesScene(WIDTH, HEIGHT, ctx) },
   { title: 'Escher Smoke Trails', scene: new EscherScene(WIDTH, HEIGHT, ctx) },
+  { title: 'Space Time', scene: new SpaceTimeScene(WIDTH, HEIGHT, ctx) },
 ]
 
 let PAGE: number = parseInt(localStorage.getItem('scene')) || 1;
@@ -114,6 +116,11 @@ document.addEventListener("keydown", (e) => {
     PAGE = 8
     localStorage.setItem('scene', '8')
   };
+  if (e.key === "9") {
+    pages[8].scene = new SpaceTimeScene(WIDTH, HEIGHT, ctx);
+    PAGE = 9
+    localStorage.setItem('scene', '9')
+  };
 
 
   if (e.key === "ArrowRight") {
@@ -132,6 +139,8 @@ document.addEventListener("keydown", (e) => {
 
   if (e.key === "x") {
     let r = pages[7].scene as unknown as Randomizable
+    r.randomize();
+    r = pages[8].scene as unknown as Randomizable
     r.randomize();
   }
 });
