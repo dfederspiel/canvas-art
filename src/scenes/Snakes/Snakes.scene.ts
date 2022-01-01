@@ -37,14 +37,12 @@ export default class SnakesScene implements Scene {
   }
 
   renderOtherStuff(objects: Sprite[]): void {
-    // this.ctx.globalAlpha = 0.5;
     objects.forEach((drop, idx) => {
       this.ctx.globalAlpha = drop.alpha;
       this.ctx.fillStyle = drop.colorString;
       this.ctx.fillRect(drop.x - drop.w / 2, drop.y - drop.h / 2, drop.w, drop.h);
 
       drop.update();
-      //drop.checkBoundaries();
     });
   }
 
@@ -66,13 +64,10 @@ export default class SnakesScene implements Scene {
 
       this.particles.push(
         new Sprite(
-          new Rect(x, y, 10, 10),
+          new Rect(x, y, 0, 0),
           30,
           this.color,
-          //`rgb(${rand(50, 255)}, ${rand(50, 255)}, ${rand(50, 255)})`,
           easeInOutSine,
-          //rand(1, 2),
-          //rand(1, 2),
           0,
           0, //rand(-.1, .1),
           new Rect(0, 0, this.width, this.height),
@@ -82,9 +77,6 @@ export default class SnakesScene implements Scene {
           0
         )
       );
-      // make the particle dance by randomizing XY 
-      // this.particleCenterX += rand(0, this.dx)
-      // this.particleCenterY += rand(0, this.dy)
 
       // run the render function
       this.angle += this.direction;

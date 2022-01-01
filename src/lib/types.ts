@@ -21,6 +21,10 @@ export interface Animatable {
   updateAnimation(): void
 }
 
+export interface Randomizable {
+  randomize(): void
+}
+
 export interface Scene {
   width: number;
   height: number;
