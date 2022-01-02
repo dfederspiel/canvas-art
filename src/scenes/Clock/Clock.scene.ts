@@ -302,6 +302,7 @@ export default class ClockScene implements Scene {
 
     this.#ctx.beginPath();
 
+    this.#ctx.lineWidth = .5
     this.#ctx.strokeStyle = "#ddd";
 
     this.#ctx.moveTo(this.width / 2, this.height / 2);
