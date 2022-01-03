@@ -92,7 +92,7 @@ export default class SupernovaeScene implements Scene, Randomizable {
       c.segments.forEach(p => {
         this.ctx.strokeStyle = c.color;
         this.ctx.lineWidth = c.lineWidth
-        this.renderLines(p.points.filter((i, idx) => idx % Math.floor(rand(1, 10)) === 0), c.alpha / Math.floor(rand(5, 10)));
+        this.renderLines(p.points.filter((i, idx) => idx % Math.floor(rand(3, 20)) === 0), c.alpha / Math.floor(rand(5, 10)));
         this.ctx.lineWidth = c.lineWidth * 2
         this.ctx.fillStyle = c.color
         this.renderOutline(p.points, c.alpha);

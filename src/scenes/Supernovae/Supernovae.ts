@@ -71,7 +71,7 @@ export default class Supernova implements Randomizable {
     this.minModifier = rand(-.1, -1.5)
     this.maxModifier = rand(-.5, -2.5);
     this.limit = Math.floor(rand(2, 20))
-    this.steps = Math.floor(rand(5, 100 / this.limit))
+    this.steps = Math.floor(rand(10, 200 / this.limit))
     this.offset = 0
     this.rotationInterval = rand(-(Math.PI / 60), Math.PI / 60) / 20
   }
