@@ -18,6 +18,7 @@ export default class Supernova implements Randomizable {
   steps: number = Math.floor(rand(50, 145))
   ease: Function
   segments: Segment[] = []
+  renderOutlines = false;
 
   minModifier = rand(-2, 2)
   maxModifier = rand(-2, 2);

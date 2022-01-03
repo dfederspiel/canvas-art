@@ -78,6 +78,7 @@ export default class SupernovaeScene implements Scene, Randomizable {
       f.direction = this.maxOpacity / Math.floor(this.displayDuration / 2);
       f.maxAlpha = this.maxOpacity
       f.alpha = 0;
+      f.renderOutlines = Math.random() < .5;
       f.ease = effects[Math.floor(rand(0, effects.length))]
       this.crystals.push(f);
     }
@@ -95,7 +96,7 @@ export default class SupernovaeScene implements Scene, Randomizable {
         this.renderLines(p.points.filter((i, idx) => idx % Math.floor(rand(3, 20)) === 0), c.alpha / Math.floor(rand(5, 10)));
         this.ctx.lineWidth = c.lineWidth * 2
         this.ctx.fillStyle = c.color
-        this.renderOutline(p.points, c.alpha);
+        if (c.renderOutlines) this.renderOutline(p.points, c.alpha);
         this.renderArcs(p.points.filter((i, idx) => idx % Math.floor(rand(3, 8)) === 0), c.alpha)
       })
     })
