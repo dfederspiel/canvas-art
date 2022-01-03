@@ -1,5 +1,6 @@
 const { resolve } = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin')
+const CopyPlugin = require("copy-webpack-plugin")
 
 module.exports = {
   entry: './src/index.ts',
@@ -27,5 +28,10 @@ module.exports = {
       // favicon: resolve(__dirname, '../public', 'favicon.ico'),
       filename: './index.html',
     }),
+    new CopyPlugin({
+      patterns: [
+        { from: 'public/images', to: 'images' }
+      ]
+    })
   ]
 };
