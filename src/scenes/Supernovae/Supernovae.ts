@@ -73,6 +73,6 @@ export default class Supernova implements Randomizable {
     this.limit = Math.floor(rand(2, 20))
     this.steps = Math.floor(rand(6, 100 / this.limit))
     this.offset = 0
-    this.rotationInterval = rand(-(Math.PI / 60), Math.PI / 60) / 2
+    this.rotationInterval = rand(-(Math.PI / 60), Math.PI / 60) / 20
   }
 }
