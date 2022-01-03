@@ -2,6 +2,7 @@ import { Randomizable, Scene } from "./lib/types";
 import ClockScene from "./scenes/Clock/Clock.scene";
 import EscherScene from "./scenes/EscherTrails/Escher.scene";
 import FlowersScene from "./scenes/Flowers/Flowers.scene";
+import IceCrystalScene from "./scenes/IceCrystals/IceCrystal.scene";
 import OrbiterScene from "./scenes/Orbiter/Orbiter.scene";
 import SeaSpaceScene from "./scenes/SeaSpace/SeaSpace.scene";
 import SnakesScene from "./scenes/Snakes/Snakes.scene";
@@ -51,6 +52,7 @@ type Page = {
 }
 
 let pages: Page[] = [
+  { title: 'Ice Crystals', scene: new IceCrystalScene(WIDTH, HEIGHT, ctx) },
   { title: 'Sea Space', scene: new SeaSpaceScene(WIDTH, HEIGHT, ctx) },
   { title: 'Walls', scene: new WallsScene(WIDTH, HEIGHT, ctx) },
   { title: 'Waterfall', scene: new WaterfallScene(WIDTH, HEIGHT, ctx) },
@@ -77,7 +79,7 @@ var main = function () {
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "1") {
-    pages[0].scene = new SeaSpaceScene(WIDTH, HEIGHT, ctx);
+    pages[0].scene = new IceCrystalScene(WIDTH, HEIGHT, ctx);
     PAGE = 1;
     localStorage.setItem('scene', '1')
   }
@@ -121,6 +123,11 @@ document.addEventListener("keydown", (e) => {
     PAGE = 9
     localStorage.setItem('scene', '9')
   };
+  if (e.key === "0") {
+    pages[9].scene = new SeaSpaceScene(WIDTH, HEIGHT, ctx);
+    PAGE = 10
+    localStorage.setItem('scene', '10')
+  };
 
 
   if (e.key === "ArrowRight") {
@@ -141,6 +148,8 @@ document.addEventListener("keydown", (e) => {
     let r = pages[7].scene as unknown as Randomizable
     r.randomize();
     r = pages[8].scene as unknown as Randomizable
+    r.randomize();
+    r = pages[0].scene as unknown as Randomizable
     r.randomize();
   }
 });

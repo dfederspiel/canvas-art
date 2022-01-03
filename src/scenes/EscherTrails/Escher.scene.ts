@@ -24,6 +24,8 @@ export default class EscherScene implements Scene, Randomizable {
   private frames = 30;
   private speed = 2;
   private limit = 500;
+
+  private length = rand(50, 500);
   private size = new Size(0, 0, 7, 7)
   private angle = Math.PI;
 
@@ -55,7 +57,7 @@ export default class EscherScene implements Scene, Randomizable {
     this.radius = this.baseRadius
     this.frames = Math.floor(rand(15, 60));
     this.speed = rand(.1, 3);
-    this.limit = rand(10, 2500)
+    this.limit = rand(250, 2500)
     this.particles = []
     let min = rand(0, 5)
     let max = rand(min, 20)
@@ -107,8 +109,8 @@ export default class EscherScene implements Scene, Randomizable {
           this.frames,
           this.color,
           this.effect,
-          0,
-          rand(.25, .5),
+          rand(-.05, .05),
+          rand(-.25, -.5),
           new Rect(0, 0, this.width, this.height),
           this.size,
           500,
@@ -169,7 +171,7 @@ export default class EscherScene implements Scene, Randomizable {
     this.count = this.count + 1 // count render calls
     this.plotPoints(this.speed) // the number of points correlates to speed
     this.renderPoints(this.particles); // 
-    //this.renderStem(this.baseRadius * 1.5)
+    this.renderStem(this.baseRadius * 1.5)
 
     // Request to do this again ASAP
     while (this.particles.length > this.limit) this.particles.shift();
