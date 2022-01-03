@@ -247,6 +247,8 @@ export default class ClockScene implements Scene {
   }
 
   render() {
+    this.#ctx.clearRect(0, 0, this.width, this.height); // clear the screen
+
     this.#date = new Date();
     this.#timeInMs =
       (this.#date.getHours() * 60 * 60 + this.#date.getMinutes() * 60 + this.#date.getSeconds()) *

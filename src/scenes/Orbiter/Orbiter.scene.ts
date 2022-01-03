@@ -41,6 +41,8 @@ export default class OrbiterScene implements Scene {
   }
 
   render(): void {
+    this.ctx.clearRect(0, 0, this.width, this.height); // clear the screen
+
     const { x, y } = calculate.getVertexFromAngle(
       this.particleCenterX,
       this.particleCenterY,

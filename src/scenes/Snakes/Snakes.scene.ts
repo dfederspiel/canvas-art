@@ -115,6 +115,8 @@ export default class SnakesScene implements Scene {
   }
 
   render(): void {
+    this.ctx.clearRect(0, 0, this.width, this.height); // clear the screen
+
     this.count += 1
     this.ctx.globalAlpha = .2
     this.plotPoints(4)

@@ -8,6 +8,7 @@ import SnakesScene from "./scenes/Snakes/Snakes.scene";
 import SpaceTimeScene from "./scenes/SpaceTime/SpaceTime.scene";
 import WallsScene from "./scenes/Walls/Walls.scene";
 import WaterfallScene from "./scenes/Waterfall/Waterfall.scene";
+import SupernovaeScene from "./scenes/Supernovae/SupernovaeScene.scene";
 
 let WIDTH = window.innerWidth;
 let HEIGHT = window.innerHeight;
@@ -42,7 +43,7 @@ function renderTitle() {
   ctx.textBaseline = 'top';
   ctx.fillText(`Scene: ${pages[PAGE - 1].title}`, 10, 10);
   ctx.font = '16px Arial';
-  ctx.fillText(`Press 1-${pages.length} to switch scenes`, 10, 40);
+  ctx.fillText(`Press 1-${pages.length} to switch or regenerate scenes`, 10, 40);
 }
 
 type Page = {
@@ -51,75 +52,77 @@ type Page = {
 }
 
 let pages: Page[] = [
+  { title: 'Supernovae', scene: new SupernovaeScene(WIDTH, HEIGHT, ctx) },
+  { title: 'Snakes on a Plane', scene: new SnakesScene(WIDTH, HEIGHT, ctx) },
+  { title: 'Space Time Rift', scene: new SpaceTimeScene(WIDTH, HEIGHT, ctx) },
+  { title: 'Flowers', scene: new FlowersScene(WIDTH, HEIGHT, ctx) },
+  { title: 'Escher Smoke Trails', scene: new EscherScene(WIDTH, HEIGHT, ctx) },
+  { title: 'Space Clock', scene: new ClockScene(canvas.width, canvas.height, ctx) },
   { title: 'Sea Space', scene: new SeaSpaceScene(WIDTH, HEIGHT, ctx) },
   { title: 'Walls', scene: new WallsScene(WIDTH, HEIGHT, ctx) },
   { title: 'Waterfall', scene: new WaterfallScene(WIDTH, HEIGHT, ctx) },
   { title: 'Orbiters', scene: new OrbiterScene(WIDTH, HEIGHT, ctx) },
-  { title: 'Space Clock', scene: new ClockScene(canvas.width, canvas.height, ctx) },
-  { title: 'Flowers', scene: new FlowersScene(WIDTH, HEIGHT, ctx) },
-  { title: 'Snakes on a Plane', scene: new SnakesScene(WIDTH, HEIGHT, ctx) },
-  { title: 'Escher Smoke Trails', scene: new EscherScene(WIDTH, HEIGHT, ctx) },
-  { title: 'Space Time', scene: new SpaceTimeScene(WIDTH, HEIGHT, ctx) },
 ]
 
 let PAGE: number = parseInt(localStorage.getItem('scene')) || 1;
 
 var main = function () {
-  ctx.clearRect(0, 0, WIDTH, HEIGHT); // clear the screen
-
   pages[PAGE - 1].scene.render();
-
   renderTitle();
-
   requestAnimationFrame(main);
 };
 
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "1") {
-    pages[0].scene = new SeaSpaceScene(WIDTH, HEIGHT, ctx);
+    pages[0].scene = new SupernovaeScene(WIDTH, HEIGHT, ctx);
     PAGE = 1;
     localStorage.setItem('scene', '1')
   }
   if (e.key === "2") {
-    pages[1].scene = new WallsScene(WIDTH, HEIGHT, ctx);
+    pages[1].scene = new SnakesScene(WIDTH, HEIGHT, ctx)
     PAGE = 2
     localStorage.setItem('scene', '2')
   };
   if (e.key === "3") {
-    pages[2].scene = new WaterfallScene(WIDTH, HEIGHT, ctx);
+    pages[2].scene = new SpaceTimeScene(WIDTH, HEIGHT, ctx);
     PAGE = 3
     localStorage.setItem('scene', '3')
   };
   if (e.key === "4") {
-    pages[3].scene = new OrbiterScene(WIDTH, HEIGHT, ctx);
+    pages[3].scene = new FlowersScene(WIDTH, HEIGHT, ctx);
     PAGE = 4
     localStorage.setItem('scene', '4')
   };
   if (e.key === "5") {
-    pages[4].scene = new ClockScene(WIDTH, HEIGHT, ctx);
+    pages[4].scene = new EscherScene(WIDTH, HEIGHT, ctx);
     PAGE = 5
     localStorage.setItem('scene', '5')
   };
   if (e.key === "6") {
-    pages[5].scene = new FlowersScene(WIDTH, HEIGHT, ctx);
+    pages[5].scene = new ClockScene(WIDTH, HEIGHT, ctx);
     PAGE = 6
     localStorage.setItem('scene', '6')
   };
   if (e.key === "7") {
-    pages[6].scene = new SnakesScene(WIDTH, HEIGHT, ctx);
+    pages[6].scene = new SeaSpaceScene(WIDTH, HEIGHT, ctx);
     PAGE = 7
     localStorage.setItem('scene', '7')
   };
   if (e.key === "8") {
-    pages[7].scene = new EscherScene(WIDTH, HEIGHT, ctx);
+    pages[7].scene = new WallsScene(WIDTH, HEIGHT, ctx);
     PAGE = 8
     localStorage.setItem('scene', '8')
   };
   if (e.key === "9") {
-    pages[8].scene = new SpaceTimeScene(WIDTH, HEIGHT, ctx);
+    pages[8].scene = new WaterfallScene(WIDTH, HEIGHT, ctx);
     PAGE = 9
     localStorage.setItem('scene', '9')
+  };
+  if (e.key === "0") {
+    pages[9].scene = new OrbiterScene(WIDTH, HEIGHT, ctx);
+    PAGE = 10
+    localStorage.setItem('scene', '10')
   };
 
 
@@ -141,6 +144,8 @@ document.addEventListener("keydown", (e) => {
     let r = pages[7].scene as unknown as Randomizable
     r.randomize();
     r = pages[8].scene as unknown as Randomizable
+    r.randomize();
+    r = pages[0].scene as unknown as Randomizable
     r.randomize();
   }
 });

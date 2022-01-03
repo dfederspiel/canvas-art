@@ -97,6 +97,7 @@ export default class WaterfallScene implements Scene {
   }
 
   render(): void {
+    this.ctx.clearRect(0, 0, this.width, this.height); // clear the screen
 
     this.walls[0].colorString = `rgb(${this.counter}, 0, 0)`
     this.walls[1].colorString = `rgb(0, ${this.counter}, 0)`
