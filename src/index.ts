@@ -52,7 +52,7 @@ type Page = {
 }
 
 let pages: Page[] = [
-  { title: 'Ice Crystals', scene: new IceCrystalScene(WIDTH, HEIGHT, ctx) },
+  { title: 'Crystals', scene: new IceCrystalScene(WIDTH, HEIGHT, ctx) },
   { title: 'Sea Space', scene: new SeaSpaceScene(WIDTH, HEIGHT, ctx) },
   { title: 'Walls', scene: new WallsScene(WIDTH, HEIGHT, ctx) },
   { title: 'Waterfall', scene: new WaterfallScene(WIDTH, HEIGHT, ctx) },

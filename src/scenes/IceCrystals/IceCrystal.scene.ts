@@ -51,11 +51,10 @@ export default class IceCrystalScene implements Scene, Randomizable {
 
   renderArcs(objects: Rect[]): void {
     if (objects.length === 0) return;
-    this.ctx.lineWidth = 1
     objects.forEach((drop, idx) => {
-      const e = easeOutElastic(idx + 1, 1, drop.w / 10, objects.length)
+      const e = easeOutElastic(idx + 1, 1, drop.w / 2, objects.length)
       this.ctx.beginPath()
-      this.ctx.arc(drop.x, drop.y, e, 0, Math.PI * 2)
+      this.ctx.arc(drop.x, drop.y, e / 2, 0, Math.PI * 2)
       this.ctx.stroke();
     });
   }
@@ -82,10 +81,10 @@ export default class IceCrystalScene implements Scene, Randomizable {
 
       f.segments.forEach(p => {
         this.ctx.lineWidth = f.lineWidth * 4
-        this.renderLines(p.points.filter((i, idx) => idx % Math.floor(rand(2, 10)) === 0), f.alpha / rand(5, 10));
+        this.renderLines(p.points.filter((i, idx) => idx % 1 === 0), f.alpha / Math.floor(rand(5, 10)));
         this.ctx.globalAlpha = f.alpha
         this.renderOutline(p.points);
-        this.renderArcs(p.points.filter((i, idx) => idx % 3 === 0))
+        this.renderArcs(p.points.filter((i, idx) => idx % 5 === 0))
       })
     })
 

@@ -13,7 +13,7 @@ export default class Crystal implements Randomizable {
   color: string = `rgb(${rand(125, 255)},${rand(125, 255)},${rand(125, 255)})`
   width = window.innerWidth;
   height = window.innerHeight
-  lineWidth: number = .2
+  lineWidth: number = .5
   offset = rand(-50, 100)
   steps: number = Math.floor(rand(50, 145))
   ease: Function
@@ -36,8 +36,8 @@ export default class Crystal implements Randomizable {
   update(step: number) {
     this.angle += step;
     this.segments = []
-    this.maxRadius -= .125
-    this.minRadius -= .125
+    this.maxRadius -= .25
+    this.minRadius += .25
 
     for (let c = 0; c < this.limit; c++) {
       this.angle += ((Math.PI * 2) / this.limit);
@@ -63,10 +63,10 @@ export default class Crystal implements Randomizable {
   randomize(): void {
     this.angle = 0;
     this.minRadius = rand(-50, 0)
-    this.maxRadius = rand(0, 250)
-    this.limit = Math.floor(rand(2, 15))
-    this.steps = Math.floor(rand(15, 40))
+    this.maxRadius = rand(50, 250)
+    this.limit = Math.floor(rand(5, 10))
+    this.steps = Math.floor(rand(30, 50))
     this.offset = rand(-150, 150)
-    this.rotationInterval = rand(-Math.PI / 60 / 5, Math.PI / 60 / 5)
+    this.rotationInterval = rand(-Math.PI / 60 / 10, Math.PI / 60 / 10)
   }
 }
