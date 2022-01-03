@@ -43,7 +43,7 @@ function renderTitle() {
   ctx.textBaseline = 'top';
   ctx.fillText(`Scene: ${pages[PAGE - 1].title}`, 10, 10);
   ctx.font = '16px Arial';
-  ctx.fillText(`Press 1-${pages.length} to switch scenes`, 10, 40);
+  ctx.fillText(`Press 1-${pages.length} to switch or regenerate scenes`, 10, 40);
 }
 
 type Page = {

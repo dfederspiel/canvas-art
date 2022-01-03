@@ -114,7 +114,7 @@ export default class SupernovaeScene implements Scene, Randomizable {
     this.ctx.fillStyle = '#000'
     this.ctx.fillRect(0, 0, this.width, this.height)
     this.ctx.globalAlpha = 1;
-    this.ctx.fillRect(0, 0, 230, 70)
+    this.ctx.fillRect(0, 0, 320, 70)
     this.count++
   }
 }
