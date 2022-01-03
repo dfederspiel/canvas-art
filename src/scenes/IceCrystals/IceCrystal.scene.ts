@@ -1,4 +1,4 @@
-import { easeInCirc, easeInElastic, easeInOutExpo, easeInOutSine, easeOutElastic, easeOutSine } from "../../lib/easing";
+import { easeInCirc, easeInElastic, easeInOutExpo, easeInOutSine, easeInSine, easeOutElastic, easeOutSine, effects } from "../../lib/easing";
 import { calculate, rand } from "../../lib/helpers";
 import Rect from "../../lib/Rect";
 import { Randomizable, Scene } from "../../lib/types";
@@ -12,8 +12,10 @@ export default class IceCrystalScene implements Scene, Randomizable {
 
   private angle = 0;
   private count = 0;
+  private maxOpacity = .75;
+  private displayDuration = 480;
 
-  private layers = 4;
+  private layers = 1;
 
   private crystals: Crystal[] = []
 
@@ -28,19 +30,20 @@ export default class IceCrystalScene implements Scene, Randomizable {
 
   renderLines(objects: Rect[], alpha: number): void {
     this.ctx.beginPath();
-    objects.forEach((drop, idx) => {
+    objects.forEach((o, idx) => {
       this.ctx.globalAlpha = alpha
       this.ctx.moveTo(this.width / 2, this.height / 2)
-      this.ctx.lineTo(drop.x, drop.y)
+      this.ctx.lineTo(o.x, o.y)
     });
     this.ctx.stroke();
   }
 
-  renderOutline(objects: Rect[]): void {
+  renderOutline(objects: Rect[], alpha: number): void {
     if (objects.length === 0) return;
-    objects.forEach((drop, idx) => {
+    this.ctx.globalAlpha = alpha
+    objects.forEach((o, idx) => {
       this.ctx.beginPath()
-      this.ctx.moveTo(drop.x, drop.y)
+      this.ctx.moveTo(o.x, o.y)
       if (idx === objects.length - 1)
         this.ctx.lineTo(objects[0].x, objects[0].y)
       else
@@ -49,12 +52,14 @@ export default class IceCrystalScene implements Scene, Randomizable {
     });
   }
 
-  renderArcs(objects: Rect[]): void {
+  renderArcs(objects: Rect[], alpha: number): void {
     if (objects.length === 0) return;
-    objects.forEach((drop, idx) => {
-      const e = easeOutElastic(idx + 1, 1, drop.w / 2, objects.length)
+    this.ctx.globalAlpha = alpha
+    objects.forEach((o, idx) => {
+      const e = easeInSine(idx + 1, 1, o.w / 2, objects.length)
       this.ctx.beginPath()
-      this.ctx.arc(drop.x, drop.y, e / 2, 0, Math.PI * 2)
+      this.ctx.arc(o.x, o.y, e, 0, Math.PI * 2)
+      this.ctx.fill()
       this.ctx.stroke();
     });
   }
@@ -65,9 +70,15 @@ export default class IceCrystalScene implements Scene, Randomizable {
 
     this.ctx.strokeStyle = 'white';
 
-    if (this.count % 60 === 0) {
-      console.log(this.crystals)
+    if (this.count % this.displayDuration === 0) {
+      this.ctx.globalAlpha = 1
+      this.ctx.fillStyle = 'black'
+      this.ctx.fillRect(0, 0, this.width, this.height)
       let f = new Crystal(this.angle, Math.floor(rand(2, 20)))
+      f.direction = this.maxOpacity / Math.floor(this.displayDuration / 2);
+      f.maxAlpha = this.maxOpacity
+      f.alpha = 0;
+      f.ease = effects[Math.floor(rand(0, effects.length))]
       this.crystals.push(f);
     }
 
@@ -76,27 +87,34 @@ export default class IceCrystalScene implements Scene, Randomizable {
       this.crystals?.shift();
     }
 
-    this.crystals?.forEach((f, idx) => {
-      this.ctx.strokeStyle = f.color;
+    this.crystals?.forEach((c, idx) => {
 
-      f.segments.forEach(p => {
-        this.ctx.lineWidth = f.lineWidth * 4
-        this.renderLines(p.points.filter((i, idx) => idx % 1 === 0), f.alpha / Math.floor(rand(5, 10)));
-        this.ctx.globalAlpha = f.alpha
-        this.renderOutline(p.points);
-        this.renderArcs(p.points.filter((i, idx) => idx % 5 === 0))
+      c.segments.forEach(p => {
+        this.ctx.strokeStyle = c.color;
+        this.ctx.lineWidth = c.lineWidth
+        this.renderLines(p.points.filter((i, idx) => idx % Math.floor(rand(1, 10)) === 0), c.alpha / Math.floor(rand(5, 10)));
+        this.ctx.lineWidth = c.lineWidth * 2
+        this.ctx.fillStyle = c.color
+        this.renderOutline(p.points, c.alpha);
+        this.renderArcs(p.points.filter((i, idx) => idx % Math.floor(rand(3, 8)) === 0), c.alpha)
       })
     })
 
-    this.crystals?.forEach(f => {
-      this.ctx.strokeStyle = f.color;
-      f.update(f.rotationInterval)
-      f.alpha += f.direction
-      if (f.alpha >= .8 && f.direction > 0) {
-        f.direction = -f.direction
+    this.crystals?.forEach(c => {
+      if (c.alpha > this.maxOpacity && c.direction > 0) {
+        c.direction = -c.direction
       }
+      this.ctx.strokeStyle = c.color;
+      c.update(c.rotationInterval)
+      c.alpha += c.direction
+      console.log(c.alpha)
     })
 
+    this.ctx.globalAlpha = .05
+    this.ctx.fillStyle = '#000'
+    this.ctx.fillRect(0, 0, this.width, this.height)
+    this.ctx.globalAlpha = 1;
+    this.ctx.fillRect(0, 0, 220, 70)
     this.count++
   }
 }

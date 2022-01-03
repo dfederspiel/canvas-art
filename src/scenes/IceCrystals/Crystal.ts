@@ -4,10 +4,10 @@ import { Randomizable } from "../../lib/types";
 import Segment from "./Segment";
 
 export default class Crystal implements Randomizable {
-  maxAlpha: number = .8;
+  maxAlpha: number = 0;
   alpha: number = 0;
-  direction: number = .8 / 120;
-  rotationInterval: number = rand(-.05, .05);
+  direction: number = 0;
+  rotationInterval: number = rand(-Math.PI / 60 / 60, Math.PI / 60 / 60);
   limit: number;
   angle: number = 0;
   color: string = `rgb(${rand(125, 255)},${rand(125, 255)},${rand(125, 255)})`
@@ -18,6 +18,9 @@ export default class Crystal implements Randomizable {
   steps: number = Math.floor(rand(50, 145))
   ease: Function
   segments: Segment[] = []
+
+  minModifier = rand(-2, 2)
+  maxModifier = rand(-2, 2);
 
   posX = 0;
   posY = 0;
@@ -34,10 +37,11 @@ export default class Crystal implements Randomizable {
   }
 
   update(step: number) {
+    if (step === 0) return;
     this.angle += step;
     this.segments = []
-    this.maxRadius -= .25
-    this.minRadius += .25
+    this.maxRadius += this.maxModifier
+    this.minRadius += this.minModifier
 
     for (let c = 0; c < this.limit; c++) {
       this.angle += ((Math.PI * 2) / this.limit);
@@ -62,11 +66,13 @@ export default class Crystal implements Randomizable {
 
   randomize(): void {
     this.angle = 0;
-    this.minRadius = rand(-50, 0)
-    this.maxRadius = rand(50, 250)
-    this.limit = Math.floor(rand(5, 10))
-    this.steps = Math.floor(rand(30, 50))
-    this.offset = rand(-150, 150)
-    this.rotationInterval = rand(-Math.PI / 60 / 10, Math.PI / 60 / 10)
+    this.minRadius = rand(0, 0)
+    this.maxRadius = rand(0, 0)
+    this.minModifier = rand(-2, 2)
+    this.maxModifier = rand(-2, 2);
+    this.limit = Math.floor(rand(2, 20))
+    this.steps = Math.floor(rand(2, 100 / this.limit))
+    this.offset = 0
+    this.rotationInterval = rand(-(Math.PI / 60), Math.PI / 60) / 10
   }
 }

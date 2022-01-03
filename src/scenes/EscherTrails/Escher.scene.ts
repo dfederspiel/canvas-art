@@ -168,6 +168,8 @@ export default class EscherScene implements Scene, Randomizable {
   }
 
   render(): void {
+    this.ctx.clearRect(0, 0, this.width, this.height); // clear the screen
+
     this.count = this.count + 1 // count render calls
     this.plotPoints(this.speed) // the number of points correlates to speed
     this.renderPoints(this.particles); // 

@@ -187,8 +187,9 @@ export default class WallsScene implements Scene {
   }
 
   render(): void {
+    this.ctx.globalAlpha = 0.001;
+    this.ctx.clearRect(0, 0, this.width, this.height); // clear the screen
 
-    this.ctx.globalAlpha = 0.8;
     this.walls.forEach((w) => {
       this.ctx.fillStyle = w.colorString;
       this.ctx.globalAlpha = .2;

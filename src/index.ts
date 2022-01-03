@@ -52,7 +52,7 @@ type Page = {
 }
 
 let pages: Page[] = [
-  { title: 'Crystals', scene: new IceCrystalScene(WIDTH, HEIGHT, ctx) },
+  { title: 'Supernovae', scene: new IceCrystalScene(WIDTH, HEIGHT, ctx) },
   { title: 'Sea Space', scene: new SeaSpaceScene(WIDTH, HEIGHT, ctx) },
   { title: 'Walls', scene: new WallsScene(WIDTH, HEIGHT, ctx) },
   { title: 'Waterfall', scene: new WaterfallScene(WIDTH, HEIGHT, ctx) },
@@ -67,12 +67,8 @@ let pages: Page[] = [
 let PAGE: number = parseInt(localStorage.getItem('scene')) || 1;
 
 var main = function () {
-  ctx.clearRect(0, 0, WIDTH, HEIGHT); // clear the screen
-
   pages[PAGE - 1].scene.render();
-
   renderTitle();
-
   requestAnimationFrame(main);
 };
 
