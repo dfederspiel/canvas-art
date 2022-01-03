@@ -2,7 +2,7 @@ import { Randomizable, Scene } from "./lib/types";
 import ClockScene from "./scenes/Clock/Clock.scene";
 import EscherScene from "./scenes/EscherTrails/Escher.scene";
 import FlowersScene from "./scenes/Flowers/Flowers.scene";
-import IceCrystalScene from "./scenes/IceCrystals/IceCrystal.scene";
+import IceCrystalScene from "./scenes/Supernovae/SupernovaeScene.scene";
 import OrbiterScene from "./scenes/Orbiter/Orbiter.scene";
 import SeaSpaceScene from "./scenes/SeaSpace/SeaSpace.scene";
 import SnakesScene from "./scenes/Snakes/Snakes.scene";

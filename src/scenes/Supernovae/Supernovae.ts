@@ -3,7 +3,7 @@ import { calculate, rand } from "../../lib/helpers";
 import { Randomizable } from "../../lib/types";
 import Segment from "./Segment";
 
-export default class Crystal implements Randomizable {
+export default class Supernova implements Randomizable {
   maxAlpha: number = 0;
   alpha: number = 0;
   direction: number = 0;
@@ -71,8 +71,8 @@ export default class Crystal implements Randomizable {
     this.minModifier = rand(-2, 2)
     this.maxModifier = rand(-2, 2);
     this.limit = Math.floor(rand(2, 20))
-    this.steps = Math.floor(rand(2, 100 / this.limit))
+    this.steps = Math.floor(rand(6, 100 / this.limit))
     this.offset = 0
-    this.rotationInterval = rand(-(Math.PI / 60), Math.PI / 60) / 10
+    this.rotationInterval = rand(-(Math.PI / 60), Math.PI / 60) / 2
   }
 }

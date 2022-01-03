@@ -2,10 +2,10 @@ import { easeInCirc, easeInElastic, easeInOutExpo, easeInOutSine, easeInSine, ea
 import { calculate, rand } from "../../lib/helpers";
 import Rect from "../../lib/Rect";
 import { Randomizable, Scene } from "../../lib/types";
-import Crystal from "./Crystal";
+import Supernova from "./Supernovae";
 import Segment from "./Segment";
 
-export default class IceCrystalScene implements Scene, Randomizable {
+export default class SupernovaeScene implements Scene, Randomizable {
   width: number;
   height: number;
   ctx: CanvasRenderingContext2D
@@ -17,7 +17,7 @@ export default class IceCrystalScene implements Scene, Randomizable {
 
   private layers = 1;
 
-  private crystals: Crystal[] = []
+  private crystals: Supernova[] = []
 
   constructor(width: number, height: number, context: CanvasRenderingContext2D) {
     this.width = width;
@@ -74,7 +74,7 @@ export default class IceCrystalScene implements Scene, Randomizable {
       this.ctx.globalAlpha = 1
       this.ctx.fillStyle = 'black'
       this.ctx.fillRect(0, 0, this.width, this.height)
-      let f = new Crystal(this.angle, Math.floor(rand(2, 20)))
+      let f = new Supernova(this.angle, Math.floor(rand(2, 20)))
       f.direction = this.maxOpacity / Math.floor(this.displayDuration / 2);
       f.maxAlpha = this.maxOpacity
       f.alpha = 0;
@@ -110,11 +110,11 @@ export default class IceCrystalScene implements Scene, Randomizable {
       console.log(c.alpha)
     })
 
-    this.ctx.globalAlpha = .05
+    this.ctx.globalAlpha = 1 / (this.displayDuration / 20)
     this.ctx.fillStyle = '#000'
     this.ctx.fillRect(0, 0, this.width, this.height)
     this.ctx.globalAlpha = 1;
-    this.ctx.fillRect(0, 0, 220, 70)
+    this.ctx.fillRect(0, 0, 230, 70)
     this.count++
   }
 }
