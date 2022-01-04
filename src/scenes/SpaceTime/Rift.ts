@@ -6,14 +6,15 @@ import Size from "../../lib/Size";
 import Sprite from "../../lib/Sprite";
 
 export default class Rift {
+
   hasTornTroughSpaceTimeFabric: boolean = false;
+  hasFinishedTearingThroughSpaceTimeFabric: boolean = false;
 
   private width: number;
   private height: number;
 
   private angle: number = 0;
   private toAngle: number = 0;
-  private direction: number = .125;
 
   private cx: number = 0;
   private cy: number = 0;
@@ -51,29 +52,24 @@ export default class Rift {
   }
 
   randomize(): void {
-    this.step = rand(.0001, .025)
-    this.baseRadius = 20
-    this.radius = this.baseRadius
-    this.frames = Math.floor(rand(15, 120));
-    this.limit = rand(1000, 2500)
     this.particles = []
-    let min = rand(0, 5)
-    let max = rand(min, 10)
-    this.size = new Size(min, min, max, max)
-    this.cx = this.width / 2 + this.radius
-    this.cy = this.height / 2 - this.radius
-    this.angle = Math.PI;
-    this.direction = -this.direction
-    this.effect = effects[Math.floor(Math.random() * effects.length)]
-    this.color = `rgb(${rand(20, 255)},${rand(20, 255)},${rand(20, 255)})`
+    this.step = .025
+    this.baseRadius = rand(25, 75)
+    this.radius = this.baseRadius
+    this.frames = 60
+    this.limit = 1500
+    this.cx = this.width / 2 - this.baseRadius
+    this.cy = this.height / 2
+    this.angle = 0 // rand(0, Math.PI * 2)
+    this.color = `rgb(${rand(100, 255)},${rand(100, 255)},${rand(100, 255)})`
   }
 
   private updateDirection() {
     // if we have travelled the length of the arc and need to change directions
 
     // clockwise
-    if (this.angle >= this.toAngle && this.direction > 0) {
-      this.direction = -this.direction; // change direction
+    if (this.angle >= this.toAngle && this.step > 0) {
+      this.step = -this.step; // change direction
       this.angle -= Math.PI; // rewind the angle 180 degrees ccw 
       this.toAngle = this.angle - rand(0, Math.PI); // set a new to angle between 0 and 180 degrees
 
@@ -82,67 +78,82 @@ export default class Rift {
         this.cx, // current center x
         this.cy, // current center y
         this.angle, // starting angle
-        -this.radius * (2 + this.step) // radius of current arc + 
+        -this.radius * 2 // radius of current arc + 
       );
 
-      this.radius = this.radius * (1 + this.step);
+      // this.radius = this.radius * (1 + this.step);
       this.cx = newX;
       this.cy = newY;
     }
 
     // counter clockwise
-    if (this.angle <= this.toAngle && this.direction < 0) {
-      this.direction = -this.direction;
+    if (this.angle <= this.toAngle && this.step < 0) {
+      this.step = -this.step;
       this.angle += Math.PI;
       this.toAngle = this.angle + rand(0, Math.PI);
       const { x: newX, y: newY } = calculate.getVertexFromAngle(
         this.cx,
         this.cy,
         this.angle,
-        -this.radius * (2 + this.step)
+        -this.radius * 2
 
       );
-      this.radius = this.radius * (1 + this.step);
+      // this.radius = this.radius * (1 + this.step);
       this.cx = newX;
       this.cy = newY;
     }
   }
 
   plot(count: number) {
-    for (let c = 0; c < count; c++) {
+    if (!this.hasTornTroughSpaceTimeFabric) {
+      for (let c = 0; c < count; c++) {
+        const { x, y } = calculate.getVertexFromAngle(
+          this.cx,
+          this.cy,
+          this.angle,
+          this.radius
+        );
 
-      const { x, y } = calculate.getVertexFromAngle(
-        this.cx,
-        this.cy,
-        this.angle,
-        this.radius
-      );
+        // if we collide with a wall, reset the origin point
+        if (x < -50 || x > this.width + 50 || y < -50 || y > this.height + 50) {
+          this.hasTornTroughSpaceTimeFabric = true;
+          console.log('has torn');
+        }
 
-      // if we collide with a wall, reset the origin point
-      if (x < -50 || x > this.width + 50 || y < -50 || y > this.height + 50) {
-        this.hasTornTroughSpaceTimeFabric = true;
+        this.particles.push(
+          new Sprite(
+            new Rect(x, y, 1, 1),
+            this.frames,
+            this.color,
+            this.effect,
+            0, //rand(-.1, .1),
+            0, //rand(-.1, .1),
+            new Rect(0, 0, this.width, this.height),
+            this.size,
+            500,
+            ObjectType.Particle,
+            0
+          )
+        );
+
+        this.updateDirection();
+        this.angle += this.step;
+
       }
-
-      this.particles.push(
-        new Sprite(
-          new Rect(x, y, 0, 0),
-          this.frames,
-          this.color,
-          this.effect,
-          0, //rand(-.1, .1),
-          0, //rand(-.1, .1),
-          new Rect(0, 0, this.width, this.height),
-          this.size,
-          500,
-          ObjectType.Particle,
-          0
-        )
-      );
-
-      this.updateDirection();
-      this.angle += this.direction;
-
       while (this.particles.length > this.limit) this.particles.shift();
+
     }
+
+    if (this.hasTornTroughSpaceTimeFabric) {
+      let toRemove = 0;
+      while (toRemove < count) {
+        this.particles.shift();
+        toRemove++;
+      }
+      this.particles.shift();
+      if (this.particles.length == 0)
+        this.hasFinishedTearingThroughSpaceTimeFabric = true
+    }
+
   }
 }
