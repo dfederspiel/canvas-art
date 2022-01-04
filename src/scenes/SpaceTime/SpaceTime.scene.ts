@@ -34,7 +34,7 @@ export default class SpaceTimeScene implements Scene, Randomizable {
     this.ctx.lineWidth = rand(.5, 1)
     objects.forEach((drop, idx) => {
       this.ctx.beginPath()
-      this.ctx.globalAlpha = rand(.025, .05)
+      this.ctx.globalAlpha = rand(.05, .1)
       this.ctx.strokeStyle = drop.colorString;
       this.ctx.moveTo(this.width / 2, this.height / 2)
       this.ctx.lineTo(drop.x, drop.y)
@@ -59,7 +59,7 @@ export default class SpaceTimeScene implements Scene, Randomizable {
 
     if (this.rifts?.length < 3) {
       let min = rand(.5, 1)
-      let max = rand(min, 4)
+      let max = rand(min, 7)
       let size = new Size(min, min, max, max)
       this.rifts.push(new Rift(
         this.width,
@@ -72,7 +72,7 @@ export default class SpaceTimeScene implements Scene, Randomizable {
     }
 
     this.rifts?.forEach(r => {
-      r.plot(5)
+      r.plot(15)
       this.renderLines(r.particles, r);
       this.renderPoints(r.particles);
     })
