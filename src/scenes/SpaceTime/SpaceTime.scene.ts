@@ -34,7 +34,7 @@ export default class SpaceTimeScene implements Scene, Randomizable {
     this.ctx.lineWidth = rand(.5, 1)
     objects.forEach((drop, idx) => {
       this.ctx.beginPath()
-      this.ctx.globalAlpha = rand(.05, .1)
+      this.ctx.globalAlpha = rand(.025, .05)
       this.ctx.strokeStyle = drop.colorString;
       this.ctx.moveTo(this.width / 2, this.height / 2)
       this.ctx.lineTo(drop.x, drop.y)
@@ -44,7 +44,7 @@ export default class SpaceTimeScene implements Scene, Randomizable {
 
   renderPoints(objects: Sprite[]): void {
     this.ctx.beginPath()
-    this.ctx.globalAlpha = .8
+    this.ctx.globalAlpha = .9
     objects.forEach((drop, idx) => {
       this.ctx.fillStyle = drop.colorString;
       this.ctx.moveTo(drop.x - drop.w / 2, drop.y - drop.h / 2)
