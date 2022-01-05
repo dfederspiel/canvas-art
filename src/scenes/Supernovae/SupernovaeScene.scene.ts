@@ -1,9 +1,7 @@
-import { easeInCirc, easeInElastic, easeInOutExpo, easeInOutSine, easeInSine, easeOutElastic, easeOutSine, effects } from "../../lib/easing";
-import { calculate, rand } from "../../lib/helpers";
-import Rect from "../../lib/Rect";
+import { effects } from "../../lib/easing";
+import { rand } from "../../lib/helpers";
 import { Randomizable, Scene } from "../../lib/types";
 import Supernova from "./Supernovae";
-import Segment from "./Segment";
 
 export default class SupernovaeScene implements Scene, Randomizable {
   width: number;
@@ -17,7 +15,7 @@ export default class SupernovaeScene implements Scene, Randomizable {
 
   private layers = 1;
 
-  private crystals: Supernova[] = []
+  private supernovae: Supernova[] = []
 
   constructor(width: number, height: number, context: CanvasRenderingContext2D) {
     this.width = width;
@@ -39,25 +37,26 @@ export default class SupernovaeScene implements Scene, Randomizable {
       let f = new Supernova(this.angle, Math.floor(rand(2, 20)), this.ctx)
       f.direction = this.maxOpacity / Math.floor(this.displayDuration / 2);
       f.maxAlpha = this.maxOpacity
-      f.alpha = 0;
+      f.color.alpha = 0;
       f.renderOutlines = Math.random() < .5;
       f.ease = effects[Math.floor(rand(0, effects.length))]
-      this.crystals.push(f);
+      this.supernovae.push(f);
     }
 
 
-    if (this.crystals?.length > this.layers) {
-      this.crystals?.shift();
+    if (this.supernovae?.length > this.layers) {
+      this.supernovae?.shift();
     }
 
-    this.crystals?.forEach((c, idx) => {
+    this.supernovae?.forEach((c, idx) => {
       c.render();
     })
 
     // this.ctx.fillStyle = `rgba(0, 0, 0, ${1 / (this.displayDuration / 20)})`
     // this.ctx.fillRect(0, 0, this.width, this.height)
-    // this.ctx.globalAlpha = 1;
-    // this.ctx.fillRect(0, 0, 320, 70)
+    this.ctx.globalAlpha = 1;
+    this.ctx.fillStyle = 'black'
+    this.ctx.fillRect(0, 0, 320, 70)
     this.count++
   }
 }

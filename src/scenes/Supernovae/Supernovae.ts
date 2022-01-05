@@ -3,15 +3,20 @@ import { calculate, rand } from '../../lib/helpers';
 import Rect from '../../lib/Rect';
 import { Randomizable } from '../../lib/types';
 import Segment from './Segment';
+import RGB from "./RGB";
 
 export default class Supernova implements Randomizable {
-  maxAlpha: number = 0.8;
-  alpha: number = 1;
+
+  maxAlpha: number = 0;
+  //alpha: number = 1; // this is a buggy remnant
   direction: number = 0;
   rotationInterval: number = rand(-Math.PI / 60 / 60, Math.PI / 60 / 60);
   limit: number;
   angle: number = 0;
-  color: string = `rgb(${rand(125, 255)},${rand(125, 255)},${rand(125, 255)})`;
+
+  color: RGB
+  strokeColor: RGB
+
   width = window.innerWidth;
   height = window.innerHeight;
   lineWidth: number = 0.5;
@@ -41,6 +46,15 @@ export default class Supernova implements Randomizable {
     this.angle = angle;
     this.ctx = context;
     this.ease = effects[Math.floor(rand(0, effects.length))];
+
+    let r = Math.floor(rand(25, 255))
+    let g = Math.floor(rand(25, 255))
+    let b = Math.floor(rand(25, 255))
+
+    this.color = new RGB(r, g, b, 0)
+    this.strokeColor = new RGB(r, g, b, 0)
+    this.strokeColor.darken(100)
+
     this.randomize();
     this.update(0);
   }
@@ -74,11 +88,10 @@ export default class Supernova implements Randomizable {
   }
 
   private renderLines(objects: Rect[], alpha: number): void {
-    this.ctx.strokeStyle = this.color;
+    this.ctx.strokeStyle = this.color.toString();
     this.ctx.lineWidth = this.lineWidth;
     this.ctx.beginPath();
     objects.forEach((o, idx) => {
-      this.ctx.globalAlpha = alpha;
       this.ctx.moveTo(this.width / 2, this.height / 2);
       this.ctx.lineTo(o.x, o.y);
     });
@@ -88,8 +101,8 @@ export default class Supernova implements Randomizable {
   private renderOutline(objects: Rect[], alpha: number): void {
     if (objects.length === 0) return;
     this.ctx.lineWidth = this.lineWidth * 2;
-    this.ctx.fillStyle = this.color;
-    this.ctx.globalAlpha = alpha;
+    this.ctx.fillStyle = this.color.toString();
+    this.ctx.strokeStyle = this.strokeColor.toString()
     objects.forEach((o, idx) => {
       this.ctx.beginPath();
       this.ctx.moveTo(o.x, o.y);
@@ -102,9 +115,8 @@ export default class Supernova implements Randomizable {
 
   private renderArcs(objects: Rect[], alpha: number): void {
     if (objects.length === 0) return;
-    this.ctx.globalAlpha = alpha;
-    this.ctx.fillStyle = this.color;
-    this.ctx.strokeStyle = 'black'
+    this.ctx.fillStyle = this.color.toString();
+    this.ctx.strokeStyle = this.strokeColor.toString()
     objects.forEach((o, idx) => {
       this.ctx.beginPath();
       const e = easeInSine(idx + 1, 1, o.w / 2, objects.length);
@@ -130,22 +142,22 @@ export default class Supernova implements Randomizable {
     this.segments.forEach((p) => {
       // this.renderLines(
       //   p.points.filter((i, idx) => idx % Math.floor(rand(3, 20)) === 0),
-      //   this.alpha / Math.floor(rand(5, 10))
+      //   this.color.alpha / Math.floor(rand(5, 10))
       // );
 
-      // if (this.renderOutlines) this.renderOutline(p.points, this.alpha);
+      // if (this.renderOutlines) this.renderOutline(p.points, this.color.alpha);
 
       this.renderArcs(
         p.points.filter((i, idx) => idx % Math.floor(rand(1, 20)) === 0),
-        this.alpha
+        this.color.alpha
       );
     });
-    if (this.alpha > 0.8 && this.direction > 0) {
+    if (this.color.alpha > 0.8 && this.direction > 0) {
       this.direction = -this.direction;
     }
-    this.ctx.strokeStyle = this.color;
+    this.ctx.strokeStyle = this.color.toString();
     this.update(this.rotationInterval);
-    this.alpha += this.direction;
-    console.log(this.alpha);
+    this.color.alpha += this.direction;
+    this.strokeColor.alpha += this.direction;
   }
 }
