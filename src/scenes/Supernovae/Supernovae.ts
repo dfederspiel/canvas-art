@@ -1,4 +1,4 @@
-import { easeInSine, effects } from '../../lib/easing';
+import { easeInOutCubic, easeInQuad, easeInSine, easeOutSine, effects } from '../../lib/easing';
 import { calculate, rand } from '../../lib/helpers';
 import Rect from '../../lib/Rect';
 import { Randomizable } from '../../lib/types';
@@ -7,35 +7,45 @@ import RGB from "./RGB";
 
 export default class Supernova implements Randomizable {
 
-  maxAlpha: number = 0;
+  private maxAlpha: number = 0;
+  private maskAlpha: number = 0;
+  private fadeInterval: number = 0;
+  private timeBeganDying: number = 0;
+
+  private velocityModifierMin: number = rand(.00125, .005)
+  private velocityModifierMax: number = rand(.005, .0125)
+
   //alpha: number = 1; // this is a buggy remnant
-  direction: number = 0;
-  rotationInterval: number = rand(-Math.PI / 60 / 60, Math.PI / 60 / 60);
-  limit: number;
-  angle: number = 0;
+  private direction: number = 0;
+  private rotationInterval: number = rand(-Math.PI / 60 / 60, Math.PI / 60 / 60);
+  private limit: number;
+  private angle: number = 0;
 
-  color: RGB
-  strokeColor: RGB
+  private color: RGB
+  private strokeColor: RGB
 
-  width = window.innerWidth;
-  height = window.innerHeight;
-  lineWidth: number = 0.5;
-  offset = rand(-50, 100);
-  steps: number = Math.floor(rand(50, 145));
-  ease: Function;
-  segments: Segment[] = [];
-  renderOutlines = false;
+  private width = window.innerWidth;
+  private height = window.innerHeight;
+  private lineWidth: number = 0.5;
+  private offset = rand(-50, 100);
+  private steps: number = Math.floor(rand(50, 145));
+  private ease: Function;
+  private segments: Segment[] = [];
+  private renderOutlines = false;
 
-  minModifier = rand(-2, 2);
-  maxModifier = rand(-2, 2);
+  private minModifier: number;
+  private maxModifier: number;
 
-  posX = 0;
-  posY = 0;
+  private life: number = 0;
+  private duration: number = Math.floor(rand(300, 600));
 
-  ctx: CanvasRenderingContext2D;
+  private ctx: CanvasRenderingContext2D;
 
   private minRadius = rand(-50, 50);
   private maxRadius = rand(50, 75);
+
+  isDying: boolean = false;
+  isDead: boolean = false;
 
   constructor(
     angle: number,
@@ -47,12 +57,18 @@ export default class Supernova implements Randomizable {
     this.ctx = context;
     this.ease = effects[Math.floor(rand(0, effects.length))];
 
-    let r = Math.floor(rand(25, 255))
-    let g = Math.floor(rand(25, 255))
-    let b = Math.floor(rand(25, 255))
+    this.maxAlpha = 1
+    this.direction = this.maxAlpha / Math.floor(this.duration);
+
+    this.renderOutlines = Math.random() < .5;
+
+    let r = Math.floor(rand(125, 255))
+    let g = Math.floor(rand(125, 255))
+    let b = Math.floor(rand(125, 255))
 
     this.color = new RGB(r, g, b, 0)
     this.strokeColor = new RGB(r, g, b, 0)
+
     this.strokeColor.darken(100)
 
     this.randomize();
@@ -88,9 +104,9 @@ export default class Supernova implements Randomizable {
   }
 
   private renderLines(objects: Rect[], alpha: number): void {
-    this.ctx.strokeStyle = this.color.toString();
-    this.ctx.lineWidth = this.lineWidth;
     this.ctx.beginPath();
+    this.ctx.lineWidth = this.lineWidth;
+    this.ctx.strokeStyle = this.strokeColor.toString();
     objects.forEach((o, idx) => {
       this.ctx.moveTo(this.width / 2, this.height / 2);
       this.ctx.lineTo(o.x, o.y);
@@ -128,10 +144,10 @@ export default class Supernova implements Randomizable {
 
   randomize(): void {
     this.angle = 0;
-    this.minRadius = rand(5, 50);
-    this.maxRadius = rand(10, 50);
-    this.minModifier = rand(-0.1, -1.5);
-    this.maxModifier = rand(-0.5, -2.5);
+    this.minRadius = rand(5, 30);
+    this.maxRadius = rand(10, 30);
+    this.minModifier = rand(-.5, -1);
+    this.maxModifier = rand(-1.5, -2.5);
     this.limit = Math.floor(rand(2, 20));
     this.steps = Math.floor(rand(10, 200 / this.limit));
     this.offset = 0;
@@ -139,25 +155,57 @@ export default class Supernova implements Randomizable {
   }
 
   render() {
-    this.segments.forEach((p) => {
-      // this.renderLines(
-      //   p.points.filter((i, idx) => idx % Math.floor(rand(3, 20)) === 0),
-      //   this.color.alpha / Math.floor(rand(5, 10))
-      // );
+    this.ctx.fillStyle = `rgba(0, 0, 0, .03)`
+    this.ctx.fillRect(0, 0, this.width, this.height)
 
-      // if (this.renderOutlines) this.renderOutline(p.points, this.color.alpha);
+    this.segments.forEach((p) => {
+      this.renderLines(
+        p.points.filter((i, idx) => idx % Math.floor(rand(2, 20)) === 0),
+        this.color.alpha / Math.floor(rand(5, 10))
+      );
+
+      if (this.renderOutlines) this.renderOutline(p.points, this.color.alpha);
 
       this.renderArcs(
-        p.points.filter((i, idx) => idx % Math.floor(rand(1, 20)) === 0),
+        p.points.filter((i, idx) => idx % Math.floor(rand(1, 5)) === 0),
         this.color.alpha
       );
     });
+
     if (this.color.alpha > 0.8 && this.direction > 0) {
       this.direction = -this.direction;
     }
+
     this.ctx.strokeStyle = this.color.toString();
     this.update(this.rotationInterval);
-    this.color.alpha += this.direction;
-    this.strokeColor.alpha += this.direction;
+
+    if (!this.isDying) {
+      this.color.alpha += 1 / this.duration * 2;
+      this.strokeColor.alpha += 1 / this.duration * 4;
+      this.fadeInterval = this.color.alpha / 120;
+    } else {
+      const alpha = easeInSine(this.timeBeganDying, 0, 1, 120)
+
+      this.color.alpha = 1 - alpha;
+      this.strokeColor.alpha = 1 - alpha;
+
+      console.log(alpha)
+      this.ctx.fillStyle = `rgba(0, 0, 0, ${alpha < 0 ? 0 : alpha})`
+      this.ctx.fillRect(0, 0, this.width, this.height)
+
+      if (this.color.alpha <= 0) this.isDead = true
+
+      this.maskAlpha += this.fadeInterval
+      this.timeBeganDying++
+    }
+
+    if (this.life > this.duration) {
+      this.isDying = true;
+    }
+
+    this.minModifier += this.velocityModifierMin;
+    this.maxModifier += this.velocityModifierMax;
+
+    this.life++;
   }
 }

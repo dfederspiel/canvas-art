@@ -8,12 +8,12 @@ export default class SupernovaeScene implements Scene, Randomizable {
   height: number;
   ctx: CanvasRenderingContext2D
 
-  private angle = 0;
+  // private angle = 0;
   private count = 0;
-  private maxOpacity = .75;
-  private displayDuration = 480;
+  // private maxOpacity = .75;
+  // private displayDuration = 480;
 
-  private layers = 1;
+  private layers = 2;
 
   private supernovae: Supernova[] = []
 
@@ -30,33 +30,34 @@ export default class SupernovaeScene implements Scene, Randomizable {
 
     this.ctx.strokeStyle = 'white';
 
-    if (this.count % this.displayDuration === 0) {
+    if (this.supernovae.length < this.layers && this.count % 60 === 0) {
       // this.ctx.globalAlpha = 1
       // this.ctx.fillStyle = 'black'
       // this.ctx.fillRect(0, 0, this.width, this.height)
-      let f = new Supernova(this.angle, Math.floor(rand(2, 20)), this.ctx)
-      f.direction = this.maxOpacity / Math.floor(this.displayDuration / 2);
-      f.maxAlpha = this.maxOpacity
-      f.color.alpha = 0;
-      f.renderOutlines = Math.random() < .5;
-      f.ease = effects[Math.floor(rand(0, effects.length))]
+      let f = new Supernova(0, Math.floor(rand(2, 20)), this.ctx)
       this.supernovae.push(f);
     }
 
 
-    if (this.supernovae?.length > this.layers) {
-      this.supernovae?.shift();
-    }
+    // if (this.supernovae?.length > this.layers) {
+    //   this.supernovae?.shift();
+    // }
 
     this.supernovae?.forEach((c, idx) => {
       c.render();
+      // if (c.isDead) {
+      //   this.ctx.fillStyle = `rgba(0, 0, 0, )`
+      //   this.ctx.fillRect(0, 0, this.width, this.height)
+      //   this.ctx.globalAlpha = 1;
+      // }
     })
 
-    // this.ctx.fillStyle = `rgba(0, 0, 0, ${1 / (this.displayDuration / 20)})`
-    // this.ctx.fillRect(0, 0, this.width, this.height)
-    this.ctx.globalAlpha = 1;
+
     this.ctx.fillStyle = 'black'
     this.ctx.fillRect(0, 0, 320, 70)
-    this.count++
+
+    this.supernovae = this.supernovae.filter(s => !s.isDead)
+
+    this.count++;
   }
 }

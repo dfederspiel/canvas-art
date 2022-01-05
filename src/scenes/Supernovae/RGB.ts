@@ -3,7 +3,9 @@ export default class RGB {
   private greenChannel: number;
   private blueChannel: number;
 
-  alpha: number
+  private _alpha: number;
+
+  // private alpha: number
 
   constructor(red: number, green: number, blue: number, alpha: number) {
     this.redChannel = red;
@@ -11,6 +13,16 @@ export default class RGB {
     this.blueChannel = blue;
 
     this.alpha = alpha;
+  }
+
+  get alpha() {
+    return this._alpha;
+  }
+
+  set alpha(value: number) {
+    if (value > 1) this._alpha = 1
+    else if (value < 0) this._alpha = 0;
+    else this._alpha = value;
   }
 
   darken(value: number) {
