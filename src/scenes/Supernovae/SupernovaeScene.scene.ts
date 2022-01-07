@@ -13,7 +13,8 @@ export default class SupernovaeScene implements Scene, Randomizable {
   // private maxOpacity = .75;
   // private displayDuration = 480;
 
-  private layers = 2;
+  private layers = 4;
+  private distributionInterval: number = 1;
 
   private supernovae: Supernova[] = []
 
@@ -27,29 +28,17 @@ export default class SupernovaeScene implements Scene, Randomizable {
   }
 
   render(): void {
+    this.ctx.fillStyle = `rgba(10, 10, 10, ${this.count == 0 ? 1 : .4})`
+    this.ctx.fillRect(0, 0, this.width, this.height)
 
-    this.ctx.strokeStyle = 'white';
-
-    if (this.supernovae.length < this.layers && this.count % 60 === 0) {
-      // this.ctx.globalAlpha = 1
-      // this.ctx.fillStyle = 'black'
-      // this.ctx.fillRect(0, 0, this.width, this.height)
-      let f = new Supernova(0, Math.floor(rand(2, 20)), this.ctx)
+    if (this.supernovae.length < this.layers && this.count % this.distributionInterval === 0) {
+      let f = new Supernova(0, Math.floor(rand(2, 10)), this.ctx)
       this.supernovae.push(f);
+      this.distributionInterval = Math.floor(rand(150, 450))
     }
-
-
-    // if (this.supernovae?.length > this.layers) {
-    //   this.supernovae?.shift();
-    // }
 
     this.supernovae?.forEach((c, idx) => {
       c.render();
-      // if (c.isDead) {
-      //   this.ctx.fillStyle = `rgba(0, 0, 0, )`
-      //   this.ctx.fillRect(0, 0, this.width, this.height)
-      //   this.ctx.globalAlpha = 1;
-      // }
     })
 
 
