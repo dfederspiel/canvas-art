@@ -14,7 +14,7 @@ export default class SupernovaeScene implements Scene, Randomizable {
   // private displayDuration = 480;
 
   private layers = 4;
-  private distributionInterval: number = 1;
+  private distributionInterval: number = 60;
 
   private supernovae: Supernova[] = []
 
@@ -28,13 +28,12 @@ export default class SupernovaeScene implements Scene, Randomizable {
   }
 
   render(): void {
-    this.ctx.fillStyle = `rgba(10, 10, 10, ${this.count == 0 ? 1 : .4})`
+    this.ctx.fillStyle = `rgba(10, 10, 10, ${this.count == 0 ? 1 : .2})`
     this.ctx.fillRect(0, 0, this.width, this.height)
 
     if (this.supernovae.length < this.layers && this.count % this.distributionInterval === 0) {
-      let f = new Supernova(0, Math.floor(rand(2, 10)), this.ctx)
-      this.supernovae.push(f);
-      this.distributionInterval = Math.floor(rand(150, 450))
+      this.supernovae.push(new Supernova(0, Math.floor(rand(1, 8)), this.ctx));
+      this.distributionInterval = Math.floor(rand(30, 120))
     }
 
     this.supernovae?.forEach((c, idx) => {

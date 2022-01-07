@@ -90,7 +90,7 @@ export default class Supernova implements Randomizable {
   }
 
   renderLobes() {
-
+    let color = (Math.random() > .8) ? new RGB(rand(50, 255), rand(50, 255), rand(50, 255), rand(.8, 1)) : null
     for (let c = 0; c < this.limit; c++) {
       this.angle += (Math.PI * 2) / this.limit;
       const { x: pX, y: pY } = calculate.getVertexFromAngle(
@@ -107,7 +107,7 @@ export default class Supernova implements Randomizable {
         this.maxRadius,
         this.steps,
         this.ease,
-        rand(.00125, .005)
+        color
       );
       this.segments.push(p);
     }
@@ -147,7 +147,7 @@ export default class Supernova implements Randomizable {
       this.ctx.beginPath();
       this.ctx.fillStyle = o.color.toString();
       // const e = easeInSine(idx + 1, 1, o.size, objects.length);
-      this.ctx.arc(o.x, o.y, o.size, 0, Math.PI * 2);
+      this.ctx.arc(o.x, o.y, o.size < 0 ? 0 : o.size, 0, Math.PI * 2);
       this.ctx.fill();
       this.ctx.stroke();
     });
@@ -155,18 +155,18 @@ export default class Supernova implements Randomizable {
 
   randomize(): void {
     this.angle = 0;
-    this.minRadius = rand(0, 10);
-    this.maxRadius = rand(10, 20);
+    this.minRadius = rand(1, 10);
+    this.maxRadius = rand(10, 30);
     this.minModifier = rand(.1, .5);
     this.maxModifier = rand(2, 3.5);
-    this.limit = Math.floor(rand(3, 10));
-    this.steps = Math.floor(rand(15, 100 / this.limit));
+    this.limit = Math.floor(rand(2, 12));
+    this.steps = Math.floor(rand(20, 150 / this.limit));
     this.offset = 0;
-    this.rotationInterval = 0 // rand(-(Math.PI / 30), Math.PI / 30) / 50;
+    this.rotationInterval = rand(-(Math.PI / 30), Math.PI / 30);
     this.cx = rand(this.width * .25, this.width * .75);
-    this.cy = rand(this.height * .25, this.height * .75);
+    this.cy = rand(this.height * .25, this.height * .25);
     // this.cx = this.width / 2;
-    // this.cy = this.height / 2
+    // this.cy = this.height / 4
   }
 
   render() {

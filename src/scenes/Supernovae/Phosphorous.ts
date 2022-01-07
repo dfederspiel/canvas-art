@@ -8,18 +8,11 @@ export default class Phosphorous extends Rect {
   color: RGB;
   isDead: boolean;
 
-  private originX: number;
-  private originY: number;
+  private vx: number;
+  private vy: number;
 
   private age: number = 0;
-  private ageLimit: number = rand(45, 300)
-
-  get angle() {
-    return calculate.angle(
-      { x: this.x, y: this.y } as unknown as Rect,
-      { x: this.originX, y: this.originY } as unknown as Rect,
-    )
-  }
+  private ageLimit: number = rand(100, 300)
 
   constructor(
     x: number,
@@ -32,13 +25,22 @@ export default class Phosphorous extends Rect {
     super(x, y, size, size)
     this.size = size;
     this.color = color;
-    this.originX = cx;
-    this.originY = cy;
+
+    this.vx = (x - cx) / rand(3, 8)
+    this.vy = (y - cy) / rand(3, 8)
   }
 
   update() {
     if (this.ageLimit - this.age > 0) {
-      console.log('alive')
+      this.x += this.vx;
+      this.y += this.vy
+
+      this.vx += -this.vx / 50
+      this.vy += -this.vy / 50
+
+      this.vy += .035
+      this.size = rand(.2, 3)
+
     } else {
       this.isDead = true;
     }
