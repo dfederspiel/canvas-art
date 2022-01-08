@@ -8,13 +8,12 @@ export default class SupernovaeScene implements Scene, Randomizable {
   height: number;
   ctx: CanvasRenderingContext2D
 
-  // private angle = 0;
+  private angle = 0;
   private count = 0;
-  // private maxOpacity = .75;
-  // private displayDuration = 480;
+  private maxOpacity = .75;
+  private displayDuration = 480;
 
-  private layers = 4;
-  private distributionInterval: number = 60;
+  private layers = 1;
 
   private supernovae: Supernova[] = []
 
@@ -24,28 +23,40 @@ export default class SupernovaeScene implements Scene, Randomizable {
     this.ctx = context;
   }
   randomize(): void {
-    //this.crystals.forEach(f => f.randomize())
+    this.supernovae.forEach(s => s.randomize())
   }
 
   render(): void {
-    this.ctx.fillStyle = `rgba(10, 10, 10, ${this.count == 0 ? 1 : .2})`
-    this.ctx.fillRect(0, 0, this.width, this.height)
 
-    if (this.supernovae.length < this.layers && this.count % this.distributionInterval === 0) {
-      this.supernovae.push(new Supernova(0, Math.floor(rand(1, 8)), this.ctx));
-      this.distributionInterval = Math.floor(rand(30, 120))
+    this.ctx.strokeStyle = 'white';
+
+    if (this.count % this.displayDuration === 0) {
+      // this.ctx.globalAlpha = 1
+      // this.ctx.fillStyle = 'black'
+      // this.ctx.fillRect(0, 0, this.width, this.height)
+      let f = new Supernova(this.angle, Math.floor(rand(2, 20)), this.ctx)
+      f.direction = this.maxOpacity / Math.floor(this.displayDuration / 2);
+      f.maxAlpha = this.maxOpacity
+      f.color.alpha = 0;
+      f.renderOutlines = Math.random() < .5;
+      f.ease = effects[Math.floor(rand(0, effects.length))]
+      this.supernovae.push(f);
+    }
+
+
+    if (this.supernovae?.length > this.layers) {
+      this.supernovae?.shift();
     }
 
     this.supernovae?.forEach((c, idx) => {
       c.render();
     })
 
-
+    // this.ctx.fillStyle = `rgba(0, 0, 0, ${1 / (this.displayDuration / 20)})`
+    // this.ctx.fillRect(0, 0, this.width, this.height)
+    this.ctx.globalAlpha = 1;
     this.ctx.fillStyle = 'black'
     this.ctx.fillRect(0, 0, 320, 70)
-
-    this.supernovae = this.supernovae.filter(s => !s.isDead)
-
-    this.count++;
+    this.count++
   }
 }

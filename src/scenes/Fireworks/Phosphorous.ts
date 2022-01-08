@@ -1,6 +1,6 @@
 import { calculate, rand } from "../../lib/helpers";
 import Rect from "../../lib/Rect";
-import RGB from "./RGB";
+import RGB from "../../lib/RGB";
 
 export default class Phosphorous extends Rect {
 
@@ -12,7 +12,7 @@ export default class Phosphorous extends Rect {
   private vy: number;
 
   private age: number = 0;
-  private ageLimit: number = rand(100, 300)
+  private ageLimit: number = rand(50, 100)
 
   constructor(
     x: number,
