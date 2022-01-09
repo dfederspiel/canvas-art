@@ -1,11 +1,16 @@
 import Rect from "./Rect";
+import RGB from "./RGB";
 
 export function rand(min: number, max: number) {
   return Math.random() * (max - min) + min;
 }
 
-export function colorRand() {
-  return `rgb(${rand(0, 255)}, ${rand(0, 255)}, ${rand(0, 255)})`
+export function colorRand(alpha?: number): RGB {
+  return new RGB(
+    rand(0, 255),
+    rand(0, 255),
+    rand(0, 255),
+    alpha || 1)
 }
 
 export const calculate = {

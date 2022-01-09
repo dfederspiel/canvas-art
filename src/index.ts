@@ -47,6 +47,17 @@ function renderTitle() {
   ctx.fillText(`Use the arrow keys to switch scenes`, 10, 40);
 }
 
+function renderHelp(pages: Page[]) {
+  ctx.globalAlpha = .85;
+  ctx.font = '13px Arial';
+  ctx.fillStyle = 'rgba(0,0,0,1)';
+  ctx.fillRect(0, 75, 190, 20 * pages.length + 5)
+  pages.forEach((page, idx) => {
+    ctx.fillStyle = PAGE === idx ? 'rgba(255, 255, 255, .7)' : 'rgba(255, 255, 255, .2)';
+    ctx.fillText(`${idx + 1}: ${page.title}`, 10, (idx * 20) + 80)
+  });
+}
+
 type Page = {
   title: string
   scene: Scene | Randomizable
@@ -71,21 +82,23 @@ let PAGE: number = parseInt(localStorage.getItem('scene')) || 0;
 var main = function () {
   (pages[PAGE].scene as Scene).render();
   renderTitle();
+  renderHelp(pages);
   requestAnimationFrame(main);
 };
 
 
 document.addEventListener("keydown", (e) => {
-
-  if (e.key === "ArrowRight") {
+  if (e.key === "ArrowDown") {
     if (PAGE < pages.length - 1) {
+      ctx.clearRect(0, 0, WIDTH, HEIGHT);
       PAGE++
       localStorage.setItem('scene', PAGE.toString())
     }
   };
 
-  if (e.key === "ArrowLeft") {
+  if (e.key === "ArrowUp") {
     if (PAGE > 0) {
+      ctx.clearRect(0, 0, WIDTH, HEIGHT);
       PAGE--
       localStorage.setItem('scene', PAGE.toString())
     }
@@ -96,6 +109,7 @@ document.addEventListener("keydown", (e) => {
   };
 
   if (e.key === "x") {
+    ctx.clearRect(0, 0, WIDTH, HEIGHT);
     if ("randomize" in pages[PAGE].scene) {
       console.log(pages[PAGE].scene);
       (pages[PAGE].scene as Randomizable).randomize();

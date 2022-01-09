@@ -9,8 +9,8 @@ export default class Sprite extends Rect implements Collidable, Boundable, Anima
   frames: number;
   hit: boolean;
   colorString: string;
-  speedx: number;
-  speedy: number;
+  speedX: number;
+  speedY: number;
   animationFrame: number;
   easeFn: Function;
   animationDirection: number;
@@ -49,8 +49,8 @@ export default class Sprite extends Rect implements Collidable, Boundable, Anima
     this.hit = false;
     this.colorString =
       colorString || `rgb(${rand(0, 25)}, ${rand(0, 25)}, ${rand(0, 255)})`;
-    this.speedx = vx;
-    this.speedy = vy;
+    this.speedX = vx;
+    this.speedY = vy;
     this.animationFrame = animationFrame !== undefined ? animationFrame : rand(0, frames);
     this.frames = frames;
     this.easeFn = easeFn;
@@ -80,20 +80,20 @@ export default class Sprite extends Rect implements Collidable, Boundable, Anima
 
   checkBoundaries() {
     if (!this.containerRect) return;
-    if (this.x >= this.containerRect.w - this.w && this.speedx > 0) {
-      this.speedx = -this.speedx;
+    if (this.x >= this.containerRect.w - this.w && this.speedX > 0) {
+      this.speedX = -this.speedX;
     }
 
-    if (this.x <= this.containerRect.x && this.speedx < 0) {
-      this.speedx = -this.speedx;
+    if (this.x <= this.containerRect.x && this.speedX < 0) {
+      this.speedX = -this.speedX;
     }
 
-    if (this.y >= this.containerRect.h - this.h && this.speedy > 0) {
-      this.speedy = -this.speedy;
+    if (this.y >= this.containerRect.h - this.h && this.speedY > 0) {
+      this.speedY = -this.speedY;
     }
 
-    if (this.y <= this.containerRect.y && this.speedy < 0) {
-      this.speedy = -this.speedy;
+    if (this.y <= this.containerRect.y && this.speedY < 0) {
+      this.speedY = -this.speedY;
     }
   }
 
@@ -116,7 +116,7 @@ export default class Sprite extends Rect implements Collidable, Boundable, Anima
 
   update() {
     this.updateAnimation()
-    this.x += this.speedx;
-    this.y += this.speedy;
+    this.x += this.speedX;
+    this.y += this.speedY;
   }
 }

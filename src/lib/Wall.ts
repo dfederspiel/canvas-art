@@ -1,11 +1,12 @@
 import Rect from "./Rect";
+import RGB from "./RGB";
 export default class Wall extends Rect {
-  colorString: string;
+  color: RGB;
   hits: number;
 
-  constructor(x: number, y: number, w: number, h: number, colorString: string) {
+  constructor(x: number, y: number, w: number, h: number, color: RGB) {
     super(x, y, w, h);
-    this.colorString = colorString;
+    this.color = color;
     this.hits = 0;
   }
 }
