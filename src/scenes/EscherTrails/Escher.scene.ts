@@ -56,7 +56,7 @@ export default class EscherScene implements Scene, Randomizable {
     this.baseRadius = rand(50, 100)
     this.radius = this.baseRadius
     this.frames = Math.floor(rand(15, 60));
-    this.speed = rand(.1, 3);
+    this.speed = rand(2, 8);
     this.limit = rand(250, 2500)
     this.particles = []
     let min = rand(0, 5)
@@ -173,7 +173,7 @@ export default class EscherScene implements Scene, Randomizable {
     this.count = this.count + 1 // count render calls
     this.plotPoints(this.speed) // the number of points correlates to speed
     this.renderPoints(this.particles); // 
-    this.renderStem(this.baseRadius * 1.5)
+    //this.renderStem(this.baseRadius * 1.5)
 
     // Request to do this again ASAP
     while (this.particles.length > this.limit) this.particles.shift();
