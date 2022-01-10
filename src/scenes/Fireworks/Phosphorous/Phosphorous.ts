@@ -89,7 +89,7 @@ export default class Phosphorous extends Rect implements Animatable {
       this.isDead = true;
     }
 
-    if (this.age > this.ageLimit / 2) this.color = this.secondaryColor
+    if (this.age > this.ageLimit / rand(1, 2)) this.color = this.secondaryColor
     this.age++
   }
 }

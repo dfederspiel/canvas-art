@@ -9,7 +9,7 @@ export default class FireworkScene implements Scene, Randomizable {
   ctx: CanvasRenderingContext2D
 
   private count = 0;
-  private layers = 1;
+  private layers = 2;
   private distributionInterval: number = 240;
 
   private fireworks: Firework[] = []
