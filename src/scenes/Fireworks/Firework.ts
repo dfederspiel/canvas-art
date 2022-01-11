@@ -1,10 +1,12 @@
-import { effects } from '../../lib/easing';
+import { easeInBack, easeInElastic, easeInOutCirc, easeInOutElastic, easeInOutSine, easeInSine, effects } from '../../lib/easing';
 import { calculate, rand } from '../../lib/helpers';
 import { Randomizable } from '../../lib/types';
 import Segment from './Segment';
 import Phosphorous from './Phosphorous/Phosphorous';
 import RGB from '../../lib/RGB';
-import { PhosphorousType } from './Phosphorous/types';
+import { Distance, PhosphorousType } from './Phosphorous/types';
+import Rect from '../../lib/Rect';
+import Blinker from './Phosphorous/Blinker';
 
 export default class Firework implements Randomizable {
 
@@ -14,10 +16,19 @@ export default class Firework implements Randomizable {
   private cx: number;
   private cy: number;
 
+  private mortarX: number = window.innerWidth / 2;
+  private mortarY: number = window.innerHeight;
+
+  private mortar: Blinker;
+
+  private count: number = 0;
+
+  private distance: Distance
+
   private timeBeganDying: number = 0;
 
   private velocityModifierMin: number = rand(.0005, .001)
-  private velocityModifierMax: number = rand(.01, .025)
+  private velocityModifierMax: number = rand(.001, .0025)
 
   //alpha: number = 1; // this is a buggy remnant
   private direction: number = 0;
@@ -48,8 +59,11 @@ export default class Firework implements Randomizable {
   private minRadius: number;
   private maxRadius: number;
 
+  private hasDetonated: boolean = false;
+
   isDying: boolean = false;
   isDead: boolean = false;
+
 
   constructor(
     angle: number,
@@ -73,10 +87,23 @@ export default class Firework implements Randomizable {
     this.color = new RGB(r, g, b, 0)
     this.strokeColor = new RGB(r, g, b, rand(.1, .3))
 
-    this.strokeColor.darken(100)
+    this.strokeColor.darken(100);
 
     this.randomize();
-    this.renderLobes();
+
+    console.log(this.width / 2, this.height, this.cx, this.cy)
+    this.distance = calculate.distance({
+      x: this.width / 2,
+      y: this.height,
+      w: 5,
+      h: 5,
+    } as Rect, {
+      x: this.cx,
+      y: this.cy,
+      w: 5,
+      h: 5,
+    } as Rect)
+    console.log(this.distance)
   }
 
   update(step: number) {
@@ -145,19 +172,39 @@ export default class Firework implements Randomizable {
     this.cy = rand(this.height * .25, this.height * .25);
   }
 
+  private updateLaunch() {
+    let r = easeInOutSine(this.count, 1, 5, 10)
+    this.ctx.fillStyle = 'silver'
+    this.ctx.fillRect(this.mortarX - r / 2, this.mortarY - r / 2, r, r);
+    this.mortarX += this.distance.dx / 75
+    this.mortarY += this.distance.dy / 40 + this.count / 5
+    this.count++;
+    if (this.count > 90) {
+      this.cx = this.mortarX - r / 2;
+      this.cy = this.mortarY - r / 2;
+      this.hasDetonated = true;
+      this.renderLobes();
+
+    }
+  }
+
   render() {
-    this.segments.forEach((p) => {
-      this.renderArcs(p.points);
-    });
-    this.update(this.rotationInterval)
+    if (this.hasDetonated) {
+      this.segments.forEach((p) => {
+        this.renderArcs(p.points);
+      });
+      this.update(this.rotationInterval)
 
-    this.isDead = true;
-    this.segments.forEach(s => {
-      if (!s.isDead) this.isDead = false;
-    })
+      this.isDead = true;
+      this.segments.forEach(s => {
+        if (!s.isDead) this.isDead = false;
+      })
 
-    if (this.minModifier > 0) this.minModifier -= this.velocityModifierMin;
-    if (this.maxModifier > 0) this.maxModifier -= this.velocityModifierMax;
+      if (this.minModifier > 0) this.minModifier -= this.velocityModifierMin;
+      if (this.maxModifier > 0) this.maxModifier -= this.velocityModifierMax;
+    } else {
+      this.updateLaunch()
+    }
 
     this.life++;
   }

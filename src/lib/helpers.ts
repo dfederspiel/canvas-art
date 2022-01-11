@@ -14,6 +14,11 @@ export function colorRand(alpha?: number): RGB {
 }
 
 export const calculate = {
+  distance: (r1: Rect, r2: Rect) => {
+    var dx = r2.x + r2.w / 2 - (r1.x + r1.w / 2);
+    var dy = r2.y + r2.h / 2 - (r1.y + r1.h / 2);
+    return { dx, dy }
+  },
   angle: (r1: Rect, r2: Rect) => {
     var dx = r2.x + r2.w / 2 - (r1.x + r1.w / 2);
     var dy = r2.y + r2.h / 2 - (r1.y + r1.h / 2);
