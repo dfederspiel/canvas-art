@@ -36,6 +36,7 @@ export default class Segment {
     steps: number,
     ease: Function,
     color?: RGB,
+    secondaryColor?: RGB,
     type?: PhosphorousType,
   ) {
 

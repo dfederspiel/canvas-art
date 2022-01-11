@@ -139,6 +139,7 @@ export default class Firework implements Randomizable {
         this.steps,
         this.ease,
         color,
+        color,
         fType,
       );
       this.segments.push(p);
@@ -173,18 +174,19 @@ export default class Firework implements Randomizable {
   }
 
   private updateLaunch() {
-    let r = easeInOutSine(this.count, 1, 5, 10)
+    let r = easeInOutSine(this.count, 2, 4, 3)
     this.ctx.fillStyle = 'silver'
     this.ctx.fillRect(this.mortarX - r / 2, this.mortarY - r / 2, r, r);
-    this.mortarX += this.distance.dx / 75
-    this.mortarY += this.distance.dy / 40 + this.count / 5
+    this.mortarX += this.distance.dx / 60
+    this.mortarY += this.distance.dy / (this.height / 20) + this.count / (this.height / 150)
     this.count++;
     if (this.count > 90) {
       this.cx = this.mortarX - r / 2;
       this.cy = this.mortarY - r / 2;
       this.hasDetonated = true;
       this.renderLobes();
-
+      this.ctx.fillStyle = 'rgba(255,255,255,.15)'
+      this.ctx.fillRect(0, 0, this.width, this.height)
     }
   }
 
