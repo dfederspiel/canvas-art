@@ -9,13 +9,13 @@ export default class Blinker extends Phosphorous {
 
   constructor(x: number, y: number, cx: number, cy: number) {
     super(x, y, cx, cy,
-      new Size(.5, rand(1, 2.8), .5, rand(1, 2.8)),
+      new Size(.2, rand(.2, 1.9), .2, rand(.2, 1.9)),
       new RGB(158, 137, 0, .6),
       new RGB(220, 220, 220, 1),
       easeOutSine
     )
     this.ageLimit = rand(180, 600)
-    this.frames = rand(15, 20) // Math.floor(rand(5, 60))
+    this.frames = Math.floor(rand(15, 20))
   }
 
   update(): void {

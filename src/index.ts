@@ -86,7 +86,6 @@ var main = function () {
   requestAnimationFrame(main);
 };
 
-
 document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowDown") {
     if (PAGE < pages.length - 1) {

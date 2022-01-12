@@ -103,7 +103,6 @@ export default class Firework implements Randomizable {
       w: 5,
       h: 5,
     } as Rect)
-    console.log(this.distance)
   }
 
   update(step: number) {
@@ -116,11 +115,9 @@ export default class Firework implements Randomizable {
     })
   }
 
-  renderLobes() {
+  renderNodes(colorPrimary?: RGB, colorSecondary?: RGB) {
     let r = Math.random() > .2
     let fType = r ? PhosphorousType.Default : PhosphorousType.Blinker;
-    let color = r ? new RGB(rand(50, 255), rand(50, 255), rand(50, 255), rand(.8, 1)) : null
-
 
     for (let c = 0; c < this.limit; c++) {
       this.angle += (Math.PI * 2) / this.limit;
@@ -138,8 +135,8 @@ export default class Firework implements Randomizable {
         this.maxRadius,
         this.steps,
         this.ease,
-        color,
-        color,
+        colorPrimary,
+        colorSecondary,
         fType,
       );
       this.segments.push(p);
@@ -169,14 +166,17 @@ export default class Firework implements Randomizable {
     this.steps = Math.floor(rand(20, 250 / this.limit));
     this.offset = 0;
     this.rotationInterval = 0;
-    this.cx = rand(this.width * .25, this.width * .75);
-    this.cy = rand(this.height * .25, this.height * .25);
+    this.cx = rand(this.width * .45, this.width * .65);
+    this.cy = rand(this.height * .20, this.height * .30);
   }
 
   private updateLaunch() {
-    let r = easeInOutSine(this.count, 2, 4, 3)
+    let r = easeInOutSine(this.count, 1, 2, 2)
+    this.ctx.beginPath();
     this.ctx.fillStyle = 'silver'
-    this.ctx.fillRect(this.mortarX - r / 2, this.mortarY - r / 2, r, r);
+    this.ctx.arc(this.mortarX, this.mortarY, r, 0, Math.PI * 2)
+    this.ctx.fill();
+    this.ctx.stroke();
     this.mortarX += this.distance.dx / 60
     this.mortarY += this.distance.dy / (this.height / 20) + this.count / (this.height / 150)
     this.count++;
@@ -184,9 +184,15 @@ export default class Firework implements Randomizable {
       this.cx = this.mortarX - r / 2;
       this.cy = this.mortarY - r / 2;
       this.hasDetonated = true;
-      this.renderLobes();
+      if (Math.random() < .3) {
+        this.renderNodes();
+      } else {
+        let c = new RGB(rand(50, 255), rand(50, 255), rand(50, 255), rand(.5, 1))
+        this.renderNodes(
+          c, c
+        )
+      }
       this.ctx.fillStyle = 'rgba(255,255,255,.15)'
-      this.ctx.fillRect(0, 0, this.width, this.height)
     }
   }
 

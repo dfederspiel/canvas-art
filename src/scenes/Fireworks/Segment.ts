@@ -57,9 +57,11 @@ export default class Segment {
     let g = rand(50, 150);
     let b = rand(50, 150);
 
-    let c = new RGB(r, g, b, rand(.6, .9));
-    let sc = new RGB(r, g, b, rand(.6, .9));
-    sc.lighten(50)
+    let c = color || new RGB(r, g, b, rand(.6, .9));
+    let sc = secondaryColor || new RGB(r, g, b, rand(.6, .9));
+
+    if (!secondaryColor)
+      sc.lighten(50)
 
     if (this.type && this.type === PhosphorousType.Blinker) steps = 100;
     for (let s = 0; s < steps; s++) {
@@ -92,7 +94,7 @@ export default class Segment {
         y1,
         this.cx,
         this.cy,
-        new Size(.1, 1.5, .1, 1.5),
+        new Size(.1, .8, .1, .8),
         c,
         sc,
         effects[Math.floor(Math.random() * effects.length)]))
@@ -104,7 +106,7 @@ export default class Segment {
         y2,
         this.cx,
         this.cy,
-        new Size(.1, 1.5, .1, 1.5),
+        new Size(.1, 1, .1, 1),
         c,
         sc,
         effects[Math.floor(Math.random() * effects.length)]))
