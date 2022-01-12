@@ -1,4 +1,6 @@
-export function easeLinear(t: number, b: number, c: number, d: number) {
+export type EasingFn = (t: number, b: number, c: number, d: number) => number;
+
+export function easeLinear(t: number, b: number, c: number, d: number): number {
   return (c * t) / d + b;
 }
 

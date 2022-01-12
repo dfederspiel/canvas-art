@@ -1,14 +1,24 @@
 import Rect from "./Rect";
+import RGB from "./RGB";
 
 export function rand(min: number, max: number) {
   return Math.random() * (max - min) + min;
 }
 
-export function colorRand() {
-  return `rgb(${rand(0, 255)}, ${rand(0, 255)}, ${rand(0, 255)})`
+export function colorRand(alpha?: number): RGB {
+  return new RGB(
+    rand(0, 255),
+    rand(0, 255),
+    rand(0, 255),
+    alpha || 1)
 }
 
 export const calculate = {
+  distance: (r1: Rect, r2: Rect) => {
+    var dx = r2.x + r2.w / 2 - (r1.x + r1.w / 2);
+    var dy = r2.y + r2.h / 2 - (r1.y + r1.h / 2);
+    return { dx, dy }
+  },
   angle: (r1: Rect, r2: Rect) => {
     var dx = r2.x + r2.w / 2 - (r1.x + r1.w / 2);
     var dy = r2.y + r2.h / 2 - (r1.y + r1.h / 2);

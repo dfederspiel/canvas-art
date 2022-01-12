@@ -50,28 +50,28 @@ export default class ClockScene implements Scene {
     this.#radiansPerHour = (this.#radiansPerMinute * 60) / 12 / 60;
 
     const WALL_WIDTH = 5;
-    const MARGIN = .1 * this.width;
+    const MARGIN = .2 * this.width;
     this.walls.push(
       // LEFT
       new Wall(
         MARGIN - WALL_WIDTH / 2,
-        MARGIN - WALL_WIDTH / 2,
+        MARGIN / 2 - WALL_WIDTH / 2,
         WALL_WIDTH,
-        this.height - MARGIN * 2,
+        this.height - (MARGIN / 2) * 2,
         colorRand()
       ),
       // RIGHT
       new Wall(
         this.width - MARGIN - (WALL_WIDTH / 2),
-        MARGIN - WALL_WIDTH / 2,
+        MARGIN / 2 - WALL_WIDTH / 2,
         WALL_WIDTH,
-        this.height - MARGIN * 2,
+        this.height - (MARGIN / 2) * 2,
         colorRand()
       ),
       // TOP
       new Wall(
         MARGIN - WALL_WIDTH / 2,
-        MARGIN - WALL_WIDTH / 2,
+        MARGIN / 2 - WALL_WIDTH / 2,
         this.width - MARGIN * 2 + WALL_WIDTH,
         WALL_WIDTH,
         colorRand()
@@ -79,7 +79,7 @@ export default class ClockScene implements Scene {
       // BOTTOM
       new Wall(
         MARGIN - WALL_WIDTH / 2,
-        this.height - MARGIN - (WALL_WIDTH / 2),
+        this.height - MARGIN / 2 - (WALL_WIDTH / 2),
         this.width - MARGIN * 2 + WALL_WIDTH,
         WALL_WIDTH,
         colorRand()
@@ -162,16 +162,16 @@ export default class ClockScene implements Scene {
           (angle > angles.bl && angle < 360)
         ) {
           /// if moving in + direction deflect rect 1 in x direction etc.
-          if (obj.speedx > 0) obj.speedx = -obj.speedx;
+          if (obj.speedX > 0) obj.speedX = -obj.speedX;
         } else if (angle >= angles.tl && angle < angles.tr) {
           /// zone 2 - top
-          if (obj.speedy > 0) obj.speedy = -obj.speedy;
+          if (obj.speedY > 0) obj.speedY = -obj.speedY;
         } else if (angle >= angles.tr && angle < angles.br) {
           /// zone 3 - right
-          if (obj.speedx < 0) obj.speedx = -obj.speedx;
+          if (obj.speedX < 0) obj.speedX = -obj.speedX;
         } else {
           /// zone 4 - bottom
-          if (obj.speedy < 0) obj.speedy = -obj.speedy;
+          if (obj.speedY < 0) obj.speedY = -obj.speedY;
         }
       }
     } else obj.hit = false; /// reset hit when this hit is done (angle = null)
@@ -207,7 +207,7 @@ export default class ClockScene implements Scene {
 
           if (angle) {
             wall.hits++;
-            p.colorString = wall.colorString;
+            p.colorString = wall.color.toString();
             p.hitTime = Date.now();
             p.alpha = 1;
           }
@@ -238,7 +238,7 @@ export default class ClockScene implements Scene {
     });
 
     this.walls.forEach((w) => {
-      this.#ctx.fillStyle = w.colorString;
+      this.#ctx.fillStyle = w.color.toString();
       this.#ctx.globalAlpha = checkCollisions ? 0.8 : 0.2;
       this.#ctx.fillRect(w.x, w.y, w.w, w.h);
     });
@@ -257,12 +257,12 @@ export default class ClockScene implements Scene {
 
     this.#ctx.globalAlpha = .75;
 
-    // Second Hand Position
-    const { x: secondsX, y: secondsY } = this.getXYOnCircle(
+    // Hour Hand Position
+    const { x: hoursX, y: hoursY } = this.getXYOnCircle(
       this.width / 2,
       this.height / 2,
-      (this.#timeInMs / 1000) * this.#radiansPerSecond - (Math.PI * 2) / 4,
-      this.#radius + 20
+      (this.#timeInMs / 1000) * this.#radiansPerHour - (Math.PI * 2) / 4,
+      this.#radius + 150
     );
 
     // Minute Hand Position
@@ -273,15 +273,15 @@ export default class ClockScene implements Scene {
       this.#radius + 100
     );
 
-    // Hour Hand Position
-    const { x: hoursX, y: hoursY } = this.getXYOnCircle(
+    // Second Hand Position
+    const { x: secondsX, y: secondsY } = this.getXYOnCircle(
       this.width / 2,
       this.height / 2,
-      (this.#timeInMs / 1000) * this.#radiansPerHour - (Math.PI * 2) / 4,
-      this.#radius + 150
+      (this.#timeInMs / 1000) * this.#radiansPerSecond - (Math.PI * 2) / 4,
+      this.#radius + 20
     );
 
-    //
+    // Millisecond Hand Position
     const { x: secondHandOrbiterX, y: secondHandOrbiterY } = this.getXYOnCircle(
       secondsX,
       secondsY,

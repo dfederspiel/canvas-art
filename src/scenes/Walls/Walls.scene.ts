@@ -1,5 +1,5 @@
 import { easeInElastic, easeInOutQuad } from "../../lib/easing";
-import { calculate, collision, rand } from "../../lib/helpers";
+import { calculate, collision, colorRand, rand } from "../../lib/helpers";
 import Rect from "../../lib/Rect";
 import Size from "../../lib/Size";
 import Sprite from "../../lib/Sprite";
@@ -8,13 +8,13 @@ import Wall from "../../lib/Wall";
 
 export default class WallsScene implements Scene {
 
-  static WALL_DIVISIONS = 4
+  static WALL_DIVISIONS = 2
   static PARTICLE_VX = 0;
   static PARTICLE_VY = 0;
-  static ROTATION_STEP = .01;
+  static ROTATION_STEP = .05;
   static MAX_PARTICLES = 1750;
-  static WALL_WIDTH = 2;
-  static WALL_HEIGHT = 2;
+  static WALL_WIDTH = 5;
+  static WALL_HEIGHT = 5;
 
   static RIGHT_PRESSED = false;
   static LEFT_PRESSED = false;
@@ -58,7 +58,7 @@ export default class WallsScene implements Scene {
           y,
           w,
           h,
-          `rgb(${rand(0, 255)}, ${rand(0, 255)}, ${rand(0, 255)})`
+          colorRand()
         )
       );
     }
@@ -75,7 +75,7 @@ export default class WallsScene implements Scene {
           y,
           w,
           h,
-          `rgb(${rand(0, 255)}, ${rand(0, 255)}, ${rand(0, 255)})`
+          colorRand()
         )
       );
     }
@@ -110,16 +110,16 @@ export default class WallsScene implements Scene {
           (angle > angles.bl && angle < 360)
         ) {
           /// if moving in + direction deflect rect 1 in x direction etc.
-          if (obj.speedx > 0) obj.speedx = -obj.speedx;
+          if (obj.speedX > 0) obj.speedX = -obj.speedX;
         } else if (angle >= angles.tl && angle < angles.tr) {
           /// zone 2 - top
-          if (obj.speedy > 0) obj.speedy = -obj.speedy;
+          if (obj.speedY > 0) obj.speedY = -obj.speedY;
         } else if (angle >= angles.tr && angle < angles.br) {
           /// zone 3 - right
-          if (obj.speedx < 0) obj.speedx = -obj.speedx;
+          if (obj.speedX < 0) obj.speedX = -obj.speedX;
         } else {
           /// zone 4 - bottom
-          if (obj.speedy < 0) obj.speedy = -obj.speedy;
+          if (obj.speedY < 0) obj.speedY = -obj.speedY;
         }
       }
     } else obj.hit = false; /// reset hit when this hit is done (angle = null)
@@ -155,7 +155,7 @@ export default class WallsScene implements Scene {
 
           if (angle) {
             wall.hits++;
-            p.colorString = wall.colorString;
+            p.colorString = wall.color.toString();
             p.hitTime = Date.now();
             p.alpha = 1;
           }
@@ -191,7 +191,7 @@ export default class WallsScene implements Scene {
     this.ctx.clearRect(0, 0, this.width, this.height); // clear the screen
 
     this.walls.forEach((w) => {
-      this.ctx.fillStyle = w.colorString;
+      this.ctx.fillStyle = w.color.toString();
       this.ctx.globalAlpha = .2;
       this.ctx.fillRect(w.x, w.y, w.w, w.h);
     });
@@ -217,7 +217,7 @@ export default class WallsScene implements Scene {
     );
     // run the render function
     this.renderOtherStuff(this.drops, true, true);
-    // this.renderOtherStuff(this.particles, true, true);
+    //this.renderOtherStuff(this.particles, true, true);
     this.angle += WallsScene.ROTATION_STEP;
     if (this.angle >= 2 * Math.PI) {
       this.angle = 0;
@@ -227,8 +227,6 @@ export default class WallsScene implements Scene {
     }
     // Request to do this again ASAP
     while (this.particles.length > WallsScene.MAX_PARTICLES) this.particles.shift();
-
-
   }
 
 }

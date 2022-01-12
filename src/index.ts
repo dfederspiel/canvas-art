@@ -9,6 +9,7 @@ import SpaceTimeScene from "./scenes/SpaceTime/SpaceTime.scene";
 import WallsScene from "./scenes/Walls/Walls.scene";
 import WaterfallScene from "./scenes/Waterfall/Waterfall.scene";
 import SupernovaeScene from "./scenes/Supernovae/SupernovaeScene.scene";
+import FireworkScene from "./scenes/Fireworks/Fireworks.scene";
 
 let WIDTH = window.innerWidth;
 let HEIGHT = window.innerHeight;
@@ -41,14 +42,25 @@ function renderTitle() {
   ctx.font = '24px Arial';
   ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
-  ctx.fillText(`Scene: ${pages[PAGE - 1].title}`, 10, 10);
+  ctx.fillText(`Scene ${PAGE + 1}: ${pages[PAGE].title}`, 10, 10);
   ctx.font = '16px Arial';
-  ctx.fillText(`Press 1-${pages.length} to switch or regenerate scenes`, 10, 40);
+  ctx.fillText(`Use the arrow keys to switch scenes`, 10, 40);
+}
+
+function renderHelp(pages: Page[]) {
+  ctx.globalAlpha = .85;
+  ctx.font = '13px Arial';
+  ctx.fillStyle = 'rgba(0,0,0,1)';
+  ctx.fillRect(0, 75, 190, 20 * pages.length + 5)
+  pages.forEach((page, idx) => {
+    ctx.fillStyle = PAGE === idx ? 'rgba(255, 255, 255, .7)' : 'rgba(255, 255, 255, .2)';
+    ctx.fillText(`${idx + 1}: ${page.title}`, 10, (idx * 20) + 80)
+  });
 }
 
 type Page = {
   title: string
-  scene: Scene
+  scene: Scene | Randomizable
 }
 
 let pages: Page[] = [
@@ -56,6 +68,7 @@ let pages: Page[] = [
   { title: 'Snakes on a Plane', scene: new SnakesScene(WIDTH, HEIGHT, ctx) },
   { title: 'Space Time Rift', scene: new SpaceTimeScene(WIDTH, HEIGHT, ctx) },
   { title: 'Flowers', scene: new FlowersScene(WIDTH, HEIGHT, ctx) },
+  { title: 'Fireworks', scene: new FireworkScene(WIDTH, HEIGHT, ctx) },
   { title: 'Escher Smoke Trails', scene: new EscherScene(WIDTH, HEIGHT, ctx) },
   { title: 'Space Clock', scene: new ClockScene(canvas.width, canvas.height, ctx) },
   { title: 'Sea Space', scene: new SeaSpaceScene(WIDTH, HEIGHT, ctx) },
@@ -64,89 +77,42 @@ let pages: Page[] = [
   { title: 'Orbiters', scene: new OrbiterScene(WIDTH, HEIGHT, ctx) },
 ]
 
-let PAGE: number = parseInt(localStorage.getItem('scene')) || 1;
+let PAGE: number = parseInt(localStorage.getItem('scene')) || 0;
 
 var main = function () {
-  pages[PAGE - 1].scene.render();
+  (pages[PAGE].scene as Scene).render();
   renderTitle();
+  renderHelp(pages);
   requestAnimationFrame(main);
 };
 
-
 document.addEventListener("keydown", (e) => {
-  if (e.key === "1") {
-    pages[0].scene = new SupernovaeScene(WIDTH, HEIGHT, ctx);
-    PAGE = 1;
-    localStorage.setItem('scene', '1')
-  }
-  if (e.key === "2") {
-    pages[1].scene = new SnakesScene(WIDTH, HEIGHT, ctx)
-    PAGE = 2
-    localStorage.setItem('scene', '2')
-  };
-  if (e.key === "3") {
-    pages[2].scene = new SpaceTimeScene(WIDTH, HEIGHT, ctx);
-    PAGE = 3
-    localStorage.setItem('scene', '3')
-  };
-  if (e.key === "4") {
-    pages[3].scene = new FlowersScene(WIDTH, HEIGHT, ctx);
-    PAGE = 4
-    localStorage.setItem('scene', '4')
-  };
-  if (e.key === "5") {
-    pages[4].scene = new EscherScene(WIDTH, HEIGHT, ctx);
-    PAGE = 5
-    localStorage.setItem('scene', '5')
-  };
-  if (e.key === "6") {
-    pages[5].scene = new ClockScene(WIDTH, HEIGHT, ctx);
-    PAGE = 6
-    localStorage.setItem('scene', '6')
-  };
-  if (e.key === "7") {
-    pages[6].scene = new SeaSpaceScene(WIDTH, HEIGHT, ctx);
-    PAGE = 7
-    localStorage.setItem('scene', '7')
-  };
-  if (e.key === "8") {
-    pages[7].scene = new WallsScene(WIDTH, HEIGHT, ctx);
-    PAGE = 8
-    localStorage.setItem('scene', '8')
-  };
-  if (e.key === "9") {
-    pages[8].scene = new WaterfallScene(WIDTH, HEIGHT, ctx);
-    PAGE = 9
-    localStorage.setItem('scene', '9')
-  };
-  if (e.key === "0") {
-    pages[9].scene = new OrbiterScene(WIDTH, HEIGHT, ctx);
-    PAGE = 10
-    localStorage.setItem('scene', '10')
-  };
-
-
-  if (e.key === "ArrowRight") {
-    if (PAGE < pages.length) {
+  if (e.key === "ArrowDown") {
+    if (PAGE < pages.length - 1) {
+      ctx.clearRect(0, 0, WIDTH, HEIGHT);
       PAGE++
       localStorage.setItem('scene', PAGE.toString())
     }
   };
 
-  if (e.key === "ArrowLeft") {
-    if (PAGE > 1) {
+  if (e.key === "ArrowUp") {
+    if (PAGE > 0) {
+      ctx.clearRect(0, 0, WIDTH, HEIGHT);
       PAGE--
       localStorage.setItem('scene', PAGE.toString())
     }
   };
 
+  if (e.key === " ") {
+
+  };
+
   if (e.key === "x") {
-    let r = pages[7].scene as unknown as Randomizable
-    r.randomize();
-    r = pages[8].scene as unknown as Randomizable
-    r.randomize();
-    r = pages[0].scene as unknown as Randomizable
-    r.randomize();
+    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    if ("randomize" in pages[PAGE].scene) {
+      (pages[PAGE].scene as Randomizable).randomize();
+      (pages[PAGE].scene as Scene).render();
+    }
   }
 });
 
