@@ -25,6 +25,9 @@ export default class Segment {
   private cx: number;
   private cy: number;
 
+  private origcx: number;
+  private origcy: number;
+
   private type: PhosphorousType;
 
   constructor(
@@ -38,6 +41,8 @@ export default class Segment {
     color?: RGB,
     secondaryColor?: RGB,
     type?: PhosphorousType,
+    origcx?: number,
+    origcy?: number,
   ) {
 
     this.ease = ease;
@@ -45,6 +50,8 @@ export default class Segment {
     this.maxRadius = maxRadius;
     this.cx = cx;
     this.cy = cy;
+    this.origcx = origcx
+    this.origcy = origcy
 
     this.type = type;
 
@@ -58,16 +65,14 @@ export default class Segment {
     let b = rand(50, 150);
 
     let c = color || new RGB(r, g, b, rand(.6, .9));
-    let sc = secondaryColor || new RGB(r, g, b, rand(.6, .9));
+    let sc = secondaryColor || color || new RGB(r, g, b, rand(.6, .9));
 
-    if (!secondaryColor)
-      sc.lighten(50)
+    // if (!secondaryColor)
+    //   sc.lighten(50)
 
     if (this.type && this.type === PhosphorousType.Blinker) steps = 100;
     for (let s = 0; s < steps; s++) {
       let radius = ease(s, this.minRadius, this.maxRadius, steps);
-
-
       switch (this.type) {
         case PhosphorousType.Default:
           this.plotPhosphorous(cx, cy, currentAngleRight, currentAngleLeft, radius, c, sc)
@@ -92,8 +97,8 @@ export default class Segment {
       new Phosphorous(
         x1,
         y1,
-        this.cx,
-        this.cy,
+        this.origcx,
+        this.origcy,
         new Size(.1, .8, .1, .8),
         c,
         sc,
@@ -104,8 +109,8 @@ export default class Segment {
       new Phosphorous(
         x2,
         y2,
-        this.cx,
-        this.cy,
+        this.origcx,
+        this.origcy,
         new Size(.1, 1, .1, 1),
         c,
         sc,
@@ -118,8 +123,8 @@ export default class Segment {
       new Blinker(
         x1,
         y1,
-        this.cx,
-        this.cy,
+        this.origcx,
+        this.origcy,
       ))
 
     const { x: x2, y: y2 } = calculate.getVertexFromAngle(cx, cy, currentAngleLeft, radius)
@@ -127,8 +132,8 @@ export default class Segment {
       new Blinker(
         x2,
         y2,
-        this.cx,
-        this.cy,
+        this.origcx,
+        this.origcy,
       ))
   }
 

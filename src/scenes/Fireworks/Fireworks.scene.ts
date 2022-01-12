@@ -9,8 +9,8 @@ export default class FireworkScene implements Scene, Randomizable {
   ctx: CanvasRenderingContext2D
 
   private count = 0;
-  private layers = 5;
-  private distributionInterval: number = 240;
+  private layers = 10;
+  private distributionInterval: number = 1;
 
   private fireworks: Firework[] = []
 
@@ -25,7 +25,7 @@ export default class FireworkScene implements Scene, Randomizable {
   }
 
   render(): void {
-    if (this.count % 30 === 0) {
+    if (this.count % 15 === 0) {
       this.ctx.filter = 'blur(10px)'
       var imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
       this.ctx.putImageData(imageData, 0, 0);
@@ -36,7 +36,8 @@ export default class FireworkScene implements Scene, Randomizable {
 
     if (this.fireworks.length < this.layers && this.count % this.distributionInterval === 0) {
       this.fireworks.push(new Firework(0, Math.floor(rand(2, 15)), this.ctx));
-      this.distributionInterval = Math.floor(rand(15, 240))
+      this.distributionInterval = Math.floor(rand(15, 60))
+      this.layers = Math.floor(rand(1, 3))
     }
 
     this.fireworks?.forEach((c, idx) => {

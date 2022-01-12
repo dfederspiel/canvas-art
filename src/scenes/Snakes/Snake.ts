@@ -117,7 +117,6 @@ export default class Snake {
         // if we collide with a wall, reset the origin point
         if (x < -50 || x > this.width + 50 || y < -50 || y > this.height + 50) {
           this.hasTornTroughSpaceTimeFabric = true;
-          console.log('has torn');
         }
 
         this.particles.push(

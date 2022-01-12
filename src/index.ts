@@ -110,7 +110,6 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "x") {
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
     if ("randomize" in pages[PAGE].scene) {
-      console.log(pages[PAGE].scene);
       (pages[PAGE].scene as Randomizable).randomize();
       (pages[PAGE].scene as Scene).render();
     }

@@ -9,8 +9,8 @@ export default class Blinker extends Phosphorous {
 
   constructor(x: number, y: number, cx: number, cy: number) {
     super(x, y, cx, cy,
-      new Size(.2, rand(.2, 1.9), .2, rand(.2, 1.9)),
-      new RGB(158, 137, 0, .6),
+      new Size(.1, rand(.5, 1.9), .1, rand(.5, 1.9)),
+      new RGB(158, 137, 0, 1),
       new RGB(220, 220, 220, 1),
       easeOutSine
     )
