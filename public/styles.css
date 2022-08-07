@@ -1,0 +1,27 @@
+body {
+  margin: 0;
+  background-color: #000;
+}
+
+.navigation {
+  display: flex;
+  height: 50px;
+}
+
+.navigation button {
+  transition: all 250ms;
+  flex: 1 1 50%;
+  font-size: 25px;
+  font-family: monospace;
+  font-weight: bold;
+  background-color: #222;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.navigation button:hover,
+.navigation button:focus,
+.navigation button:active {
+  background-color: #333;
+}
