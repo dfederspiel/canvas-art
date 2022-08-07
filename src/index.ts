@@ -12,7 +12,7 @@ import SupernovaeScene from "./scenes/Supernovae/SupernovaeScene.scene";
 import FireworkScene from "./scenes/Fireworks/Fireworks.scene";
 
 let WIDTH = window.innerWidth;
-let HEIGHT = window.innerHeight;
+let HEIGHT = window.innerHeight - 50;
 
 let canvas: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D;
@@ -42,19 +42,7 @@ function renderTitle() {
   ctx.textBaseline = "top";
   ctx.fillText(`Scene ${PAGE + 1}: ${pages[PAGE].title}`, 10, 10);
   ctx.font = "16px Arial";
-  ctx.fillText(`Use the arrow keys to switch scenes`, 10, 40);
-}
-
-function renderHelp(pages: Page[]) {
-  ctx.globalAlpha = 0.85;
-  ctx.font = "13px Arial";
-  ctx.fillStyle = "rgba(0,0,0,1)";
-  ctx.fillRect(0, 75, 190, 20 * pages.length + 5);
-  pages.forEach((page, idx) => {
-    ctx.fillStyle =
-      PAGE === idx ? "rgba(255, 255, 255, .7)" : "rgba(255, 255, 255, .2)";
-    ctx.fillText(`${idx + 1}: ${page.title}`, 10, idx * 20 + 80);
-  });
+  ctx.fillText(`Use the buttons switch scenes`, 10, 40);
 }
 
 type Page = {
@@ -84,7 +72,6 @@ let PAGE: number = parseInt(localStorage.getItem("scene")) || 0;
 var main = function () {
   (pages[PAGE].scene as Scene).render();
   renderTitle();
-  renderHelp(pages);
   requestAnimationFrame(main);
 };
 
