@@ -42,7 +42,7 @@ function renderTitle() {
   ctx.textBaseline = "top";
   ctx.fillText(`Scene ${PAGE + 1}: ${pages[PAGE].title}`, 10, 10);
   ctx.font = "16px Arial";
-  ctx.fillText(`Use the buttons switch scenes`, 10, 40);
+  ctx.fillText(`use the buttons below to switch scenes`, 10, 40);
 }
 
 type Page = {
@@ -75,34 +75,34 @@ var main = function () {
   requestAnimationFrame(main);
 };
 
-document.addEventListener("keydown", (e) => {
-  if (e.key === "ArrowDown") {
-    if (PAGE < pages.length - 1) {
-      ctx.clearRect(0, 0, WIDTH, HEIGHT);
-      PAGE++;
-      localStorage.setItem("scene", PAGE.toString());
-    }
-  }
+// document.addEventListener("keydown", (e) => {
+//   if (e.key === "ArrowDown") {
+//     if (PAGE < pages.length - 1) {
+//       ctx.clearRect(0, 0, WIDTH, HEIGHT);
+//       PAGE++;
+//       localStorage.setItem("scene", PAGE.toString());
+//     }
+//   }
 
-  if (e.key === "ArrowUp") {
-    if (PAGE > 0) {
-      ctx.clearRect(0, 0, WIDTH, HEIGHT);
-      PAGE--;
-      localStorage.setItem("scene", PAGE.toString());
-    }
-  }
+//   if (e.key === "ArrowUp") {
+//     if (PAGE > 0) {
+//       ctx.clearRect(0, 0, WIDTH, HEIGHT);
+//       PAGE--;
+//       localStorage.setItem("scene", PAGE.toString());
+//     }
+//   }
 
-  if (e.key === " ") {
-  }
+//   if (e.key === " ") {
+//   }
 
-  if (e.key === "x") {
-    ctx.clearRect(0, 0, WIDTH, HEIGHT);
-    if ("randomize" in pages[PAGE].scene) {
-      (pages[PAGE].scene as Randomizable).randomize();
-      (pages[PAGE].scene as Scene).render();
-    }
-  }
-});
+//   if (e.key === "x") {
+//     ctx.clearRect(0, 0, WIDTH, HEIGHT);
+//     if ("randomize" in pages[PAGE].scene) {
+//       (pages[PAGE].scene as Randomizable).randomize();
+//       (pages[PAGE].scene as Scene).render();
+//     }
+//   }
+// });
 
 const nextButton = document.getElementById("nextButton");
 nextButton.addEventListener("click", () => {

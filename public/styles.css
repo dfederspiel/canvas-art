@@ -9,6 +9,7 @@ body {
 }
 
 .navigation button {
+  transition: all 250ms;
   flex: 1 1 50%;
   font-size: 25px;
   font-family: monospace;
@@ -19,6 +20,8 @@ body {
   cursor: pointer;
 }
 
-.navigation button:first-child {
-  border-right: 5px;
+.navigation button:hover,
+.navigation button:focus,
+.navigation button:active {
+  background-color: #333;
 }
