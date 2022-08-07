@@ -25,13 +25,12 @@ module.exports = {
   plugins: [
     new HtmlWebPackPlugin({
       template: resolve(__dirname, "./public", "index.html"),
-      // favicon: resolve(__dirname, '../public', 'favicon.ico'),
       filename: "./index.html",
     }),
     new CopyPlugin({
       patterns: [
         { from: "public/images", to: "images" },
-        { from: "public/styles.css", to: "styles.css" },
+        { from: "public/styles.css" },
       ],
     }),
   ],

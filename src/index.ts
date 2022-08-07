@@ -75,35 +75,6 @@ var main = function () {
   requestAnimationFrame(main);
 };
 
-// document.addEventListener("keydown", (e) => {
-//   if (e.key === "ArrowDown") {
-//     if (PAGE < pages.length - 1) {
-//       ctx.clearRect(0, 0, WIDTH, HEIGHT);
-//       PAGE++;
-//       localStorage.setItem("scene", PAGE.toString());
-//     }
-//   }
-
-//   if (e.key === "ArrowUp") {
-//     if (PAGE > 0) {
-//       ctx.clearRect(0, 0, WIDTH, HEIGHT);
-//       PAGE--;
-//       localStorage.setItem("scene", PAGE.toString());
-//     }
-//   }
-
-//   if (e.key === " ") {
-//   }
-
-//   if (e.key === "x") {
-//     ctx.clearRect(0, 0, WIDTH, HEIGHT);
-//     if ("randomize" in pages[PAGE].scene) {
-//       (pages[PAGE].scene as Randomizable).randomize();
-//       (pages[PAGE].scene as Scene).render();
-//     }
-//   }
-// });
-
 const nextButton = document.getElementById("nextButton");
 nextButton.addEventListener("click", () => {
   if (PAGE < pages.length - 1) {
