@@ -25,3 +25,7 @@ body {
 .navigation button:active {
   background-color: #333;
 }
+
+.navigation button#randomize {
+  flex: 0 0 50px;
+}

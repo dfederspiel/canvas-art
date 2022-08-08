@@ -16,6 +16,12 @@ let HEIGHT = window.innerHeight - 50;
 
 let canvas: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D;
+let randomizeButton = document.getElementById("randomize") as HTMLButtonElement;
+
+function addRandomizerEvent() {
+  randomizeButton.addEventListener("click", listener);
+  randomizeButton.disabled = isRandomizable(pages[PAGE].scene) ? false : true;
+}
 
 canvas = document.getElementById("canvas") as HTMLCanvasElement;
 ctx = canvas.getContext("2d");
@@ -43,6 +49,10 @@ function renderTitle() {
   ctx.fillText(`Scene ${PAGE + 1}: ${pages[PAGE].title}`, 10, 10);
   ctx.font = "16px Arial";
   ctx.fillText(`use the buttons below to switch scenes`, 10, 40);
+}
+
+function isRandomizable(scene: Scene | Randomizable): scene is Randomizable {
+  return (<Randomizable>scene).randomize !== undefined;
 }
 
 type Page = {
@@ -75,6 +85,12 @@ var main = function () {
   requestAnimationFrame(main);
 };
 
+const listener = (ev: Event) => {
+  if (isRandomizable(pages[PAGE].scene)) {
+    (<Randomizable>pages[PAGE].scene).randomize();
+  }
+};
+
 const nextButton = document.getElementById("nextButton");
 nextButton.addEventListener("click", () => {
   if (PAGE < pages.length - 1) {
@@ -89,8 +105,9 @@ previousButton.addEventListener("click", () => {
   if (PAGE > 0) {
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
     PAGE--;
-    localStorage.setItem("scene", PAGE.toString());
+    localStorage.setItem("scene", String(PAGE));
   }
 });
 
+addRandomizerEvent();
 main();

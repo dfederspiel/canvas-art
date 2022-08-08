@@ -7,26 +7,31 @@ export interface Angles {
   br: number;
 }
 
+export interface Distance {
+  dx: number;
+  dy: number;
+}
+
 export interface Collidable {
   hit: boolean;
-  collidesWith(reference: Rect): Angles
+  collidesWith(reference: Rect): Angles;
 }
 
 export interface Boundable {
-  checkBoundaries(): void
+  checkBoundaries(): void;
 }
 
 export interface Animatable {
-  animationDirection: number
-  updateAnimation(): void
+  animationDirection: number;
+  updateAnimation(): void;
 }
 
 export interface Randomizable {
-  randomize(): void
+  randomize(): void;
 }
 
 export interface Scene {
   width: number;
   height: number;
-  render(): void
+  render(): void;
 }
