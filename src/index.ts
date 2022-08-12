@@ -10,6 +10,7 @@ import WallsScene from "./scenes/Walls/Walls.scene";
 import WaterfallScene from "./scenes/Waterfall/Waterfall.scene";
 import SupernovaeScene from "./scenes/Supernovae/SupernovaeScene.scene";
 import FireworkScene from "./scenes/Fireworks/Fireworks.scene";
+import FlowersScene from "./scenes/Flowers/Flowers.scene";
 
 let WIDTH = window.innerWidth;
 let HEIGHT = window.innerHeight - 50;
@@ -65,6 +66,7 @@ let pages: Page[] = [
   { title: "Snakes on a Plane", scene: new SnakesScene(WIDTH, HEIGHT, ctx) },
   { title: "Space Time Rift", scene: new SpaceTimeScene(WIDTH, HEIGHT, ctx) },
   { title: "Spiral Graph", scene: new SpirographScene(WIDTH, HEIGHT, ctx) },
+  { title: "Flowers", scene: new FlowersScene(WIDTH, HEIGHT, ctx) },
   { title: "Fireworks", scene: new FireworkScene(WIDTH, HEIGHT, ctx) },
   { title: "Escher Smoke Trails", scene: new EscherScene(WIDTH, HEIGHT, ctx) },
   {
