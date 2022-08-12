@@ -64,7 +64,7 @@ let pages: Page[] = [
   { title: "Supernovae", scene: new SupernovaeScene(WIDTH, HEIGHT, ctx) },
   { title: "Snakes on a Plane", scene: new SnakesScene(WIDTH, HEIGHT, ctx) },
   { title: "Space Time Rift", scene: new SpaceTimeScene(WIDTH, HEIGHT, ctx) },
-  { title: "Flowers", scene: new FlowersScene(WIDTH, HEIGHT, ctx) },
+  { title: "Spiral Graph", scene: new FlowersScene(WIDTH, HEIGHT, ctx) },
   { title: "Fireworks", scene: new FireworkScene(WIDTH, HEIGHT, ctx) },
   { title: "Escher Smoke Trails", scene: new EscherScene(WIDTH, HEIGHT, ctx) },
   {

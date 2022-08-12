@@ -1,12 +1,4 @@
-import {
-  easeInCirc,
-  easeInElastic,
-  easeInExpo,
-  easeInOutBack,
-  easeInOutQuad,
-  easeInOutSine,
-  easeLinear,
-} from "../../lib/easing";
+import effects from "../../lib/easing";
 import { ObjectType } from "../../lib/enums";
 import { calculate, rand } from "../../lib/helpers";
 import Rect from "../../lib/Rect";
@@ -15,17 +7,10 @@ import Size from "../../lib/Size";
 import Sprite from "../../lib/Sprite";
 import { Randomizable, Scene } from "../../lib/types";
 
-const easings = [
-  easeInCirc,
-  easeInElastic,
-  easeInOutBack,
-  easeInOutQuad,
-  easeInOutSine,
-  easeLinear,
-];
-
 type SpirographOptions = {
   angleStep: number;
+  radiusStepExit: number;
+  radiusStepReturn: number;
   color: string;
   stroke: string;
   easing: (t: number, b: number, c: number, d: number) => number;
@@ -36,23 +21,27 @@ type SpirographOptions = {
 };
 
 const getRandomOptions = (): SpirographOptions => {
-  let r = Math.floor(rand(5, 255));
-  let g = Math.floor(rand(5, 255));
-  let b = Math.floor(rand(5, 255));
+  let r = Math.floor(rand(0, 255));
+  let g = Math.floor(rand(0, 255));
+  let b = Math.floor(rand(0, 255));
 
   const color = new RGB(r, g, b, 1);
   const fill = color.toString();
-  color.darken(50);
+  color.lighten(50);
   const stroke = color.toString();
+
+  const maxRadius = Math.ceil(rand(150, 300));
   return {
-    angleStep: rand(-0.05, 0.05),
+    angleStep: (Math.PI * 2) / rand(10, 150),
+    radiusStepExit: rand(5, 150),
+    radiusStepReturn: rand(5, 150),
     color: fill,
     stroke,
-    easing: easings[Math.floor(rand(1, easings.length))],
-    frames: Math.floor(rand(1, 200)),
-    minRadius: Math.floor(rand(20, 100)),
-    maxRadius: Math.ceil(rand(75, 250)),
-    rate: Math.floor(rand(1, 40)),
+    easing: effects[Math.floor(rand(0, effects.length))],
+    frames: Math.floor(rand(15, 300)),
+    minRadius: Math.floor(rand(10, 60)),
+    maxRadius,
+    rate: Math.ceil(maxRadius / 5),
   };
 };
 
@@ -110,7 +99,7 @@ export default class FlowersScene implements Scene, Randomizable {
           0,
           0,
           new Rect(0, 0, this.width, this.height),
-          new Size(4, 4, 10, 10),
+          new Size(5, 5, 10, 10),
           1000,
           ObjectType.Particle,
           this.frame
@@ -123,14 +112,14 @@ export default class FlowersScene implements Scene, Randomizable {
         this.frame--;
       }
 
-      if (this.frame >= 60 || this.frame <= 0)
+      if (this.frame >= this.options.frames || this.frame <= 0)
         this.animationDirection = -this.animationDirection;
 
       this.angle += this.options.angleStep;
       if (this.direction < 0) {
-        this.radius -= this.radius / 25;
+        this.radius -= this.options.maxRadius / this.options.radiusStepReturn;
       } else if (this.direction > 0) {
-        this.radius += this.radius / 25;
+        this.radius += this.options.maxRadius / this.options.radiusStepExit;
       }
       if (
         (this.radius > this.options.maxRadius && this.direction > 0) ||
@@ -145,24 +134,25 @@ export default class FlowersScene implements Scene, Randomizable {
       this.ctx.globalAlpha = drop.alpha;
       this.ctx.fillStyle = this.options.color;
       this.ctx.strokeStyle = this.options.stroke;
-
-      this.ctx.beginPath();
-      const e = this.options.easing(idx + 1, 1, drop.w / 2, objects.length);
-
-      this.ctx.arc(drop.x, drop.y, e > 0 ? e : 0, 0, Math.PI * 2);
-      this.ctx.fill();
-      this.ctx.stroke();
-
+      this.ctx.lineWidth = rand(0.05, 2);
+      this.ctx.lineTo(drop.x, drop.y);
       drop.update();
       drop.checkBoundaries();
     });
   }
 
   render(): void {
-    this.ctx.clearRect(0, 0, this.width, this.height); // clear the screen
+    this.ctx.fillStyle = `rgba(0, 0, 0, .05)`;
+    this.ctx.fillRect(0, 0, this.width, this.height);
+    this.ctx.filter = "none";
 
     this.pushParticles(this.options.rate);
+
+    this.ctx.beginPath();
     this.renderParticles(this.particles);
-    while (this.particles.length > 1000) this.particles.shift();
+    this.ctx.stroke();
+
+    while (this.particles.length > this.options.maxRadius * 5)
+      this.particles.shift();
   }
 }
