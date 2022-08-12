@@ -1,7 +1,7 @@
 import { Randomizable, Scene } from "./lib/types";
 import ClockScene from "./scenes/Clock/Clock.scene";
 import EscherScene from "./scenes/EscherTrails/Escher.scene";
-import FlowersScene from "./scenes/Flowers/Flowers.scene";
+import SpirographScene from "./scenes/Spirograph/Spirograph.scene";
 import OrbiterScene from "./scenes/Orbiter/Orbiter.scene";
 import SeaSpaceScene from "./scenes/SeaSpace/SeaSpace.scene";
 import SnakesScene from "./scenes/Snakes/Snakes.scene";
@@ -64,7 +64,7 @@ let pages: Page[] = [
   { title: "Supernovae", scene: new SupernovaeScene(WIDTH, HEIGHT, ctx) },
   { title: "Snakes on a Plane", scene: new SnakesScene(WIDTH, HEIGHT, ctx) },
   { title: "Space Time Rift", scene: new SpaceTimeScene(WIDTH, HEIGHT, ctx) },
-  { title: "Spiral Graph", scene: new FlowersScene(WIDTH, HEIGHT, ctx) },
+  { title: "Spiral Graph", scene: new SpirographScene(WIDTH, HEIGHT, ctx) },
   { title: "Fireworks", scene: new FireworkScene(WIDTH, HEIGHT, ctx) },
   { title: "Escher Smoke Trails", scene: new EscherScene(WIDTH, HEIGHT, ctx) },
   {

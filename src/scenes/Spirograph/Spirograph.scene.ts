@@ -45,7 +45,7 @@ const getRandomOptions = (): SpirographOptions => {
   };
 };
 
-export default class FlowersScene implements Scene, Randomizable {
+export default class SpirographScene implements Scene, Randomizable {
   width: number;
   height: number;
   ctx: CanvasRenderingContext2D;
