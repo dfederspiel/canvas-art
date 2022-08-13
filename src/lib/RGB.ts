@@ -20,30 +20,24 @@ export default class RGB {
   }
 
   set alpha(value: number) {
-    if (value > 1) this._alpha = 1
+    if (value > 1) this._alpha = 1;
     else if (value < 0) this._alpha = 0;
     else this._alpha = value;
   }
 
   darken(value: number) {
-    this.redChannel -= value;
-    this.redChannel = this.redChannel < 0 ? 0 : this.redChannel
-    this.greenChannel -= value;
-    this.greenChannel = this.greenChannel < 0 ? 0 : this.greenChannel
-    this.blueChannel -= value;
-    this.blueChannel = this.blueChannel < 0 ? 0 : this.blueChannel
+    return `rgba(${this.redChannel - value},${this.greenChannel - value},${
+      this.blueChannel - value
+    },${this.alpha})`;
   }
 
   lighten(value: number) {
-    this.redChannel += value;
-    this.redChannel = this.redChannel > 255 ? 255 : this.redChannel
-    this.greenChannel += value;
-    this.greenChannel = this.greenChannel > 255 ? 255 : this.greenChannel
-    this.blueChannel += value;
-    this.blueChannel = this.blueChannel > 255 ? 255 : this.blueChannel
+    return `rgba(${this.redChannel + value},${this.greenChannel + value},${
+      this.blueChannel + -value
+    },${this.alpha})`;
   }
 
   toString() {
-    return `rgba(${this.redChannel},${this.greenChannel},${this.blueChannel},${this.alpha})`
+    return `rgba(${this.redChannel},${this.greenChannel},${this.blueChannel},${this.alpha})`;
   }
 }
