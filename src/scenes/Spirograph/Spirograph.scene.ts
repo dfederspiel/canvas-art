@@ -3,11 +3,20 @@ import Rect from "../../lib/Rect";
 import RGB from "../../lib/RGB";
 import { Randomizable, Scene } from "../../lib/types";
 
+const _patternSeeds = [2, 3, 4, 5, 6, 7, 8, 9, 10];
+const patternSeeds = [2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+const getPatternSeed = () => {
+  const seed1 = patternSeeds[Math.floor(rand(0, patternSeeds.length))];
+  const seed2 = patternSeeds[Math.floor(rand(0, patternSeeds.length))];
+  return Number(rand(seed1, seed2).toFixed(2));
+};
+
 type SpirographOptions = {
   angleStep: number;
   radiusStepExit: number;
   radiusStepReturn: number;
-  color: string;
+  color: RGB;
   stroke: string;
   minRadius: number;
   maxRadius: number;
@@ -20,21 +29,20 @@ const getRandomOptions = (): SpirographOptions => {
   let b = Math.floor(rand(0, 255));
 
   const color = new RGB(r, g, b, 1);
-  const fill = color.toString();
   color.lighten(50);
   const stroke = color.toString();
 
-  const maxRadius = Math.ceil(rand(150, 300));
-  const angleStep = Math.PI / Math.floor(rand(2, 150));
+  const maxRadius = Math.ceil(rand(150, 200));
+  const angleStep = Math.PI / getPatternSeed();
   return {
     angleStep,
-    radiusStepExit: angleStep * rand(300, 800),
-    radiusStepReturn: angleStep * rand(300, 800),
-    color: fill,
+    radiusStepExit: angleStep * rand(100, 400),
+    radiusStepReturn: angleStep * rand(100, 400),
+    color,
     stroke,
-    minRadius: Math.floor(rand(0, 75)),
+    minRadius: Math.floor(rand(10, 75)),
     maxRadius,
-    rate: 50,
+    rate: 5,
   };
 };
 
@@ -71,6 +79,7 @@ export default class SpirographScene implements Scene, Randomizable {
   randomize(): void {
     this.particles = [];
     this.options = getRandomOptions();
+    console.log("CONFIG", this.options);
   }
 
   pushParticles(count: number) {
@@ -99,29 +108,36 @@ export default class SpirographScene implements Scene, Randomizable {
   }
 
   renderParticles(objects: Rect[]): void {
+    this.ctx.beginPath();
     objects.forEach((drop, idx) => {
-      this.ctx.fillStyle = this.options.color;
-      this.ctx.strokeStyle = this.options.stroke;
-      this.ctx.lineWidth = 0.5;
+      const colorBump = Math.floor(
+        Math.abs(
+          calculate.distance(
+            new Rect(this.width / 2, this.height / 2, 0, 0),
+            drop
+          ).dx
+        )
+      );
+      this.ctx.strokeStyle = this.options.color.lighten(50);
+      this.ctx.lineWidth = 10 / idx;
       this.ctx.lineTo(drop.x, drop.y);
     });
+    this.ctx.stroke();
   }
 
   render(): void {
     this.frameCount++;
 
-    // if (this.frameCount % 2 === 0) {
-    this.ctx.fillStyle = `rgba(0, 0, 0, .05)`;
-    this.ctx.fillRect(0, 0, this.width, this.height);
-    this.ctx.filter = "none";
-    // }
+    if (this.frameCount % 2 === 0) {
+      this.ctx.fillStyle = `rgba(0, 0, 0, .05)`;
+      this.ctx.fillRect(0, 0, this.width, this.height);
+      this.ctx.filter = "none";
+    }
 
     this.pushParticles(this.options.rate);
 
-    this.ctx.beginPath();
     this.renderParticles(this.particles);
-    this.ctx.stroke();
 
-    while (this.particles.length > 500) this.particles.shift();
+    while (this.particles.length > 200) this.particles.shift();
   }
 }
