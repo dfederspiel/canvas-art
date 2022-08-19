@@ -143,16 +143,16 @@ export function easeInOutElastic(t: number, b: number, c: number, d: number) {
   if (t < 1)
     return (
       -0.5 *
-      (a *
-        Math.pow(2, 10 * (t -= 1)) *
-        Math.sin(((t * d - s) * (2 * Math.PI)) / p)) +
+        (a *
+          Math.pow(2, 10 * (t -= 1)) *
+          Math.sin(((t * d - s) * (2 * Math.PI)) / p)) +
       b
     );
   return (
     a *
-    Math.pow(2, -10 * (t -= 1)) *
-    Math.sin(((t * d - s) * (2 * Math.PI)) / p) *
-    0.5 +
+      Math.pow(2, -10 * (t -= 1)) *
+      Math.sin(((t * d - s) * (2 * Math.PI)) / p) *
+      0.5 +
     c +
     b
   );
@@ -214,3 +214,4 @@ export const effects = [
   easeInOutSine,
 ];
 
+export default effects;

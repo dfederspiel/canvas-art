@@ -1,4 +1,14 @@
-import { easeInCirc, easeInElastic, easeInExpo, easeInOutBack, easeInOutElastic, easeInOutExpo, easeInOutQuad, easeInOutSine, easeLinear } from "../../lib/easing";
+import {
+  easeInCirc,
+  easeInElastic,
+  easeInExpo,
+  easeInOutBack,
+  easeInOutElastic,
+  easeInOutExpo,
+  easeInOutQuad,
+  easeInOutSine,
+  easeLinear,
+} from "../../lib/easing";
 import { ObjectType } from "../../lib/enums";
 import { calculate, rand } from "../../lib/helpers";
 import Rect from "../../lib/Rect";
@@ -9,26 +19,30 @@ import { Scene } from "../../lib/types";
 export default class FlowersScene implements Scene {
   width: number;
   height: number;
-  ctx: CanvasRenderingContext2D
+  ctx: CanvasRenderingContext2D;
 
   private particleCenterX = 0;
   private particleCenterY = 0;
   private radius = 255;
   private angle = 0;
-  private animationDirection = 1
+  private animationDirection = 1;
   private frame = 0;
 
   private direction = -1;
 
   private particles: Sprite[] = [];
 
-  constructor(width: number, height: number, context: CanvasRenderingContext2D) {
+  constructor(
+    width: number,
+    height: number,
+    context: CanvasRenderingContext2D
+  ) {
     this.width = width;
     this.height = height;
     this.ctx = context;
 
-    this.particleCenterX = this.width / 2 // rand(this.radius, this.width - this.radius)
-    this.particleCenterY = this.height / 2 // rand(this.radius, this.height - this.radius)
+    this.particleCenterX = this.width / 2; // rand(this.radius, this.width - this.radius)
+    this.particleCenterY = this.height / 2; // rand(this.radius, this.height - this.radius)
   }
 
   pushParticles(count: number) {
@@ -56,21 +70,22 @@ export default class FlowersScene implements Scene {
       );
 
       if (this.animationDirection > 0) {
-        this.frame++
+        this.frame++;
       } else if (this.animationDirection < 0) {
-        this.frame--
+        this.frame--;
       }
 
       if (this.frame >= 60 || this.frame <= 0)
-        this.animationDirection = -this.animationDirection
+        this.animationDirection = -this.animationDirection;
 
-      this.angle += .01564;
+      this.angle += 0.01564;
       if (this.direction < 0) {
-        this.radius -= 6
+        this.radius -= 6;
       } else if (this.direction > 0) {
-        this.radius += 6
+        this.radius += 6;
       }
-      if (this.radius > 254 || this.radius < 0) this.direction = -this.direction
+      if (this.radius > 254 || this.radius < 0)
+        this.direction = -this.direction;
     }
   }
 
@@ -78,7 +93,12 @@ export default class FlowersScene implements Scene {
     objects.forEach((drop, idx) => {
       this.ctx.globalAlpha = drop.alpha;
       this.ctx.fillStyle = drop.colorString;
-      this.ctx.fillRect(drop.x - drop.w / 2, drop.y - drop.h / 2, drop.w, drop.h);
+      this.ctx.fillRect(
+        drop.x - drop.w / 2,
+        drop.y - drop.h / 2,
+        drop.w,
+        drop.h
+      );
 
       drop.update();
       drop.checkBoundaries();
@@ -88,9 +108,8 @@ export default class FlowersScene implements Scene {
   render(): void {
     this.ctx.clearRect(0, 0, this.width, this.height); // clear the screen
 
-    this.pushParticles(15)
+    this.pushParticles(15);
     this.renderParticles(this.particles);
     while (this.particles.length > 5000) this.particles.shift();
   }
-
 }

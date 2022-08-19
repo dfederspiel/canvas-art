@@ -1,7 +1,7 @@
 import { Randomizable, Scene } from "./lib/types";
 import ClockScene from "./scenes/Clock/Clock.scene";
 import EscherScene from "./scenes/EscherTrails/Escher.scene";
-import FlowersScene from "./scenes/Flowers/Flowers.scene";
+import SpirographScene from "./scenes/Spirograph/Spirograph.scene";
 import OrbiterScene from "./scenes/Orbiter/Orbiter.scene";
 import SeaSpaceScene from "./scenes/SeaSpace/SeaSpace.scene";
 import SnakesScene from "./scenes/Snakes/Snakes.scene";
@@ -10,12 +10,19 @@ import WallsScene from "./scenes/Walls/Walls.scene";
 import WaterfallScene from "./scenes/Waterfall/Waterfall.scene";
 import SupernovaeScene from "./scenes/Supernovae/SupernovaeScene.scene";
 import FireworkScene from "./scenes/Fireworks/Fireworks.scene";
+import FlowersScene from "./scenes/Flowers/Flowers.scene";
 
 let WIDTH = window.innerWidth;
 let HEIGHT = window.innerHeight - 50;
 
 let canvas: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D;
+let randomizeButton = document.getElementById("randomize") as HTMLButtonElement;
+
+function addRandomizerEvent() {
+  randomizeButton.addEventListener("click", listener);
+  randomizeButton.disabled = isRandomizable(pages[PAGE].scene) ? false : true;
+}
 
 canvas = document.getElementById("canvas") as HTMLCanvasElement;
 ctx = canvas.getContext("2d");
@@ -45,6 +52,10 @@ function renderTitle() {
   ctx.fillText(`use the buttons below to switch scenes`, 10, 40);
 }
 
+function isRandomizable(scene: Scene | Randomizable): scene is Randomizable {
+  return (<Randomizable>scene).randomize !== undefined;
+}
+
 type Page = {
   title: string;
   scene: Scene | Randomizable;
@@ -54,6 +65,7 @@ let pages: Page[] = [
   { title: "Supernovae", scene: new SupernovaeScene(WIDTH, HEIGHT, ctx) },
   { title: "Snakes on a Plane", scene: new SnakesScene(WIDTH, HEIGHT, ctx) },
   { title: "Space Time Rift", scene: new SpaceTimeScene(WIDTH, HEIGHT, ctx) },
+  { title: "Spiral Graph", scene: new SpirographScene(WIDTH, HEIGHT, ctx) },
   { title: "Flowers", scene: new FlowersScene(WIDTH, HEIGHT, ctx) },
   { title: "Fireworks", scene: new FireworkScene(WIDTH, HEIGHT, ctx) },
   { title: "Escher Smoke Trails", scene: new EscherScene(WIDTH, HEIGHT, ctx) },
@@ -75,6 +87,12 @@ var main = function () {
   requestAnimationFrame(main);
 };
 
+const listener = (ev: Event) => {
+  if (isRandomizable(pages[PAGE].scene)) {
+    (<Randomizable>pages[PAGE].scene).randomize();
+  }
+};
+
 const nextButton = document.getElementById("nextButton");
 nextButton.addEventListener("click", () => {
   if (PAGE < pages.length - 1) {
@@ -89,8 +107,9 @@ previousButton.addEventListener("click", () => {
   if (PAGE > 0) {
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
     PAGE--;
-    localStorage.setItem("scene", PAGE.toString());
+    localStorage.setItem("scene", String(PAGE));
   }
 });
 
+addRandomizerEvent();
 main();
