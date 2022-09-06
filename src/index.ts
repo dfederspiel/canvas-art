@@ -98,6 +98,7 @@ nextButton.addEventListener("click", () => {
   if (PAGE < pages.length - 1) {
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
     PAGE++;
+    history.pushState({ scene: PAGE.toString() }, "", "");
     localStorage.setItem("scene", PAGE.toString());
   }
 });
