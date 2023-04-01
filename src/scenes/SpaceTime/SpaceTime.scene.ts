@@ -1,4 +1,4 @@
-import { easeInBack, easeInOutSine, effects } from "../../lib/easing";
+import { easeInOutSine } from "../../lib/easing";
 import { rand } from "../../lib/helpers";
 import Size from "../../lib/Size";
 import Sprite from "../../lib/Sprite";
@@ -16,7 +16,6 @@ export default class SpaceTimeScene implements Scene, Randomizable {
   rifts: Rift[] = []
 
   private direction = Math.PI * 2 / 60 / 2.5;
-  private count: number = 0;
 
   constructor(width: number, height: number, context: CanvasRenderingContext2D) {
     this.width = width;
@@ -30,9 +29,9 @@ export default class SpaceTimeScene implements Scene, Randomizable {
     this.direction = -this.direction
   }
 
-  renderLines(objects: Sprite[], rift: Rift): void {
+  renderLines(rift: Rift): void {
     this.ctx.lineWidth = rand(.5, 1)
-    objects.forEach((drop, idx) => {
+    rift.particles.forEach((drop, idx) => {
       this.ctx.beginPath()
       this.ctx.globalAlpha = rand(.025, .05)
       this.ctx.strokeStyle = drop.colorString;
@@ -42,16 +41,16 @@ export default class SpaceTimeScene implements Scene, Randomizable {
     });
   }
 
-  renderPoints(objects: Sprite[]): void {
-    this.ctx.beginPath()
-    this.ctx.globalAlpha = .9
-    objects.forEach((drop, idx) => {
+  renderPoints(rift: Rift): void {
+    rift.particles.forEach((drop, idx) => {
+      this.ctx.beginPath()
+      this.ctx.globalAlpha = .9
       this.ctx.fillStyle = drop.colorString;
       this.ctx.moveTo(drop.x - drop.w / 2, drop.y - drop.h / 2)
       this.ctx.arc(drop.x, drop.y, drop.w > 0 ? drop.w : 0, 0, Math.PI * 2)
       drop.update();
+      this.ctx.fill()
     });
-    this.ctx.fill()
   }
 
   render(): void {
@@ -66,31 +65,18 @@ export default class SpaceTimeScene implements Scene, Randomizable {
         this.height,
         `rgb(${rand(75, 255)},${rand(75, 255)},${rand(75, 255)})`,
         15,
-        easeInOutSine, // effects[Math.floor(Math.random() * effects.length)],
+        easeInOutSine,
         size
       ))
     }
 
     this.rifts?.forEach(r => {
       r.plot(15)
-      this.renderLines(r.particles, r);
-      this.renderPoints(r.particles);
+      this.renderLines(r);
+      this.renderPoints(r);
     })
 
     this.rifts = this.rifts?.filter(r => !r.hasFinishedTearingThroughSpaceTimeFabric)
-
-
-    // this.ctx.beginPath();
-    // this.ctx.arc(
-    //   this.width / 2,
-    //   this.height / 2,
-    //   75,
-    //   0,
-    //   Math.PI * 2
-    // )
-    // this.ctx.stroke()
-
-    this.count++;
   }
 
 }

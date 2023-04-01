@@ -8,7 +8,6 @@ import Segment from './Segment';
 export default class Supernova implements Randomizable {
 
   maxAlpha: number = 0;
-  //alpha: number = 1; // this is a buggy remnant
   direction: number = 0;
   rotationInterval: number = rand(-Math.PI / 60 / 60, Math.PI / 60 / 60);
   limit: number;
@@ -140,13 +139,6 @@ export default class Supernova implements Randomizable {
 
   render() {
     this.segments.forEach((p) => {
-      // this.renderLines(
-      //   p.points.filter((i, idx) => idx % Math.floor(rand(3, 20)) === 0),
-      //   this.color.alpha / Math.floor(rand(5, 10))
-      // );
-
-      // if (this.renderOutlines) this.renderOutline(p.points, this.color.alpha);
-
       this.renderArcs(
         p.points.filter((i, idx) => idx % Math.floor(rand(1, 20)) === 0),
         this.color.alpha

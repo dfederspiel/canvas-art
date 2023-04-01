@@ -1,12 +1,13 @@
-import { easeInBack, easeInElastic, easeInOutCirc, easeInOutElastic, easeInOutSine, easeInSine, effects } from '../../lib/easing';
+import { easeInOutSine, effects } from '../../lib/easing';
 import { calculate, rand } from '../../lib/helpers';
 import { Randomizable } from '../../lib/types';
 import Segment from './Segment';
 import Phosphorous from './Phosphorous/Phosphorous';
 import RGB from '../../lib/RGB';
-import { Distance, PhosphorousType } from './Phosphorous/types';
-import Rect from '../../lib/Rect';
-import Blinker from './Phosphorous/Blinker';
+import { PhosphorousType } from './Phosphorous/types';
+
+
+const GRAVITY = -65; // Gravity constant
 
 export default class Firework implements Randomizable {
 
@@ -19,39 +20,27 @@ export default class Firework implements Randomizable {
   private mortarX: number = window.innerWidth / 2;
   private mortarY: number = window.innerHeight;
 
-  private mortar: Blinker;
-
   private count: number = 0;
-
-  private distance: Distance
-
-  private timeBeganDying: number = 0;
 
   private velocityModifierMin: number = rand(.0005, .001)
   private velocityModifierMax: number = rand(.001, .0025)
 
-  //alpha: number = 1; // this is a buggy remnant
-  private direction: number = 0;
   private rotationInterval: number = rand(-Math.PI / 60 / 60, Math.PI / 60 / 60);
   private limit: number;
   private angle: number = 0;
 
-  private color: RGB
   private strokeColor: RGB
 
   private width = window.innerWidth;
   private height = window.innerHeight;
-  private lineWidth: number = 0.5;
   private offset = 0 // rand(-50, 100);
   private steps: number = Math.floor(rand(50, 145));
   private ease: Function;
   private segments: Segment[] = [];
-  private renderOutlines = false;
 
   private minModifier: number;
   private maxModifier: number;
 
-  private life: number = 0;
   private duration: number = Math.floor(rand(120, 300));
 
   private ctx: CanvasRenderingContext2D;
@@ -60,6 +49,9 @@ export default class Firework implements Randomizable {
   private maxRadius: number;
 
   private hasDetonated: boolean = false;
+
+  private launchVelocity: number;
+  private launchAngle: number;
 
   isDying: boolean = false;
   isDead: boolean = false;
@@ -76,32 +68,23 @@ export default class Firework implements Randomizable {
     this.ease = effects[Math.floor(rand(0, effects.length))];
 
     this.maxAlpha = 1
-    this.direction = this.maxAlpha / Math.floor(this.duration);
-
-    this.renderOutlines = Math.random() < .5;
 
     let r = Math.floor(rand(5, 255))
     let g = Math.floor(rand(5, 255))
     let b = Math.floor(rand(5, 255))
 
-    this.color = new RGB(r, g, b, 0)
     this.strokeColor = new RGB(r, g, b, rand(.1, .3))
 
     this.strokeColor.darken(100);
 
     this.randomize();
 
-    this.distance = calculate.distance({
-      x: this.width / 2,
-      y: this.height,
-      w: 5,
-      h: 5,
-    } as Rect, {
-      x: this.cx,
-      y: this.cy,
-      w: 5,
-      h: 5,
-    } as Rect)
+    this.launchVelocity = rand(160, 200); // Adjust initial launch velocity as needed
+    
+    // Convert degrees to radians: (Math.PI / 180) * degrees
+    let minLaunchAngle = (Math.PI / 180) * (90 - 15); // 70 degrees in radians
+    let maxLaunchAngle = (Math.PI / 180) * (90 + 15); // 110 degrees in radians
+    this.launchAngle = rand(minLaunchAngle, maxLaunchAngle); // Launch angle: straight up +/- 20 degrees
   }
 
   update(step: number) {
@@ -178,10 +161,26 @@ export default class Firework implements Randomizable {
     this.ctx.arc(this.mortarX, this.mortarY, r, 0, Math.PI * 2)
     this.ctx.fill();
     this.ctx.stroke();
-    this.mortarX += this.distance.dx / 60
-    this.mortarY += this.distance.dy / (this.height / 20) + this.count / (this.height / 150)
+
+
+    //this.mortarX += this.distance.dx / 60
+    //this.mortarY += this.distance.dy / (this.height / 20) + this.count / (this.height / 150)
+    let elapsedTime = this.count / 60; // Assuming 60 frames per second
+    let vx = this.launchVelocity * Math.cos(this.launchAngle);
+    let vy = this.launchVelocity * Math.sin(this.launchAngle) + GRAVITY * elapsedTime;
+
+    this.mortarX += vx / 30; // Update the x position
+    this.mortarY -= vy / 30; // Update the y position
+
     this.count++;
-    if (this.count > this.height / 10) {
+
+    // Gravity (in pixels per second squared)
+    const gravity = 50;
+
+    // Calculate the time it takes for the shell to reach its highest point
+    const timeToApex = this.launchVelocity / gravity;
+
+    if (this.count > timeToApex * 60) {
       this.cx = this.mortarX - r / 2;
       this.cy = this.mortarY - r / 2;
       this.hasDetonated = true;
@@ -216,6 +215,6 @@ export default class Firework implements Randomizable {
       this.updateLaunch()
     }
 
-    this.life++;
+    // this.life++;
   }
 }

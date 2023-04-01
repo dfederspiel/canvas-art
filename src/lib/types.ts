@@ -14,7 +14,7 @@ export interface Distance {
 
 export interface Collidable {
   hit: boolean;
-  collidesWith(reference: Rect): Angles;
+  collidesWith(reference: Rect): boolean;
 }
 
 export interface Boundable {

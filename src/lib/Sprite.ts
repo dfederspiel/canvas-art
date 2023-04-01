@@ -63,8 +63,13 @@ export default class Sprite extends Rect implements Collidable, Boundable, Anima
     this.type = type
   }
 
-  collidesWith(reference: Rect): Angles {
-    throw new Error("Method not implemented.");
+  collidesWith(other: Rect): boolean {
+    return (
+      this.x < other.x + other.w &&
+      this.x + this.w > other.x &&
+      this.y < other.y + other.h &&
+      this.y + this.h > other.y
+    );
   }
 
   getAnimationFrame() {
