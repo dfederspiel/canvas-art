@@ -12,7 +12,8 @@ const getPatternSeed = () => {
   return Number(rand(seed1, seed2).toFixed(2));
 };
 
-type SpirographOptions = {
+
+export type SpirographOptions = {
   angleStep: number;
   radiusStepExit: number;
   radiusStepReturn: number;
@@ -77,7 +78,7 @@ export default class SpirographScene implements Scene, Randomizable {
   height: number;
   ctx: CanvasRenderingContext2D;
 
-  private options: SpirographOptions = null;
+  options: SpirographOptions = null;
   private particleCenterX = 0;
   private particleCenterY = 0;
   private radius = 0;
@@ -90,9 +91,10 @@ export default class SpirographScene implements Scene, Randomizable {
   constructor(
     width: number,
     height: number,
-    context: CanvasRenderingContext2D
+    context: CanvasRenderingContext2D,
+    options?: SpirographOptions
   ) {
-    this.options = paramsToSpirographOptions(
+    this.options = options || paramsToSpirographOptions(
       new URLSearchParams(window.location.search)
     );
 
@@ -126,13 +128,31 @@ export default class SpirographScene implements Scene, Randomizable {
 
     this.options = getRandomOptions();
     history.pushState(
-      null,
-      "",
-      `?${new URLSearchParams(
+      {
+        scene: '3',
+        params: this.options,
+      },
+      "Scene",
+      `/3?${new URLSearchParams(
         spirographOptionsToParams(this.options)
       ).toString()}`
     );
   }
+
+  paramsToSpirographOptions = (
+    params: URLSearchParams
+  ): SpirographOptions => {
+    return {
+      angleStep: Number(params.get("angleStep")),
+      color: JSON.parse(params.get("color")) || null,
+      maxRadius: Number(params.get("maxRadius")),
+      minRadius: Number(params.get("minRadius")),
+      radiusStepExit: Number(params.get("radiusStepExit")),
+      radiusStepReturn: Number(params.get("radiusStepReturn")),
+      rate: Number(params.get("rate")),
+      stroke: params.get("stroke"),
+    };
+  };
 
   pushParticles(count: number) {
     for (var x = 0; x < count; x++) {

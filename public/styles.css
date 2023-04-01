@@ -26,6 +26,10 @@ body {
   background-color: #333;
 }
 
+button:disabled {
+  color: black;
+}
+
 .navigation button#randomize {
   flex: 0 0 50px;
 }
