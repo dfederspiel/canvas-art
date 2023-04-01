@@ -3,7 +3,7 @@ import { rand } from "../../lib/helpers";
 import { Randomizable, Scene } from "../../lib/types";
 import Firework from "./Firework";
 
-export default class FireworkScene implements Scene, Randomizable {
+export default class FireworkScene implements Scene {
   width: number;
   height: number;
   ctx: CanvasRenderingContext2D
@@ -18,10 +18,6 @@ export default class FireworkScene implements Scene, Randomizable {
     this.width = width;
     this.height = height;
     this.ctx = context;
-  }
-
-  randomize(): void {
-    this.fireworks.forEach(s => s.randomize())
   }
 
   render(): void {

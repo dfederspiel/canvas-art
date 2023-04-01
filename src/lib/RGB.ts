@@ -1,7 +1,7 @@
 export default class RGB {
-  private redChannel: number;
-  private greenChannel: number;
-  private blueChannel: number;
+  redChannel: number;
+  greenChannel: number;
+  blueChannel: number;
 
   private _alpha: number;
 

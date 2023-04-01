@@ -8,7 +8,7 @@ import Rift from "./Rift";
 /**
  * Snakes on a Plane
  */
-export default class SpaceTimeScene implements Scene, Randomizable {
+export default class SpaceTimeScene implements Scene {
   width: number;
   height: number;
   ctx: CanvasRenderingContext2D
@@ -21,12 +21,6 @@ export default class SpaceTimeScene implements Scene, Randomizable {
     this.width = width;
     this.height = height;
     this.ctx = context;
-
-    this.randomize();
-  }
-
-  randomize(): void {
-    this.direction = -this.direction
   }
 
   renderLines(rift: Rift): void {
