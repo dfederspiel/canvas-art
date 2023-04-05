@@ -24,7 +24,7 @@ export type SpirographOptions = {
   rate: number;
 };
 
-const getRandomOptions = (): SpirographOptions => {
+const getRandomOptions = (max: number): SpirographOptions => {
   let r = Math.floor(rand(0, 255));
   let g = Math.floor(rand(0, 255));
   let b = Math.floor(rand(0, 255));
@@ -33,19 +33,18 @@ const getRandomOptions = (): SpirographOptions => {
   color.lighten(50);
   const stroke = color.toString();
 
-  const maxRadius = Math.ceil(rand(150, 200));
+  const maxRadius = Math.ceil(rand(10, max ));
   const angleStep = Math.PI / getPatternSeed();
-  const newOptions = {
+  return {
     angleStep,
-    radiusStepExit: angleStep * rand(100, 400),
-    radiusStepReturn: angleStep * rand(100, 400),
+    radiusStepExit: angleStep * rand(10, max),
+    radiusStepReturn: angleStep * rand(10, max),
     color,
     stroke,
-    minRadius: Math.floor(rand(10, 75)),
+    minRadius: Math.floor(rand(10, max)),
     maxRadius,
-    rate: 5,
+    rate: Math.floor(rand(2, 30)),
   };
-  return newOptions;
 };
 
 const paramsToSpirographOptions = (
@@ -115,7 +114,7 @@ export default class SpirographScene implements Scene, Randomizable {
         0.5
       );
     } else {
-      this.options = getRandomOptions();
+      this.options = getRandomOptions(this.height);
     }
 
     this.radius = this.options.minRadius;
@@ -126,7 +125,7 @@ export default class SpirographScene implements Scene, Randomizable {
   randomize(): void {
     this.particles = [];
 
-    this.options = getRandomOptions();
+    this.options = getRandomOptions(this.height);
     history.pushState(
       {
         scene: '3',
@@ -182,14 +181,6 @@ export default class SpirographScene implements Scene, Randomizable {
   renderParticles(objects: Rect[]): void {
     this.ctx.beginPath();
     objects.forEach((drop, idx) => {
-      const colorBump = Math.floor(
-        Math.abs(
-          calculate.distance(
-            new Rect(this.width / 2, this.height / 2, 0, 0),
-            drop
-          ).dx
-        )
-      );
       this.ctx.strokeStyle = this.options.color.lighten(50);
       this.ctx.lineWidth = 10 / idx;
       this.ctx.lineTo(drop.x, drop.y);

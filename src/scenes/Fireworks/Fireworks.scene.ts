@@ -9,8 +9,8 @@ export default class FireworkScene implements Scene {
   ctx: CanvasRenderingContext2D
 
   private count = 0;
-  private layers = 10;
-  private distributionInterval: number = 1;
+  private layers = 20;
+  private distributionInterval: number = 5;
 
   private fireworks: Firework[] = []
 
@@ -30,10 +30,10 @@ export default class FireworkScene implements Scene {
     this.ctx.fillRect(0, 0, this.width, this.height)
     this.ctx.filter = 'none'
 
-    if (this.fireworks.length < this.layers && this.count % this.distributionInterval === 0) {
+    if (this.fireworks.length < this.layers) {
       this.fireworks.push(new Firework(0, Math.floor(rand(2, 15)), this.ctx));
-      this.distributionInterval = Math.floor(rand(15, 60))
-      this.layers = Math.floor(rand(1, 3))
+      //this.distributionInterval = Math.floor(rand(15, 60))
+      //this.layers = Math.floor(rand(1, 3))
     }
 
     this.fireworks?.forEach((c, idx) => {

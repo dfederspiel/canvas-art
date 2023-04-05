@@ -5,8 +5,6 @@ export default class RGB {
 
   private _alpha: number;
 
-  // private alpha: number
-
   constructor(red: number, green: number, blue: number, alpha: number) {
     this.redChannel = red;
     this.greenChannel = green;

@@ -1,5 +1,6 @@
 import { easeInCubic, easeInElastic, effects } from "../../lib/easing";
 import { calculate, rand } from "../../lib/helpers";
+import HSL from "../../lib/HSL";
 import RGB from "../../lib/RGB";
 import Size from "../../lib/Size";
 import Blinker from "./Phosphorous/Blinker";
@@ -38,8 +39,8 @@ export default class Segment {
     maxRadius: number,
     steps: number,
     ease: Function,
-    color?: RGB,
-    secondaryColor?: RGB,
+    color?: HSL,
+    secondaryColor?: HSL,
     type?: PhosphorousType,
     origcx?: number,
     origcy?: number,
@@ -64,13 +65,13 @@ export default class Segment {
     let g = rand(50, 150);
     let b = rand(50, 150);
 
-    let c = color || new RGB(r, g, b, rand(.6, .9));
-    let sc = secondaryColor || color || new RGB(r, g, b, rand(.6, .9));
+    let c = color || HSL.fromRGB(r, g, b, rand(.6, .9));
+    let sc = secondaryColor || color || HSL.fromRGB(r, g, b, rand(.6, .9));
 
     // if (!secondaryColor)
     //   sc.lighten(50)
 
-    if (this.type && this.type === PhosphorousType.Blinker) steps = 100;
+    //if (this.type && this.type === PhosphorousType.Blinker) steps = 100;
     for (let s = 0; s < steps; s++) {
       let radius = ease(s, this.minRadius, this.maxRadius, steps);
       switch (this.type) {
@@ -91,7 +92,7 @@ export default class Segment {
     }
   }
 
-  plotPhosphorous(cx: number, cy: number, currentAngleRight: number, currentAngleLeft: number, radius: number, c: RGB, sc: RGB) {
+  plotPhosphorous(cx: number, cy: number, currentAngleRight: number, currentAngleLeft: number, radius: number, c: HSL, sc: HSL) {
     const { x: x1, y: y1 } = calculate.getVertexFromAngle(cx, cy, currentAngleRight, radius)
     this.lPoints.push(
       new Phosphorous(
