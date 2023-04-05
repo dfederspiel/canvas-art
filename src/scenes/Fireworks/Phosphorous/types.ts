@@ -1,6 +1,7 @@
 export enum PhosphorousType {
   Default,
-  Blinker
+  Blinker,
+  Hue,
 }
 
 export type Distance = {

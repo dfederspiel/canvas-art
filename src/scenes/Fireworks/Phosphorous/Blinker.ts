@@ -6,19 +6,32 @@ import Size from "../../../lib/Size";
 import Phosphorous from "./Phosphorous";
 
 export default class Blinker extends Phosphorous {
+  
   constructor(x: number, y: number, cx: number, cy: number) {
+
+
+    // Silver
+    const silverHue = rand(190, 220);
+    const silverSaturation = rand(0, 10);
+    const silverLightness = rand(40, 60);
+
+    // Gold
+    const goldHue = rand(45, 55);
+    const goldSaturation = rand(75, 100);
+    const goldLightness = rand(45, 55);
+
     super(
       x,
       y,
       cx,
       cy,
-      new Size(0.1, rand(0.2, 0.8), 0.1, rand(0.2, 0.8)),
-      HSL.fromRGB(158, 137, 0, 1),
-      HSL.fromRGB(220, 220, 220, 1),
+      new Size(0.3, rand(0.5, 1), 0.3, rand(0.5, 1)),
+      new HSL(goldHue, goldSaturation, goldLightness),
+      new HSL(silverHue, silverSaturation, silverLightness),
       easeOutSine
     );
     this.ageLimit = rand(180, 600);
-    this.frames = Math.floor(rand(1, 100));
+    this.frames = Math.floor(rand(10, 50));
   }
 
   update(): void {

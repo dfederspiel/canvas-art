@@ -15,12 +15,12 @@ export default class Phosphorous extends Rect implements Animatable {
   animationFrame: number = 0;
   frames: number = rand(5, 15);
 
-  ageLimit: number = rand(15, 300);
+  ageLimit: number = rand(15, 100);
 
   private vx: number;
   private vy: number;
 
-  private age: number = 0;
+  age: number = 0;
 
   private easing?: EasingFn
 
@@ -88,9 +88,12 @@ export default class Phosphorous extends Rect implements Animatable {
       this.isDead = true;
     }
 
-    if (this.age > this.ageLimit / rand(1, 2)) {
-      this.color = this.secondaryColor;
-    }
+    // Fade out the alpha values of c1 and c2 when the age is within 5% of the ageLimit
+    // if (this.age >= this.ageLimit * 0.95) {
+    //   const fadeOutProgress = (this.age - this.ageLimit * 0.95) / (this.ageLimit * 0.05);
+    //   this.color.a = 1 - fadeOutProgress;
+    //   this.secondaryColor.a = 1 - fadeOutProgress;
+    // }
 
     this.age++;
   }
