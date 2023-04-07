@@ -29,8 +29,8 @@ function generateCirclePoints(cx: number, cy: number): { x: number; y: number }[
 function generateStarPoints(cx: number, cy: number, num: number): { x: number; y: number }[] {
   const points: { x: number; y: number }[] = [];
   const numPoints = num;
-  const outerRadius = 30;
-  const innerRadius = 10;
+  const outerRadius = 15;
+  const innerRadius = 2;
   const centerX = cx;
   const centerY = cy;
 
@@ -120,11 +120,23 @@ export default class Firework implements Randomizable {
 
     this.renderFancyFirework = Math.random() > .95;
 
-    this.launchVelocity = rand(190, 230); // Adjust initial launch velocity as needed
+    let minLaunchAngle = 0;
+    let maxLaunchAngle = 0;
+
+    if(this.renderFancyFirework) {
+      this.launchVelocity =  rand(200, 230); // Adjust initial launch velocity as needed
     
-    // Convert degrees to radians: (Math.PI / 180) * degrees
-    let minLaunchAngle = (Math.PI / 180) * (90 - 17); // 70 degrees in radians
-    let maxLaunchAngle = (Math.PI / 180) * (90 + 17); // 110 degrees in radians
+      // Convert degrees to radians: (Math.PI / 180) * degrees
+      minLaunchAngle = (Math.PI / 180) * (90 - 20); // 70 degrees in radians
+      maxLaunchAngle = (Math.PI / 180) * (90 + 20); // 110 degrees in radians
+    } else {
+      this.launchVelocity = rand(140, 160); // Adjust initial launch velocity as needed
+    
+      // Convert degrees to radians: (Math.PI / 180) * degrees
+      minLaunchAngle = (Math.PI / 180) * (90 - 15); // 70 degrees in radians
+      maxLaunchAngle = (Math.PI / 180) * (90 + 15); // 110 degrees in radians
+    }
+    
     this.launchAngle = rand(minLaunchAngle, maxLaunchAngle); // Launch angle: straight up +/- 20 degrees
   }
 
@@ -173,10 +185,10 @@ export default class Firework implements Randomizable {
 
       segments.forEach(s => { this.points.push(...s.points) });
     } else {
-      const points = generateStarPoints(this.cx, this.cy, rand(10, 50));
-      const c1 =new HSL(rand(0, 360), 80, 80, .5)
-      const c2 = new HSL(rand(0, 360), 80, 80, .5)
-      const size = new Size(0.8, rand(1, 2), 0.8, rand(1, 2));
+      const points = generateStarPoints(this.cx, this.cy, rand(20, 60));
+      const c1 =new HSL(rand(0, 360), rand(40, 80), 60, 1)
+      const c2 =new HSL(rand(0, 360), rand(40, 80), 60, 1)
+      const size = new Size(0.5, rand(.8, 1.8), 0.5, rand(.8, 1.8));
       this.points.push(...points.map(p => new Phosphorous(p.x, p.y, this.cx, this.cy, size, c1, c2, getRandomEasing())))
     }
   }
@@ -217,7 +229,7 @@ export default class Firework implements Randomizable {
   }
 
   private updateLaunch() {
-    let r = easeInOutSine(this.count, 1, 2, 2)
+    let r = easeInOutSine(this.count,.5, 1, 2)
     this.ctx.beginPath();
     this.ctx.fillStyle = 'rgba(150, 150, 150, .3)'
     this.ctx.strokeStyle = 'rgba(150, 150, 150, .9)'
@@ -240,7 +252,7 @@ export default class Firework implements Randomizable {
     // Calculate the time it takes for the shell to reach its highest point
     const timeToApex = this.launchVelocity / gravity;
 
-    if (this.count > timeToApex * 60) {
+    if (this.count > timeToApex * 50) {
       this.cx = this.mortarX - r / 2;
       this.cy = this.mortarY - r / 2;
       this.hasDetonated = true;

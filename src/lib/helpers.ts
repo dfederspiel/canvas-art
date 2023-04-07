@@ -9,9 +9,9 @@ export function getRandomPhosphorousType(): PhosphorousType {
   if (randomNumber < 80) {
     return PhosphorousType.Default;
   } else if (randomNumber < 95) {
-    return PhosphorousType.Hue;
-  } else {
     return PhosphorousType.Blinker;
+  } else {
+    return PhosphorousType.Hue;
   }
 }
 

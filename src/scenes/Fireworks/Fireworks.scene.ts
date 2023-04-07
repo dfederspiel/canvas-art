@@ -10,9 +10,9 @@ export default class FireworkScene implements Scene {
 
   private count = 0;
   private layers = 15;
-  private lowLayers = 15;
+  private lowLayers = 5;
   private highLayers = 50;
-  private distributionInterval: number = 30;
+  private distributionInterval: number = 4;
   private timeSinceSwitch = 0;
   private switchInterval = rand(20, 31) * 1000; // 20-30 seconds
 
@@ -41,7 +41,7 @@ export default class FireworkScene implements Scene {
        this.layers = this.layers === this.lowLayers ? this.highLayers : this.lowLayers;
        this.timeSinceSwitch = elapsedTime;
        this.switchInterval = rand(20, 31) * 1000;
-       this.distributionInterval = this.distributionInterval <= 10 ? rand(20, 60) : rand(2, 10)
+       // this.distributionInterval = this.distributionInterval <= 10 ? rand(20, 60) : rand(2, 10)
      }
 
     if (this.count % 15 === 0) {
@@ -49,7 +49,7 @@ export default class FireworkScene implements Scene {
       var imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
       this.ctx.putImageData(imageData, 0, 0);
     }
-    this.ctx.fillStyle = `rgba(0, 0, 0, ${this.count == 0 ? 1 : .1})`;
+    this.ctx.fillStyle = `rgba(0,0,0, ${this.count == 0 ? 1 : .1})`;
     this.ctx.fillRect(0, 0, this.width, this.height);
     this.ctx.filter = 'none';
 
@@ -57,7 +57,7 @@ export default class FireworkScene implements Scene {
     this.fireworkCounter++;
 
     if (this.fireworks.length < this.layers && this.fireworkCounter >= this.distributionInterval) {
-      this.fireworks.push(new Firework(rand(0, 360), Math.ceil(rand(4, 20)), this.ctx));
+      this.fireworks.push(new Firework(rand(0, 360), Math.floor(rand(1, 100)), this.ctx));
       
       // Reset the fireworkCounter
       this.fireworkCounter = 0;

@@ -53,8 +53,8 @@ export default class Segment {
     let currentAngleRight = inverseAngle;
     let currentAngleLeft = inverseAngle;
 
-    let c = color || new HSL(rand(0, 360), rand(0,100), rand(33,66)) // HSL.fromRGB(r, g, b, rand(.6, .9));
-    let sc = secondaryColor || color || new HSL(rand(0, 360), rand(0,100), rand(33,66)) ;
+    let c = color || new HSL(rand(0, 180), rand(0,100), rand(33,66)) // HSL.fromRGB(r, g, b, rand(.6, .9));
+    let sc = secondaryColor || color || new HSL(rand(180, 360), rand(0,100), rand(33,66)) ;
 
     // if (!secondaryColor)
     //   sc.lighten(50)
@@ -69,7 +69,7 @@ export default class Segment {
         case PhosphorousType.Blinker:
           radius = easeInElastic(s, this.minRadius, this.maxRadius, steps);
           this.maxRadius = 60
-          this.minRadius = 30
+          this.minRadius = 20
           this.plotBlinker(cx, cy, currentAngleRight, currentAngleLeft, radius)
           break;
         case PhosphorousType.Hue:
