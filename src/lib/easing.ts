@@ -214,4 +214,9 @@ export const effects = [
   easeInOutSine,
 ];
 
+export function getRandomEasing(): EasingFn {
+  const randomIndex = Math.floor(Math.random() * effects.length);
+  return effects[randomIndex];
+}
+
 export default effects;

@@ -10,8 +10,8 @@ export default class FireworkScene implements Scene {
 
   private count = 0;
   private layers = 15;
-  private lowLayers = 2;
-  private highLayers = 15;
+  private lowLayers = 15;
+  private highLayers = 50;
   private distributionInterval: number = 30;
   private timeSinceSwitch = 0;
   private switchInterval = rand(20, 31) * 1000; // 20-30 seconds
@@ -57,7 +57,7 @@ export default class FireworkScene implements Scene {
     this.fireworkCounter++;
 
     if (this.fireworks.length < this.layers && this.fireworkCounter >= this.distributionInterval) {
-      this.fireworks.push(new Firework(rand(0, 360), rand(2, 20), this.ctx));
+      this.fireworks.push(new Firework(rand(0, 360), Math.ceil(rand(4, 20)), this.ctx));
       
       // Reset the fireworkCounter
       this.fireworkCounter = 0;

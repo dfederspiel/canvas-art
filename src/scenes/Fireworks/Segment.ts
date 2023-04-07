@@ -1,7 +1,6 @@
 import { easeInCubic, easeInElastic, effects } from "../../lib/easing";
 import { calculate, rand } from "../../lib/helpers";
 import HSL from "../../lib/HSL";
-import RGB from "../../lib/RGB";
 import Size from "../../lib/Size";
 import Blinker from "./Phosphorous/Blinker";
 import Hue from './Phosphorous/Hue';
@@ -19,13 +18,8 @@ export default class Segment {
 
   isDead: boolean = false;
 
-  private ease: Function;
   private minRadius: number;
   private maxRadius: number;
-
-
-  private cx: number;
-  private cy: number;
 
   private origcx: number;
   private origcy: number;
@@ -47,11 +41,8 @@ export default class Segment {
     origcy?: number,
   ) {
 
-    this.ease = ease;
     this.minRadius = minRadius;
     this.maxRadius = maxRadius;
-    this.cx = cx;
-    this.cy = cy;
     this.origcx = origcx
     this.origcy = origcy
 
@@ -77,7 +68,6 @@ export default class Segment {
           break;
         case PhosphorousType.Blinker:
           radius = easeInElastic(s, this.minRadius, this.maxRadius, steps);
-          this.ease = easeInCubic
           this.maxRadius = 60
           this.minRadius = 30
           this.plotBlinker(cx, cy, currentAngleRight, currentAngleLeft, radius)
@@ -126,7 +116,7 @@ export default class Segment {
         y1,
         this.origcx,
         this.origcy,
-        new Size(.1, .8, .1, .8),
+        new Size(0.8, rand(1, 2), 0.8, rand(1, 2)),
         c,
         sc,
         effects[Math.floor(Math.random() * effects.length)]))
@@ -138,7 +128,7 @@ export default class Segment {
         y2,
         this.origcx,
         this.origcy,
-        new Size(.1, 1, .1, 1),
+        new Size(0.8, rand(1, 2), 0.8, rand(1, 2)),
         c,
         sc,
         effects[Math.floor(Math.random() * effects.length)]))

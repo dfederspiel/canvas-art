@@ -25,7 +25,7 @@ export default class Blinker extends Phosphorous {
       y,
       cx,
       cy,
-      new Size(0.3, rand(0.5, 1), 0.3, rand(0.5, 1)),
+      new Size(0.8, rand(1, 2), 0.8, rand(1, 2)),
       new HSL(goldHue, goldSaturation, goldLightness),
       new HSL(silverHue, silverSaturation, silverLightness),
       easeOutSine

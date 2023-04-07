@@ -41,8 +41,8 @@ export default class Phosphorous extends Rect implements Animatable {
 
     this.easing = easing;
 
-    this.vx = (x - cx) / rand(3, 8)
-    this.vy = (y - cy) / rand(3, 8)
+    this.vx = (x - cx) * rand(.05, .5) // / rand(1, 8) // rand(3, 8)
+    this.vy = (y - cy) * rand(.05, .5) // / rand(1, 8) // rand(3, 8)
   }
 
 
