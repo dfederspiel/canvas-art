@@ -75,6 +75,11 @@ export default class HSL {
       return this;
     }
   
+    setHue(hue: number): HSL {
+      this.h = hue;
+      return this;
+    }
+  
     clone(): HSL {
       return new HSL(this.h, this.s, this.l, this.a);
     }

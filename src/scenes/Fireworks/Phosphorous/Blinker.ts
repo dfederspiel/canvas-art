@@ -1,4 +1,4 @@
-import { easeInOutCubic, easeInOutSine, easeOutSine } from "../../../lib/easing";
+import { easeInOutCubic, easeInOutExpo, easeInOutSine, easeOutSine } from "../../../lib/easing";
 import { rand } from "../../../lib/helpers";
 import HSL from "../../../lib/HSL";
 import RGB from "../../../lib/RGB";
@@ -28,7 +28,7 @@ export default class Blinker extends Phosphorous {
       y,
       cx,
       cy,
-      new Size(.8, rand(.9, 1.5), .8, rand(.9, 1.5)),
+      new Size(.5, rand(.9, 1.5), .5, rand(.9, 1.5)),
       Math.random() < .5 ? gold : silver,
       Math.random() < .5 ? silver : gold,
       easeInOutCubic
@@ -40,10 +40,10 @@ export default class Blinker extends Phosphorous {
   update(): void {
     super.update();
 
-    if(this.age > 5) {
-      let a = easeInOutCubic(this.animationFrame, 0.1, .3, this.frames);
-      this.color.a = a < 0 ? 0 : a;
-      this.secondaryColor.a = a < 0 ? 0 : a;
+    if(this.age > 100) {
+      let a = easeInOutExpo(this.animationFrame, 0, 1, rand(10, 30));
+      this.color.a = a;
+      this.secondaryColor.a = a;
     }
   }
 }

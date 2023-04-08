@@ -22,6 +22,6 @@ export default class Strobe extends Phosphorous {
   }
 
   update(): void {
-      super.update();
+    super.update();
   }
 }

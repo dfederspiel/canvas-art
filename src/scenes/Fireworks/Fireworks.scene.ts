@@ -58,7 +58,6 @@ export default class FireworkScene implements Scene {
 
     if (this.fireworks.length < this.layers && this.fireworkCounter >= this.distributionInterval) {
       this.fireworks.push(new Firework(rand(0, 360), Math.floor(rand(1, 100)), this.ctx));
-      
       // Reset the fireworkCounter
       this.fireworkCounter = 0;
     }
@@ -70,7 +69,9 @@ export default class FireworkScene implements Scene {
     this.ctx.fillStyle = 'black';
     this.ctx.fillRect(0, 0, 320, 70);
 
+    // Remove any firework that are dead (all Phosphorous balls are burned out)
     this.fireworks = this.fireworks.filter(s => !s.isDead);
+
     this.count++;
   }
 }

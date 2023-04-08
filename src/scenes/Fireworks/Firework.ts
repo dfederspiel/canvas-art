@@ -141,11 +141,7 @@ export default class Firework implements Randomizable {
   }
 
   update(step: number) {
-    // this.maxRadius += this.maxModifier;
-    // this.minRadius += this.minModifier;
-    // this.angle += step;
     this.points.forEach(p => {
-      // this.angle += (Math.PI * 2) / this.limit;
       p.update()
     })
   }
@@ -189,17 +185,9 @@ export default class Firework implements Randomizable {
       const c1 =new HSL(rand(0, 360), rand(40, 80), 60, 1)
       const c2 =new HSL(rand(0, 360), rand(40, 80), 60, 1)
       const size = new Size(0.8, rand(1, 1.8), 0.8, rand(1, 1.8));
-      this.points.push(...points.map(p => new Phosphorous(p.x, p.y, this.cx, this.cy, size, c1, c2, getRandomEasing())))
+      this.points.push(...points.map(p => new Phosphorous(p.x, p.y, this.cx, this.cy, size, c1.clone().setHue(c1.h + rand(0, 50)), c2, getRandomEasing())))
     }
   }
-
-
-  // plotPhosphorousPoints(colorPrimary?: HSL, colorSecondary?: HSL) {
-  //   const points = generateStarPoints(this.cx, this.cy, rand(10, 100));
-  //   const c1 =new HSL(rand(0, 360), 100, 40, 1)
-  //   const c2 = new HSL(rand(0, 360), 100, 40, 1)
-  //   this.points.push(...points.map(p => new Phosphorous(p.x, p.y, this.cx, this.cy, new Size(1,1,.3,.3), c1, c2, easeInOutSine)))
-  // }
 
   private renderPhosphorous(objects: Phosphorous[]): void {
     if (objects.length === 0) return;
@@ -207,17 +195,15 @@ export default class Firework implements Randomizable {
       if (o.isDead) return
       this.ctx.beginPath();
       this.ctx.fillStyle = o.color.toString();
-      // this.ctx.strokeStyle = o.secondaryColor.toString()
       this.ctx.arc(o.x, o.y, o.w < 0 ? 0 : o.w, 0, Math.PI * 2);
       this.ctx.fill();
-      //this.ctx.stroke();
     });
   }
 
   randomize(): void {
     this.angle = 0;
-    this.minRadius = rand(5, 10);
-    this.maxRadius = rand(15, 45);
+    this.minRadius = rand(10, 20);
+    this.maxRadius = rand(25, 50);
     this.minModifier = rand(.1, .5);
     this.maxModifier = rand(2, 3.5);
     this.limit = Math.floor(rand(2, 30));
