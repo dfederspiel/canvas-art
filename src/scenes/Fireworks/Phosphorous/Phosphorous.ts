@@ -1,5 +1,5 @@
 import { EasingFn } from "../../../lib/easing";
-import { rand } from "../../../lib/helpers";
+import { calculate, rand } from "../../../lib/helpers";
 import { Animatable } from "../../../lib/types";
 import Rect from "../../../lib/Rect";
 import Size from "../../../lib/Size";
@@ -14,11 +14,12 @@ export default class Phosphorous extends Rect implements Animatable {
   animationDirection: number = 1;
   animationFrame: number = 0;
   frames: number = rand(5, 15);
+  radius: number;
 
-  ageLimit: number = rand(15, 100);
+  ageLimit: number = rand(15, 120);
 
-  private vx: number;
-  private vy: number;
+  vx: number;
+  vy: number;
 
   age: number = 0;
 
@@ -41,8 +42,8 @@ export default class Phosphorous extends Rect implements Animatable {
 
     this.easing = easing;
 
-    this.vx = (x - cx) / rand(3, 8)
-    this.vy = (y - cy) / rand(3, 8)
+    this.vx = (x - cx) / rand(3, 12)
+    this.vy = (y - cy) / rand(3, 12)
   }
 
 
@@ -79,21 +80,14 @@ export default class Phosphorous extends Rect implements Animatable {
       this.x += this.vx;
       this.y += this.vy;
 
-      this.vx += -this.vx / 50;
-      this.vy += -this.vy / 50;
+      this.vx += -this.vx / 40;
+      this.vy += -this.vy / 40;
 
       this.vy += 0.035;
       this.updateAnimation();
     } else {
       this.isDead = true;
     }
-
-    // Fade out the alpha values of c1 and c2 when the age is within 5% of the ageLimit
-    // if (this.age >= this.ageLimit * 0.95) {
-    //   const fadeOutProgress = (this.age - this.ageLimit * 0.95) / (this.ageLimit * 0.05);
-    //   this.color.a = 1 - fadeOutProgress;
-    //   this.secondaryColor.a = 1 - fadeOutProgress;
-    // }
 
     this.age++;
   }

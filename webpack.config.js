@@ -6,7 +6,7 @@ module.exports = {
   devServer: {
     static: join(__dirname, 'dist'), // Replaces 'contentBase' in v5
     compress: true,
-    port: 9000,
+    port: 8080,
     historyApiFallback: true, // Add this line to enable the fallback
   },
   entry: "./src/index.ts",
