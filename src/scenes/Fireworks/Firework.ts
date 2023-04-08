@@ -26,10 +26,10 @@ function generateCirclePoints(cx: number, cy: number): { x: number; y: number }[
   return points;
 }
 
-function generateStarPoints(cx: number, cy: number, num: number): { x: number; y: number }[] {
+function generateStarPoints(cx: number, cy: number, num: number, radius: number = 15): { x: number; y: number }[] {
   const points: { x: number; y: number }[] = [];
   const numPoints = num;
-  const outerRadius = 15;
+  const outerRadius = radius;
   const innerRadius = 2;
   const centerX = cx;
   const centerY = cy;
@@ -44,7 +44,6 @@ function generateStarPoints(cx: number, cy: number, num: number): { x: number; y
 
   return points;
 }
-
 
 const GRAVITY = -65; // Gravity constant
 
@@ -181,7 +180,7 @@ export default class Firework implements Randomizable {
 
       segments.forEach(s => { this.points.push(...s.points) });
     } else {
-      const points = generateStarPoints(this.cx, this.cy, rand(20, 60));
+      const points = generateStarPoints(this.cx, this.cy, rand(20, Math.random() < .9 ? 60 : 200), rand(15, 30));
       const c1 =new HSL(rand(0, 360), rand(40, 80), 60, 1)
       const c2 =new HSL(rand(0, 360), rand(40, 80), 60, 1)
       const size = new Size(0.8, rand(1, 1.8), 0.8, rand(1, 1.8));
@@ -242,6 +241,15 @@ export default class Firework implements Randomizable {
       this.cx = this.mortarX - r / 2;
       this.cy = this.mortarY - r / 2;
       this.hasDetonated = true;
+
+      const radius = 50;
+      const gradient = this.ctx.createRadialGradient(this.mortarX, this.mortarY, 0, this.mortarX, this.mortarY, radius);
+      gradient.addColorStop(0, 'rgba(255, 255, 255, .3)');
+      gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+      this.ctx.fillStyle = gradient
+      this.ctx.arc(this.mortarX, this.mortarY, radius, 0, Math.PI * 2)
+      this.ctx.fill();
       if (Math.random() < .2) {
         this.plotPhosphorousPoints();
       } else {

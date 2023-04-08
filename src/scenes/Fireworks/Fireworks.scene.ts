@@ -10,7 +10,7 @@ export default class FireworkScene implements Scene {
 
   private count = 0;
   private layers = 15;
-  private lowLayers = 2;
+  private lowLayers = 5;
   private highLayers = 100;
   private distributionInterval: number = rand(45, 70);
   private timeSinceSwitch = 0;
