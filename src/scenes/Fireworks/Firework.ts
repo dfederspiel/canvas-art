@@ -1,10 +1,11 @@
 import { easeInOutSine, effects } from '../../lib/easing';
-import { calculate, rand } from '../../lib/helpers';
+import { calculate, getRandomPhosphorousType, rand } from '../../lib/helpers';
 import { Randomizable } from '../../lib/types';
 import Segment from './Segment';
 import Phosphorous from './Phosphorous/Phosphorous';
 import RGB from '../../lib/RGB';
 import { PhosphorousType } from './Phosphorous/types';
+import HSL from '../../lib/HSL';
 
 
 const GRAVITY = -65; // Gravity constant
@@ -36,7 +37,7 @@ export default class Firework implements Randomizable {
   private offset = 0 // rand(-50, 100);
   private steps: number = Math.floor(rand(50, 145));
   private ease: Function;
-  private segments: Segment[] = [];
+  segments: Segment[] = [];
 
   private minModifier: number;
   private maxModifier: number;
@@ -79,11 +80,11 @@ export default class Firework implements Randomizable {
 
     this.randomize();
 
-    this.launchVelocity = rand(160, 200); // Adjust initial launch velocity as needed
+    this.launchVelocity = rand(190, 230); // Adjust initial launch velocity as needed
     
     // Convert degrees to radians: (Math.PI / 180) * degrees
-    let minLaunchAngle = (Math.PI / 180) * (90 - 15); // 70 degrees in radians
-    let maxLaunchAngle = (Math.PI / 180) * (90 + 15); // 110 degrees in radians
+    let minLaunchAngle = (Math.PI / 180) * (90 - 10); // 70 degrees in radians
+    let maxLaunchAngle = (Math.PI / 180) * (90 + 10); // 110 degrees in radians
     this.launchAngle = rand(minLaunchAngle, maxLaunchAngle); // Launch angle: straight up +/- 20 degrees
   }
 
@@ -97,11 +98,11 @@ export default class Firework implements Randomizable {
     })
   }
 
-  renderNodes(colorPrimary?: RGB, colorSecondary?: RGB) {
+  renderNodes(colorPrimary?: HSL, colorSecondary?: HSL) {
     let r = Math.random() > .2
-    let fType = r ? PhosphorousType.Default : PhosphorousType.Blinker;
+    let fType = getRandomPhosphorousType();
 
-    for (let c = 0; c < this.limit; c++) {
+    for (let c = 0; c <= this.limit; c++) {
       this.angle += (Math.PI * 2) / this.limit;
       const { x: pX, y: pY } = calculate.getVertexFromAngle(
         this.cx,
@@ -129,11 +130,11 @@ export default class Firework implements Randomizable {
 
   private renderArcs(objects: Phosphorous[]): void {
     if (objects.length === 0) return;
-    this.ctx.strokeStyle = this.strokeColor.toString()
     objects.forEach((o, idx) => {
       if (o.isDead) return
       this.ctx.beginPath();
       this.ctx.fillStyle = o.color.toString();
+      this.ctx.strokeStyle = o.color.toString()
       this.ctx.arc(o.x, o.y, o.w < 0 ? 0 : o.h, 0, Math.PI * 2);
       this.ctx.fill();
       this.ctx.stroke();
@@ -158,6 +159,7 @@ export default class Firework implements Randomizable {
     let r = easeInOutSine(this.count, 1, 2, 2)
     this.ctx.beginPath();
     this.ctx.fillStyle = 'rgba(150, 150, 150, .3)'
+    this.ctx.strokeStyle = 'rgba(150, 150, 150, .9)'
     this.ctx.arc(this.mortarX, this.mortarY, r, 0, Math.PI * 2)
     this.ctx.fill();
     this.ctx.stroke();
@@ -187,8 +189,8 @@ export default class Firework implements Randomizable {
       if (Math.random() < .2) {
         this.renderNodes();
       } else {
-        let c = new RGB(rand(50, 255), rand(50, 255), rand(50, 255), rand(.8, 1))
-        let d = new RGB(rand(50, 255), rand(50, 255), rand(50, 255), rand(.8, 1))
+        let c = new HSL(rand(0, 360), rand(90, 100), rand(33, 100)) // HSL.fromRGB(rand(50, 255), rand(50, 255), rand(50, 255), rand(.8, 1))
+        let d = new HSL(rand(0, 360), rand(60, 100), rand(33, 100)) // HSL.fromRGB(rand(50, 255), rand(50, 255), rand(50, 255), rand(.8, 1))
         this.renderNodes(
           c, Math.random() < .5 ? d : null
         )

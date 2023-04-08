@@ -2,25 +2,25 @@ import { EasingFn } from "../../../lib/easing";
 import { rand } from "../../../lib/helpers";
 import { Animatable } from "../../../lib/types";
 import Rect from "../../../lib/Rect";
-import RGB from "../../../lib/RGB";
 import Size from "../../../lib/Size";
+import HSL from '../../../lib/HSL';
 
 export default class Phosphorous extends Rect implements Animatable {
 
   size: Size;
-  color: RGB;
-  secondaryColor: RGB;
+  color: HSL;
+  secondaryColor: HSL;
   isDead: boolean;
   animationDirection: number = 1;
   animationFrame: number = 0;
   frames: number = rand(5, 15);
 
-  ageLimit: number = rand(15, 300)
+  ageLimit: number = rand(15, 100);
 
   private vx: number;
   private vy: number;
 
-  private age: number = 0;
+  age: number = 0;
 
   private easing?: EasingFn
 
@@ -30,8 +30,8 @@ export default class Phosphorous extends Rect implements Animatable {
     cx: number,
     cy: number,
     size: Size,
-    color: RGB,
-    secondaryColor: RGB,
+    color: HSL,
+    secondaryColor: HSL,
     easing?: EasingFn,
   ) {
     super(x, y, size.min.w, size.min.h)
@@ -77,19 +77,24 @@ export default class Phosphorous extends Rect implements Animatable {
   update() {
     if (this.ageLimit - this.age > 0) {
       this.x += this.vx;
-      this.y += this.vy
+      this.y += this.vy;
 
-      this.vx += -this.vx / 50
-      this.vy += -this.vy / 50
+      this.vx += -this.vx / 50;
+      this.vy += -this.vy / 50;
 
-      this.vy += .035
-      this.updateAnimation()
-
+      this.vy += 0.035;
+      this.updateAnimation();
     } else {
       this.isDead = true;
     }
 
-    if (this.age > this.ageLimit / rand(1, 2)) this.color = this.secondaryColor
-    this.age++
+    // Fade out the alpha values of c1 and c2 when the age is within 5% of the ageLimit
+    // if (this.age >= this.ageLimit * 0.95) {
+    //   const fadeOutProgress = (this.age - this.ageLimit * 0.95) / (this.ageLimit * 0.05);
+    //   this.color.a = 1 - fadeOutProgress;
+    //   this.secondaryColor.a = 1 - fadeOutProgress;
+    // }
+
+    this.age++;
   }
 }

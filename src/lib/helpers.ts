@@ -1,6 +1,19 @@
+import { PhosphorousType } from '../scenes/Fireworks/Phosphorous/types';
 import Rect from "./Rect";
 import RGB from "./RGB";
 import { Distance } from "./types";
+
+export function getRandomPhosphorousType(): PhosphorousType {
+  const randomNumber = Math.random() * 100;
+
+  if (randomNumber < 80) {
+    return PhosphorousType.Default;
+  } else if (randomNumber < 95) {
+    return PhosphorousType.Hue;
+  } else {
+    return PhosphorousType.Blinker;
+  }
+}
 
 export function rand(min: number, max: number) {
   return Math.random() * (max - min) + min;
