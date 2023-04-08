@@ -1,4 +1,4 @@
-import { easeInOutSine, easeOutSine } from "../../../lib/easing";
+import { easeInOutElastic, easeInOutSine, easeLinear, easeOutSine, getRandomEasing } from "../../../lib/easing";
 import { rand } from "../../../lib/helpers";
 import Size from "../../../lib/Size";
 import HSL from '../../../lib/HSL';
@@ -14,10 +14,10 @@ export default class Hue extends Phosphorous {
       y,
       cx,
       cy,
-      new Size(0.8, rand(1, 2), 0.8, rand(1, 2)),
+      new Size(0.8, rand(1, 1.2), 0.8, rand(1, 1.2)),
       c1,
       c2,
-      easeOutSine
+      easeInOutElastic
     );
     this.ageLimit = rand(10, 300);
     this.frames = Math.floor(rand(1, 100));
@@ -27,18 +27,18 @@ export default class Hue extends Phosphorous {
   update(): void {
     super.update();
 
-    // Calculate the progress of the hue transition
-    const progress = this.age / this.ageLimit;
+     // Calculate the progress of the hue transition
+     const progress = this.age / this.ageLimit;
 
-    // Calculate the hue difference between the start and end color
-    const hueDifference = this.secondaryColor.h - this.originalColor.h;
-  
-    // Update the hue based on the progress
-    this.color.h = this.originalColor.h + (hueDifference * progress);
-
-    // Update the alpha values
-    // let a = easeInOutSine(this.animationFrame / 2, 0.1, 1, this.frames);
-    // this.color.a = a < 0 ? 0 : a;
-    //this.secondaryColor.a = a < 0 ? 0 : a;
+     // Calculate the hue difference between the start and end color
+     const hueDifference = this.secondaryColor.h - this.originalColor.h;
+   
+     // Update the hue based on the progress
+     this.color.h = this.originalColor.h + (hueDifference * progress);
+ 
+     // Update the alpha values
+     // let a = easeInOutSine(this.animationFrame / 2, 0.1, 1, this.frames);
+     // this.color.a = a < 0 ? 0 : a;
+     //this.secondaryColor.a = a < 0 ? 0 : a;
   }
 }

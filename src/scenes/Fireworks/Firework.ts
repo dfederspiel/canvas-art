@@ -127,10 +127,10 @@ export default class Firework implements Randomizable {
       this.launchVelocity =  rand(200, 230); // Adjust initial launch velocity as needed
     
       // Convert degrees to radians: (Math.PI / 180) * degrees
-      minLaunchAngle = (Math.PI / 180) * (90 - 20); // 70 degrees in radians
-      maxLaunchAngle = (Math.PI / 180) * (90 + 20); // 110 degrees in radians
+      minLaunchAngle = (Math.PI / 180) * (90 - 25); // 70 degrees in radians
+      maxLaunchAngle = (Math.PI / 180) * (90 + 25); // 110 degrees in radians
     } else {
-      this.launchVelocity = rand(140, 160); // Adjust initial launch velocity as needed
+      this.launchVelocity = rand(120, 180); // Adjust initial launch velocity as needed
     
       // Convert degrees to radians: (Math.PI / 180) * degrees
       minLaunchAngle = (Math.PI / 180) * (90 - 15); // 70 degrees in radians
@@ -188,7 +188,7 @@ export default class Firework implements Randomizable {
       const points = generateStarPoints(this.cx, this.cy, rand(20, 60));
       const c1 =new HSL(rand(0, 360), rand(40, 80), 60, 1)
       const c2 =new HSL(rand(0, 360), rand(40, 80), 60, 1)
-      const size = new Size(0.5, rand(.8, 1.8), 0.5, rand(.8, 1.8));
+      const size = new Size(0.8, rand(1, 1.8), 0.8, rand(1, 1.8));
       this.points.push(...points.map(p => new Phosphorous(p.x, p.y, this.cx, this.cy, size, c1, c2, getRandomEasing())))
     }
   }
@@ -207,23 +207,23 @@ export default class Firework implements Randomizable {
       if (o.isDead) return
       this.ctx.beginPath();
       this.ctx.fillStyle = o.color.toString();
-      this.ctx.strokeStyle = o.color.toString()
+      // this.ctx.strokeStyle = o.secondaryColor.toString()
       this.ctx.arc(o.x, o.y, o.w < 0 ? 0 : o.w, 0, Math.PI * 2);
       this.ctx.fill();
-      this.ctx.stroke();
+      //this.ctx.stroke();
     });
   }
 
   randomize(): void {
     this.angle = 0;
-    this.minRadius = rand(-10, 10);
-    this.maxRadius = rand(20, 40);
+    this.minRadius = rand(5, 10);
+    this.maxRadius = rand(15, 45);
     this.minModifier = rand(.1, .5);
     this.maxModifier = rand(2, 3.5);
-    this.limit = Math.floor(rand(2, 12));
-    this.steps = Math.floor(rand(50 / this.limit, 150 / this.limit));
+    this.limit = Math.floor(rand(2, 30));
+    this.steps = Math.floor(rand(50 / this.limit, 300 / this.limit));
     this.offset = rand(5, 20);
-    this.rotationInterval = 0;
+    this.rotationInterval = rand(0, 1);
     this.cx = rand(this.width * .45, this.width * .65);
     this.cy = rand(this.height * .20, this.height * .30);
   }
@@ -270,10 +270,9 @@ export default class Firework implements Randomizable {
   render() {
     if (this.hasDetonated) {
       
+      this.update(this.rotationInterval)
       this.renderPhosphorous(this.points);
       
-      this.update(this.rotationInterval)
-
       this.isDead = true;
       this.points.forEach(p => {
         if (!p.isDead) this.isDead = false;
